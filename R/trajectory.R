@@ -71,7 +71,7 @@ TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
   # Save frame rate
   attr(trj, .MTA_FPS) <- fps
 
-  trj
+  .fillInTraj(trj)
 }
 
 #' Scale a trajectory

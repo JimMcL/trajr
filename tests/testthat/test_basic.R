@@ -38,4 +38,7 @@ test_that("Trajectory creation", {
   # Rediscretization
   rd <- TrajRediscretize(smoothed, .05)
   #TrajPlot(rd)
+
+  expect_true(TrajSinuosity(smoothed) < 1)
+  expect_true(TrajSinuosity(smoothed) > 0)
 })
