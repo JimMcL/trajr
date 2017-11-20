@@ -4,6 +4,22 @@
 .MTA_FPS <- 'fps'
 .MTA_NFRAMES <- 'numFrames'
 
+# ---- Private functions ----
+
+# Must be called whenever the cartesian coordinates of a trajectory are
+# modified. Fills in polar coordinates and displacement.
+.fillInTraj <- function(trj) {
+  # Get polar coordinates
+  trj$polar <- complex(real = trj$x, imaginary = trj$y)
+
+  # Calculate displacements from each point to the next
+  trj$displacement <- c(0, diff(trj$polar))
+
+  trj
+}
+
+# ---- Trajectory creation and modification ----
+
 #' Create a Trajectory Object
 #'
 #' \code{TrajFromCoords} creates a new trajectory object from a set of
@@ -14,58 +30,136 @@
 #' calculated for each point as \code{(frame - 1) / fps} where \code{frame} is
 #' the index of the point.
 #'
-#' @param track data frame containing x & y columns.
+#' @param trj data frame containing x & y columns.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
 #' @param yCol Name or index of the \code{y} column in \code{track} (default 2).
 #' @param fps Frames per second - used to calculate relative frame times if
 #'   \code{track} does not contain a \code{time} column.
 #'
 #' @return A new trajectory object.
-TrajFromCoords <- function(track, xCol = 1, yCol = 2, fps = 50) {
-  # Get polar coordinates
-  track$polar <- complex(real = track$x, imaginary = track$y)
-
-  # Calculate displacements from each point to the next
-  track$displacement <- c(0, diff(track$polar))
+TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
+  # Ensure column names are as expected
+  renm <- function(col, name) {
+    if (is.numeric(col)) {
+      names(trj)[col] <- name
+    } else {
+      names(trj)[names(trj) == col] <- name
+    }
+    trj
+  }
+  trj <- renm(xCol, 'x')
+  trj <- renm(yCol, 'y')
 
   # Rename time column to standard name
-  if (!('time' %in% names(track)) && 'Time' %in% names(track)) {
-      names(track)[names(track) == 'Time'] <- "time"
+  if (!('time' %in% names(trj)) && 'Time' %in% names(trj)) {
+      names(trj)[names(trj) == 'Time'] <- "time"
   }
 
   # Allocate times if they aren't already known
-  if (!('time' %in% names(track))) {
+  if (!('time' %in% names(trj))) {
     # Assign times to each frame, starting at 0
-    track$time <- 0:(nrow(track) - 1) / fps
+    trj$time <- 0:(nrow(trj) - 1) / fps
   }
 
   # Get times associated with displacements, with the first point at time 0,
   # i.e. time at each point in displacement, not time between points
-  track$displacementTime <- track$time[1:nrow(track)] - track$time[1]
+  trj$displacementTime <- trj$time[1:nrow(trj)] - trj$time[1]
 
   # Save number of frames
-  attr(track, .MTA_NFRAMES) <- nrow(track)
+  attr(trj, .MTA_NFRAMES) <- nrow(trj)
 
   # Save frame rate
-  attr(track, .MTA_FPS) <- fps
+  attr(trj, .MTA_FPS) <- fps
 
-  track
+  trj
 }
 
-TrajGetFPS <- function(track) { attr(track, .MTA_FPS) }
-TrajGetNFrames <- function(track) { attr(track, .MTA_NFRAMES) }
+#' Scale a trajectory
+#'
+#' Scales the cartesian coordinates in a trajectory, for example, to convert
+#' units from pixels to metres.
+#'
+#' @param trj The trajectory to be scaled.
+#' @param scale Scaling factor to be applied to the trajectory coordinates.
+#' @param units Character specifying the new spatial units, e.g. "m" or "metres"
+#' @param yScale Optional scaling factor to be applied to the y-axis, which may
+#'   be specified if the original coordinates are not square. Defaults to
+#'   \code{scale}.
+#' @return new scaled trajectory.
+#'
+#' @examples
+#' # original trajectory units are pixels, measured as having
+#' #  47 pixels in 10 mm, so to convert to metres, scale the
+#' # trajectory by the approriate factor
+#' scale <- 10 / 47 * 1000
+#' scaled <- TrajScale(trj, scale, "m")
+TrajScale <- function(trj, scale, units, yScale = scale) {
+  trj$x <- trj$x * scale
+  trj$y <- trj$y * scale
+  .fillInTraj(trj)
+}
 
-TrajPlot <- function(track, type = 'l', add = FALSE, ...) {
+#' Rotates a trajectory so that angle(finish - start) == angle
+TrajRotate <- function(trj, angle = 0) {
+  # Calculate current orientation
+  orient <- Arg(track$polar[length(track$polar)] - track$polar[1])
+  # Calculate required rotation
+  alpha <- angle - orient
+  # Rotation matrix
+  rm <- matrix(c(cos(alpha), sin(alpha), -sin(alpha), cos(alpha)), ncol = 2)
+
+  # New track is old track rotated
+  nt <- as.data.frame(t(rm %*% (t(track[,c('x', 'y')]))))
+  colnames(nt) <- c('x', 'y')
+  trj$x <- nt$x
+  trj$y <- nt$y
+
+  .fillInTraj(trj)
+}
+
+#' Smooth a trajectory using a Savitzky-Golay filter
+#'
+#' Smooths a trajectory using a Savitzky-Golay smoothing filter.
+#'
+#' @param trj The trajectory to be smoothed.
+#' @param p polynomial order.
+#' @param n Filter length (or window size), must be an odd number.
+#' @return a new trajectory which is a smoothed version of the input trajectory.
+#'
+#' @examples
+#' trj <- TrajSmoothSG(trj, 3, 101)
+TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {
+  trj$x <- signal::sgolayfilt(trj$x, p, n)
+  trj$y <- signal::sgolayfilt(trj$y, p, n)
+  .fillInTraj(trj)
+}
+
+
+# ---- Trajectory analysis ----
+
+#' Returns the frames-per-second recorded for this trajectory
+TrajGetFPS <- function(trj) { attr(trj, .MTA_FPS) }
+
+#' Returns the number of frames recorded for this trajectory
+TrajGetNFrames <- function(trj) { attr(trj, .MTA_NFRAMES) }
+
+#' Plots a trajectory
+TrajPlot <- function(trj, type = 'l', add = FALSE, ...) {
   if (!add) {
-    plot(NULL, xlim = range(track$x), ylim = range(track$y), asp = 1, ...)
+    plot(NULL, xlim = range(trj$x), ylim = range(trj$y), asp = 1, ...)
   }
-  lines(y ~ x, data = track, type = type, ...)
-  points(track$x[1], track$y[1], pch = 16, cex = .8)
+  lines(y ~ x, data = trj, type = type, ...)
+  points(trj$x[1], trj$y[1], pch = 16, cex = .8)
 }
 
-# Returns angles (in radians) of each segment relative to the previous segment
-TrajAngles <- function(track, lag = 1) {
-  angles <- diff(Arg(track$displacement), lag)
+#' Turning angles of a Trajectory
+#'
+#' Calculates the angles (in radians) of each segment relative to the previous segment.
+#'
+#' @param trj the trajectory whose whose angles are to be calculated.
+#' @param lag Angles between every lag'th segment is calculated.
+TrajAngles <- function(trj, lag = 1) {
+  angles <- diff(Arg(trj$displacement), lag)
   # Normalise so that -pi < angle <= pi
   ii <- angles <= -pi
   angles[ii] <- angles[ii] + 2 * pi
@@ -74,13 +168,13 @@ TrajAngles <- function(track, lag = 1) {
   angles
 }
 
-# Calculates speed and linear acceleration along a track over time.
-#
-# value - list with values speed, speedTimes, acceleration, accelerationTimes
-TrajDerivatives <- function(track) {
+#' Calculates speed and linear acceleration along a track over time.
+#'
+#' @return list with values \code{speed}, \code{speedTimes}, \code{acceleration}, \code{accelerationTimes}
+TrajDerivatives <- function(trj) {
   # Note that displacements are the (polar) displacements from 1 point to the next
-  d <- Mod(track$displacement)
-  t <- track$displacementTime
+  d <- Mod(trj$displacement)
+  t <- trj$displacementTime
 
   # Calculate speed
   v <- d[2:length(d)] / diff(t)
@@ -92,52 +186,28 @@ TrajDerivatives <- function(track) {
   list(speed = v, speedTimes = vt, acceleration = a, accelerationTimes = at)
 }
 
-# Calculates the cumulative length of a track, which is the distance travelled
-TrajLength <- function(track) {
-  sum(Mod(diff(track$polar)))
+#' Calculates the cumulative length of a track, which is the distance travelled
+TrajLength <- function(trj) {
+  sum(Mod(diff(trj$polar)))
 }
 
-# Calculates the distance between the start and end of a set of points in polar form.
-# Also called the diffusion distance, net distance, or bee-line from start to finish.
-TrajDistance <- function(track) {
-  Mod(diff(track$polar[c(1,length(track$polar))]))
+#' Calculates the distance between the start and end of a trajectory.
+#' Also called the diffusion distance, net distance, or bee-line from start to finish.
+TrajDistance <- function(trj) {
+  Mod(diff(trj$polar[c(1,length(trj$polar))]))
 }
 
-TrajSinuosity <- function(track) {
-  TrajDistance(track) / TrajLength(track)
+#' Sinuosity of a Trajectory
+TrajSinuosity <- function(trj) {
+  TrajDistance(trj) / TrajLength(trj)
 }
 
-# Rotates a track so that angle(finish - start) == angle
-TrajRotate <- function(track, angle = 0) {
-  # Calculate current orientation
-  orient <- Arg(track$polar[length(track$polar)] - track$polar[1])
-  # Calculate required rotation
-  alpha <- angle - orient
-  # Rotation matrix
-  rm <- matrix(c(cos(alpha), sin(alpha), -sin(alpha), cos(alpha)), ncol = 2)
-
-  # New track is old track rotated
-  nt <- as.data.frame(t(rm %*% (t(track[,c('x', 'y')]))))
-  colnames(nt) <- c('x', 'y')
-  nt <- TrajFromCoords(nt)
-
-  nt
-}
-
-# Directional change (DC) for an entire track
-# track - Track to calculate DC for
-# nFrames - frame delta to process - if 1, every frame is process, if 2, every 2nd frame is processed...
+#' Directional change (DC) for an entire track
+#' @param trj Track to calculate DC for
+#' @param nFrames frame delta to process - if 1, every frame is process, if 2, every 2nd frame is processed...
 #
-# Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483
-TrajDirectionalChange <- function(track, nFrames = 1) {
-  TrajAngles(track, nFrames) / diff(track$displacementTime, nFrames)
+#' Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483
+TrajDirectionalChange <- function(trj, nFrames = 1) {
+  TrajAngles(trj, nFrames) / diff(trj$displacementTime, nFrames)
 }
-
-# Smooths a track using a Savitzky-Golay smoothing filter
-TrajSmooth <- function(track, p = 3, n = p + 3 - p%%2) {
-  sm <- data.frame(x = sgolayfilt(track$x, p, n), y = sgolayfilt(track$y, p, n))
-  TrajFromCoords(sm, TrajGetFPS(track))
-}
-
-
 

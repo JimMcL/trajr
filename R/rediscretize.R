@@ -74,23 +74,23 @@
 
 #' Resample a trajectory to a constant path length
 #'
+#' Constructs a new trajectory by resampling the input trajectory to a fixed
+#' segment length.
+#'
 #' Based on the appendix in Bovet and Benhamou, (1988).
 #'
 #' TODO Handle frame times properly
 #'
-#' @param traj list of points, with x & y values
-# R - rediscretization step length
+#' @param trj The trajectory to be resampled.
+#' @param R rediscretization step length.
 #
-#' @return a new trajectory which
-TrajRediscretize <- function(traj, R) {
-  rt <- MRediscretizePoints(traj, R)
+#' @return a new trajectory which follows \code{trj}
+TrajRediscretize <- function(trj, R) {
+  rt <- .TrajRediscretizePoints(trj, R)
+
   # Convert from complex to cartesian coords
   rt <- data.frame(x = Re(rt), y = Im(rt))
+
   # Fill in other track stuff
-  rt <- TrajFromCoords(rt)
-  # Copy attributes across
-  for (att in c('numFrames', 'type', 'file')) {
-    attr(rt, att) <- attr(track, att)
-  }
-  rt
+  .fillInTraj(rt)
 }

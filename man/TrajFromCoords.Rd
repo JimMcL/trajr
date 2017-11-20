@@ -4,16 +4,17 @@
 \alias{TrajFromCoords}
 \title{Create a Trajectory Object}
 \usage{
-TrajFromCoords(track, xCol = 1, yCol = 2, fps = 50)
+TrajFromCoords(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50)
 }
 \arguments{
-\item{track}{data frame containing x & y columns.}
+\item{trj}{data frame containing x & y columns.}
 
 \item{xCol}{Name or index of the \code{x} column in \code{track} (default 1).}
 
 \item{yCol}{Name or index of the \code{y} column in \code{track} (default 2).}
 
-\item{fps}{Frames per second - used to calculate relative frame times.}
+\item{fps}{Frames per second - used to calculate relative frame times if
+\code{track} does not contain a \code{time} column.}
 }
 \value{
 A new trajectory object.
@@ -23,8 +24,8 @@ A new trajectory object.
 2-dimensional cartesian coordinates and some metadata.
 }
 \details{
-#' If \code{track} contains a \code{time} (or \code{Time}) column, it is
-assumed to contain the time (in seconds) of each data point. Otherwise times
-are calculated as \code{(frame - 1) / fps} where \code{frame} is the index of
-the point.
+If \code{track} contains a \code{time} (or \code{Time}) column, it is assumed
+to contain the time (in seconds) of each data point. Otherwise times are
+calculated for each point as \code{(frame - 1) / fps} where \code{frame} is
+the index of the point.
 }
