@@ -1,1 +1,2 @@
-exportPattern("^Traj[[:alpha:]]+")
+exportPattern("^[[:alpha:]]+")
+

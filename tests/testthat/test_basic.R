@@ -39,6 +39,20 @@ test_that("Trajectory creation", {
   rd <- TrajRediscretize(smoothed, .05)
   #TrajPlot(rd)
 
-  expect_true(TrajSinuosity(smoothed) < 1)
-  expect_true(TrajSinuosity(smoothed) > 0)
+  expect_true(TrajStraightness(smoothed) < 1)
+  expect_true(TrajStraightness(smoothed) > 0)
+
+  corr <- TrajDirectionAutocorrelations(TrajRediscretize(smoothed, .5))
+  # plot(corr, type='l')
+  mn <- TrajDAFindFirstMinimum(corr, 10)
+  # points(mn["deltaS"], mn["C"], pch = 16, col = "red", lwd = 2)
+  # points(mn["deltaS"], mn["C"], col = "black", lwd = 2)
+  mx <- TrajDAFindFirstMaximum(corr, 5)
+  # points(mx["deltaS"], mx["C"], pch = 16, col = "green", lwd = 2)
+  # points(mx["deltaS"], mx["C"], col = "black", lwd = 2)
+
+
+  sinuosity <- TrajSinuosity(rd)
+
+  emax <- TrajEmax(smoothed)
 })

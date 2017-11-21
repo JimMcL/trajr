@@ -12,14 +12,14 @@ TrajRediscretize(trj, R)
 \item{R}{rediscretization step length.}
 }
 \value{
-a new trajectory which follows \code{trj}
+a new trajectory with a constant segment length which follows
+  \code{trj}.
 }
 \description{
 Constructs a new trajectory by resampling the input trajectory to a fixed
-segment length.
+segment length. Timing of frames is lost, so speed and acceleration cannot be
+calculated on a rediscretized trajectory.
 }
 \details{
-Based on the appendix in Bovet and Benhamou, (1988).
-
-TODO Handle frame times properly
+Based on the appendix in Bovet and Benhamou, (1988)
 }

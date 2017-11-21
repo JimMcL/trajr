@@ -1,11 +1,9 @@
 #
 
-#' Resample a trajectory to a constant path length
-#'
-#' Based on the appendix in Bovet and Benhamou, (1988).
-#'
-#' @param points list of points, with x & y values
-# R - rediscretization step length
+# This function is the guts of TrajRediscretize
+#
+# @param points list of points, with x & y values
+# @param R rediscretization step length
 #
 # value is vector of complex points which are the rediscretized path
 .TrajRediscretizePoints <- function(points, R) {
@@ -75,16 +73,15 @@
 #' Resample a trajectory to a constant path length
 #'
 #' Constructs a new trajectory by resampling the input trajectory to a fixed
-#' segment length.
+#' segment length. Timing of frames is lost, so speed and acceleration cannot be
+#' calculated on a rediscretized trajectory.
 #'
-#' Based on the appendix in Bovet and Benhamou, (1988).
-#'
-#' TODO Handle frame times properly
+#' Based on the appendix in Bovet and Benhamou, (1988)
 #'
 #' @param trj The trajectory to be resampled.
 #' @param R rediscretization step length.
-#
-#' @return a new trajectory which follows \code{trj}
+#' @return a new trajectory with a constant segment length which follows
+#'   \code{trj}.
 TrajRediscretize <- function(trj, R) {
   rt <- .TrajRediscretizePoints(trj, R)
 

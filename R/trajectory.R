@@ -197,8 +197,15 @@ TrajDistance <- function(trj) {
   Mod(diff(trj$polar[c(1,length(trj$polar))]))
 }
 
-#' Sinuosity of a Trajectory
-TrajSinuosity <- function(trj) {
+#' Straightness of a Trajectory
+#'
+#' Calculates the straightness index of a trajectory, \code{D / L}, where
+#' \code{D} is the beeline distance between the first and last points in the
+#' trajectory,and \code{L} is the path length travelled.
+#'
+#' @param trj Trajectory to calculate straightness of.
+#' @return The straightness index of \code{trj}.
+TrajStraightness <- function(trj) {
   TrajDistance(trj) / TrajLength(trj)
 }
 
