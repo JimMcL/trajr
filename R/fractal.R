@@ -1,0 +1,52 @@
+# Fractal index functions
+
+#' Calculate possible fractal dimension step sizes
+#'
+TrajFractalStepSizes <- function(trj, smallestStepFactor = .0001, largestStepFactor = .1, numSteps = 100) {
+  pathLen <- TrajLength(trj)
+  exp(log(10) * seq(log10(smallestStepFactor * pathLen), log10(largestStepFactor * pathLen), length.out = numSteps))
+}
+
+#' Fractal dimension calculation
+#'
+#' Calculates path length (\eqn{L(\delta)}) for a range of step sizes (\eqn{\delta}).
+#' @param trj Trajectory to calculate fractal dimension for.
+#' @param stepSizes Vector of step sizes used to calculate path lengths (see \code{\link{TrajFractalStepSizes}}).
+#' @return Data frame with columns \code{stepsize} (\eqn{\delta}) and \code{pathlength} ((\eqn{L(\delta)}).
+#'
+#' @seealso \code{\link{TrajFractalStepSizes}} for a possible calculation of \code{stepSizes}.
+#' \code{\link{TrajFractalDimension}}
+#'
+#' @examples
+#' plot(TrajFractalDimensionValues(trj, TrajFractalStepSizes(trj)), log = "xy", pch = 16, cex = .5)
+TrajFractalDimensionValues <- function(trj, stepSizes) {
+  fi <- data.frame(t(sapply(stepSizes, function(ss) c(ss, TrajLength(TrajRediscretize(trj, ss))))))
+  names(fi) <- c('stepsize', 'pathlength')
+  fi
+}
+
+#' Calculate fractal dimension of a trajectory
+#'
+#' Calculates the fractal dimension of a trajectory using the 'dividers' method
+#' (Sugihara & May, 1990). This value may be meaningless for animal trajectories
+#' as they may not be fractal curves - see Benhamou (2004) and Turchin (1996).
+#'
+#' @param trj Trajectory to calculate fractal dimension for.
+#' @param stepSizes Vector of step sizes used to calculate path lengths (see \code{\link{TrajFractalStepSizes}}).
+#' @return The fractal dimension of the trajectory for the given step sizes.
+#' @seealso \code{\link{TrajFractalStepSizes}}, \code{\link{TrajFractalDimensionValues}}.
+#'
+#' @references Sugihara, G., & M. May, R. (1990). Applications of fractals in ecology. Trends in Ecology & Evolution, 5(3), 79-86. doi:10.1016/0169-5347(90)90235-6
+#'
+#' Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. doi:10.1016/j.jtbi.2004.03.016
+#'
+#' Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique. Ecology, 77(7), 2086-2090. doi:10.2307/2265702
+TrajFractalDimension <- function(trj, stepSizes) {
+  # Calculate path length for a range of step sizes
+  fi <- TrajFractalDimensionValues(trj, stepSizes)
+  # Calculate slope of points on log/log axes
+  l <- lm(log(fi$pathlength) ~ log(fi$stepsize))
+  slope <- l$coefficients[2]
+  # Fractal dimension
+  1 - slope
+}
