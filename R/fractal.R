@@ -1,6 +1,25 @@
 # Fractal index functions
 
-#' Calculate possible fractal dimension step sizes
+#' Fractal dimension step sizes
+#'
+#' Calculates a vector of possible fractal dimension step sizes, suitable for
+#' use when calculating the fractal dimension of a trajectory. Note that the
+#' selected step sizes may determine the calculated fractal dimension, which may
+#' render fractal dimension meaningless for animal trajectories.
+#'
+#' By default, returns a vector of step sizes ranging from 1/1000th of the path
+#' length to 1/10th of the path length.
+#'
+#' @param trj Trajectory to return step sizes for.
+#' @param smallestStepFactor Multiplied by the path length of \code{trj} to
+#'   determine the smallest step size in the returned range.
+#' @param largestStepFactor Multiplied by the path length of \code{trj} to
+#'   determine the largest step size in the returned range.
+#' @param numSteps The number of step sizes in the returned vector.
+#' @return A vector of step sizes which can be passed to
+#'   \code{\link{TrajFractalDimension}}.
+#'
+#' @seealso \code{\link{TrajFractalDimension}}
 #'
 TrajFractalStepSizes <- function(trj, smallestStepFactor = .0001, largestStepFactor = .1, numSteps = 100) {
   pathLen <- TrajLength(trj)
