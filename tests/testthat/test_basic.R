@@ -8,6 +8,7 @@ test_that("Trajectory creation", {
   coords <- read.csv(csvFile, stringsAsFactors = FALSE)
   expect_false(is.null(coords))
   trj <- TrajFromCoords(coords, fps = 1000)
+
   expect_false(is.null(trj))
   expect_equal(2030, nrow(trj))
   xRange <- c(997.31, 1541.549436)
@@ -50,7 +51,6 @@ test_that("Trajectory creation", {
   mx <- TrajDAFindFirstMaximum(corr, 5)
   # points(mx["deltaS"], mx["C"], pch = 16, col = "green", lwd = 2)
   # points(mx["deltaS"], mx["C"], col = "black", lwd = 2)
-
 
   sinuosity <- TrajSinuosity(rd)
 

@@ -3,6 +3,7 @@
 
 .MTA_FPS <- 'fps'
 .MTA_NFRAMES <- 'numFrames'
+.MTA_UNITS <- 'units'
 
 # ---- Private functions ----
 
@@ -16,6 +17,22 @@
   trj$displacement <- c(0, diff(trj$polar))
 
   trj
+}
+
+.checkCoords <- function(coords) {
+  # Remove NA values at the start or end of the coordinates
+  for (startIdx in 1:nrow(coords)) {
+    if (!anyNA(coords[startIdx,])) break
+  }
+  for (endIdx in nrow(coords):1) {
+    if (!anyNA(coords[endIdx,])) break
+  }
+  coords <- coords[startIdx:endIdx,]
+  # Shouldn't be any NAs remaining
+  if (anyNA(coords)) {
+    stop("Trajectory contains missing coordinate values")
+  }
+  coords
 }
 
 # ---- Trajectory creation and modification ----
@@ -33,6 +50,7 @@
 #' @param trj data frame containing x & y columns.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
 #' @param yCol Name or index of the \code{y} column in \code{track} (default 2).
+#' @param timeCol optional name or index of the column which contains frame times.
 #' @param fps Frames per second - used to calculate relative frame times if
 #'   \code{track} does not contain a \code{time} column.
 #'
@@ -49,17 +67,17 @@ TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
   }
   trj <- renm(xCol, 'x')
   trj <- renm(yCol, 'y')
-
-  # Rename time column to standard name
-  if (!('time' %in% names(trj)) && 'Time' %in% names(trj)) {
-      names(trj)[names(trj) == 'Time'] <- "time"
-  }
+  if (!is.null(timeCol))
+    trj <- renm(timeCol, 'time')
 
   # Allocate times if they aren't already known
   if (!('time' %in% names(trj))) {
     # Assign times to each frame, starting at 0
     trj$time <- 0:(nrow(trj) - 1) / fps
   }
+
+  # Check coordinates are valid
+  trj <- .checkCoords(trj)
 
   # Get times associated with displacements, with the first point at time 0,
   # i.e. time at each point in displacement, not time between points
@@ -96,6 +114,10 @@ TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
 TrajScale <- function(trj, scale, units, yScale = scale) {
   trj$x <- trj$x * scale
   trj$y <- trj$y * scale
+
+  # Save units
+  attr(trj, .MTA_UNITS) <- units
+
   .fillInTraj(trj)
 }
 
@@ -126,6 +148,7 @@ TrajRotate <- function(trj, angle = 0) {
 #' @param n Filter length (or window size), must be an odd number.
 #' @return a new trajectory which is a smoothed version of the input trajectory.
 #'
+#' @seealso \code{\link[signal]{sgolayfilt}}
 #' @examples
 #' trj <- TrajSmoothSG(trj, 3, 101)
 TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {
@@ -209,10 +232,15 @@ TrajStraightness <- function(trj) {
   TrajDistance(trj) / TrajLength(trj)
 }
 
-#' Directional change (DC) for an entire track
-#' @param trj Track to calculate DC for
-#' @param nFrames frame delta to process - if 1, every frame is process, if 2, every 2nd frame is processed...
-#
+#' Directional change (DC)
+#'
+#' Calculates the directional change (DC) of a trajectory \emph{sensu} Kitamura & Imafuku (2015).
+#'
+#' @param trj Track to calculate DC for.
+#' @param nFrames Frame delta to process: if 1, every frame is processed, if 2,
+#'   every 2nd frame is processed, and so on. Default is 1.
+#'
+#' @references
 #' Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483
 TrajDirectionalChange <- function(trj, nFrames = 1) {
   TrajAngles(trj, nFrames) / diff(trj$displacementTime, nFrames)

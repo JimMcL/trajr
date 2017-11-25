@@ -45,17 +45,18 @@
 
 #' Direction autocorrelation
 #'
-#' Calculates the autocorrelation of the track for the given delta s, based on
-#' (Shamble et al., 2017). \code{trj} must have been rediscretized so that all
-#' segments have the same length. deltaS is specified in number of segments.
-#'
-#' Calculates autocorrelations for delta s values ranging from 1 to
-#' length(track)/2. Track should already be rediscretized.
+#' Calculates the autocorrelation of the track for \eqn{\Delta}s ranging from 1
+#' to \code{deltaSMax}, based on Shamble et al. (2017). \code{trj} must have a
+#' constant step length (see \code{\link{TrajRediscretize}}) i.e. all segments
+#' in the trajectory must be the same length. deltaS is specified in number of
+#' segments.
 #'
 #' @param trj The trajectory to calculate the directional autocorrelations for.
 #' @param deltaSMax Maximum delta s to calculate, default is 1/2 the number of
 #'   segments in the trajectory.
 #' @return a data frame with 2 columns, \code{deltaS} and \code{C}.
+#'
+#' @references Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). doi:10.1098/rspb.2017.0308
 TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 2)) {
 
   # The guts of the autocorrelation function
@@ -83,15 +84,15 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 2))
 #' consideration as minimum.
 #'
 #' @param corr Direction autocorrelation of a trajectory.
-#' @param window Size of window used to define what constitutes a local mimimum.
+#' @param windowSize Size of window used to define what constitutes a local mimimum.
 #' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
 #'   NULL if there is no local minimum (other than the end point).
 #'
-#' @seealso \code{\link{TrajDAFindFirstMaximum}}
+#' @seealso \code{\link{TrajDAFindFirstMaximum}}, \code{\link{TrajDirectionAutocorrelations}}
 #'
 #' @examples
 #' # Calculate direction autocorrelation for trj
-#' corr <- \code{\link{TrajDirectionAutocorrelations}}(trj)
+#' corr <- TrajDirectionAutocorrelations(trj)
 #' # Extract first local minimum from autocorrelation
 #' minPt <- TrajDAFindFirstMinimum(corr, 50)
 #'
@@ -118,15 +119,15 @@ TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
 #' consideration as maximum.
 #'
 #' @param corr Direction autocorrelation of a trajectory.
-#' @param window Size of window used to define what constitutes a local maximum.
+#' @param windowSize Size of window used to define what constitutes a local maximum.
 #' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
 #'   NULL if there is no local minimum (other than the start point).
 #'
-#' @seealso \code{\link{TrajDAFindFirstMinimum}}
+#' @seealso \code{\link{TrajDAFindFirstMinimum}}, \code{\link{TrajDirectionAutocorrelations}}
 #'
 #' @examples
 #' # Calculate direction autocorrelation for trj
-#' corr <- \code{\link{TrajDirectionAutocorrelations}}(trj)
+#' corr <- TrajDirectionAutocorrelations(trj)
 #' # Extract first local maximum from autocorrelation
 #' minPt <- TrajDAFindFirstMaximum(corr, 50)
 #'
@@ -150,7 +151,8 @@ TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
 
 #' Sinuosity of a trajectory
 #'
-#' Calculates the sinuosity of a trajectory as defined by Benhamou (2004).
+#' Calculates the sinuosity of a trajectory as defined by Benhamou (2004), which
+#' is: \deqn{S = 1.18\sigma_{q} / \sqrtq}.
 #'
 #' @param trj Trajectory to calculate sinuosity of.
 #' @return The sinuosity of \code{trj}.
