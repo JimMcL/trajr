@@ -17,9 +17,12 @@ a new trajectory with a constant segment length which follows
 }
 \description{
 Constructs a new trajectory by resampling the input trajectory to a fixed
-segment length. Timing of frames is lost, so speed and acceleration cannot be
-calculated on a rediscretized trajectory.
+step (or segment) length. Timing of frames is lost, so speed and acceleration
+cannot be calculated on a rediscretized trajectory.
 }
 \details{
 Based on the appendix in Bovet and Benhamou, (1988)
+}
+\references{
+Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
 }

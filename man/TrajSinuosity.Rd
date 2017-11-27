@@ -13,5 +13,6 @@ TrajSinuosity(trj)
 The sinuosity of \code{trj}.
 }
 \description{
-Calculates the sinuosity of a trajectory as defined by Benhamou (2004).
+Calculates the sinuosity of a trajectory as defined by Benhamou (2004), which
+is: \deqn{S = 1.18\sigma_{q} / \sqrtq}.
 }

@@ -19,7 +19,7 @@ test_that("Trajectory creation", {
   # Scaling
   scale <- .1
   scaled <- TrajScale(trj, scale, "m")
-  #TrajPlot(scaled)
+  #plot(scaled)
   expect_false(is.null(scaled))
   expect_equal(nrow(trj), nrow(scaled))
   expect_equal(range(scaled$x), xRange * scale)
@@ -27,7 +27,7 @@ test_that("Trajectory creation", {
 
   # Smoothing
   smoothed <- TrajSmoothSG(scaled, 3, 101)
-  #TrajPlot(smoothed)
+  #plot(smoothed)
   expect_true(TrajLength(smoothed) < TrajLength(scaled))
   expect_true(abs(TrajDistance(smoothed) - TrajDistance(scaled)) < TrajDistance(scaled) / 10)
 

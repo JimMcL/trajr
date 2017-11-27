@@ -22,3 +22,6 @@ Smooths a trajectory using a Savitzky-Golay smoothing filter.
 \examples{
 trj <- TrajSmoothSG(trj, 3, 101)
 }
+\seealso{
+\code{\link[signal]{sgolayfilt}}
+}

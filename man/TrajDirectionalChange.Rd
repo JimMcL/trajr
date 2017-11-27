@@ -2,16 +2,19 @@
 % Please edit documentation in R/trajectory.R
 \name{TrajDirectionalChange}
 \alias{TrajDirectionalChange}
-\title{Directional change (DC) for an entire track}
+\title{Directional change (DC)}
 \usage{
 TrajDirectionalChange(trj, nFrames = 1)
 }
 \arguments{
-\item{trj}{Track to calculate DC for}
+\item{trj}{Track to calculate DC for.}
 
-\item{nFrames}{frame delta to process - if 1, every frame is process, if 2, every 2nd frame is processed...
-Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483}
+\item{nFrames}{Frame delta to process: if 1, every frame is processed, if 2,
+every 2nd frame is processed, and so on. Default is 1.}
 }
 \description{
-Directional change (DC) for an entire track
+Calculates the directional change (DC) of a trajectory \emph{sensu} Kitamura & Imafuku (2015).
+}
+\references{
+Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483
 }

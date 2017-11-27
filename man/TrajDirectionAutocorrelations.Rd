@@ -4,7 +4,7 @@
 \alias{TrajDirectionAutocorrelations}
 \title{Direction autocorrelation}
 \usage{
-TrajDirectionAutocorrelations(trj, deltaSMax = round(nrow(trj)/2))
+TrajDirectionAutocorrelations(trj, deltaSMax = round(nrow(trj)/4))
 }
 \arguments{
 \item{trj}{The trajectory to calculate the directional autocorrelations for.}
@@ -16,11 +16,12 @@ segments in the trajectory.}
 a data frame with 2 columns, \code{deltaS} and \code{C}.
 }
 \description{
-Calculates the autocorrelation of the track for the given delta s, based on
-(Shamble et al., 2017). \code{trj} must have been rediscretized so that all
-segments have the same length. deltaS is specified in number of segments.
+Calculates the autocorrelation of the track for \eqn{\Delta}s ranging from 1
+to \code{deltaSMax}, based on Shamble et al. (2017). \code{trj} must have a
+constant step length (see \code{\link{TrajRediscretize}}) i.e. all segments
+in the trajectory must be the same length. deltaS is specified in number of
+segments.
 }
-\details{
-Calculates autocorrelations for delta s values ranging from 1 to
-length(track)/2. Track should already be rediscretized.
+\references{
+Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). doi:10.1098/rspb.2017.0308
 }

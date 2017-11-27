@@ -30,7 +30,7 @@ render fractal dimension meaningless for animal trajectories.
 }
 \details{
 By default, returns a vector of step sizes ranging from 1/1000th of the path
-length to 1/10th of the path length.
+length to 1/10th of the path length, with logarithmically increasing intervals.
 }
 \seealso{
 \code{\link{TrajFractalDimension}}

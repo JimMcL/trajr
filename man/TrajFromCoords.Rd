@@ -13,11 +13,16 @@ TrajFromCoords(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50)
 
 \item{yCol}{Name or index of the \code{y} column in \code{track} (default 2).}
 
+\item{timeCol}{optional name or index of the column which contains frame
+times.}
+
 \item{fps}{Frames per second - used to calculate relative frame times if
 \code{track} does not contain a \code{time} column.}
 }
 \value{
-A new trajectory object.
+An object with class "\code{Trajectory}", which is a data.frame with
+  the following components:
+  TODO
 }
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
