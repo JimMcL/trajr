@@ -50,11 +50,14 @@
 #' @param trj data frame containing x & y columns.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
 #' @param yCol Name or index of the \code{y} column in \code{track} (default 2).
-#' @param timeCol optional name or index of the column which contains frame times.
+#' @param timeCol optional name or index of the column which contains frame
+#'   times.
 #' @param fps Frames per second - used to calculate relative frame times if
 #'   \code{track} does not contain a \code{time} column.
 #'
-#' @return A new trajectory object.
+#' @return An object with class "\code{Trajectory}", which is a data.frame with
+#'   the following components:
+#'   TODO
 TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
   # Ensure column names are as expected
   renm <- function(col, name) {
@@ -89,7 +92,12 @@ TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
   # Save frame rate
   attr(trj, .MTA_FPS) <- fps
 
-  .fillInTraj(trj)
+  trj <- .fillInTraj(trj)
+
+  # Give it a special class
+  class(trj) <- c("Trajectory", class(trj))
+
+  trj
 }
 
 #' Scale a trajectory
@@ -158,7 +166,7 @@ TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {
 }
 
 
-# ---- Trajectory analysis ----
+# ---- Trajectory query and display ----
 
 #' Returns the frames-per-second recorded for this trajectory
 TrajGetFPS <- function(trj) { attr(trj, .MTA_FPS) }
@@ -166,14 +174,28 @@ TrajGetFPS <- function(trj) { attr(trj, .MTA_FPS) }
 #' Returns the number of frames recorded for this trajectory
 TrajGetNFrames <- function(trj) { attr(trj, .MTA_NFRAMES) }
 
-#' Plots a trajectory
-TrajPlot <- function(trj, type = 'l', add = FALSE, ...) {
+#' Plot method for trajectories
+#'
+#' The plot method for Trajectory objects.
+#'
+#' @param trj The trajectory to be plotted.
+#' @param draw.start.pt if TRUE, draws a dot at the start point of the trajectory.
+#' @param add If TRUE, the trajectory is added to the current plot.
+#' @param type,xlim,ylim,asp plotting parameters with useful defaults.
+plot.Trajectory <- function(trj, draw.start.pt = TRUE, add = FALSE,
+                            type = 'l',
+                            xlim = range(trj$x), ylim = range(trj$y),
+                            asp = 1, ...) {
   if (!add) {
-    plot(NULL, xlim = range(trj$x), ylim = range(trj$y), asp = 1, ...)
+    plot.default(NULL, xlim = xlim, ylim = ylim, asp = 1, ...)
   }
   lines(y ~ x, data = trj, type = type, ...)
-  points(trj$x[1], trj$y[1], pch = 16, cex = .8)
+  if (draw.start.pt)
+    points(trj$x[1], trj$y[1], pch = 16, cex = .8)
 }
+
+
+# ---- Trajectory analysis ----
 
 #' Turning angles of a Trajectory
 #'
