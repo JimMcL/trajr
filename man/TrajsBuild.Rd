@@ -55,7 +55,8 @@ rootDir <- 'c:/Jim/data'
 scale <- c('1/1200', '1/1350', '1/1300')
 # Files have columns y, x
 csvStruct <- list(x = 2, y = 1)
-# Apply default smoothing, and the files are conventional CSV, so no need to specify csvReadFn
+# Apply default smoothing, and the files are formatted as conventional CSV,
+# so there's no need to specify csvReadFn
 trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
                    scale = scale, units = "m",
                    csvStruct = csvStruct, rootDir = rootDir)

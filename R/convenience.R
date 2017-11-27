@@ -29,7 +29,8 @@
 #' Construct multiple trajectories
 #'
 #' Reads multiple trajectories from files, performs some basic sanity checks on
-#' them, and optionally smooths and scales them.
+#' them, and optionally smooths and scales them. Attempts to collect and report
+#' errors for multiple trajectories in a single call.
 #'
 #' @param fileNames Vector of the names of CSV files containing trajectory
 #'   coordinates. All of the files must have the same columns. All file names
@@ -87,30 +88,43 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
 
   result <- list(length(fileNames))
 
+  # Build up a list of errors so they can all be reported at once,
+  # rather than annoying report one, fix one, report next one...
+  errors <- character(0)
+
   # For each file...
   for (i in 1:length(fileNames)) {
     # Read the trajectory coordinates from the file
     coords <- .readAndCheckCoords(fileNames[i], csvReadFn)
     # Convert to a trajectory
-    trj <- withCallingHandlers(
+    trj <- tryCatch(
       TrajFromCoords(coords, fps = fps[i], xCol = csvStruct$x, yCol = csvStruct$y, timeCol = csvStruct$time),
-      error = function (e) stop(sprintf("Trajectory file %s (index %d):\n%s", fileNames[i], i, e))
+      error = function (e) {
+        errors <<- c(errors, sprintf("Trajectory file %s (index %d): %s", fileNames[i], i, conditionMessage(e)))
+        NULL
+      }
     )
 
-    # Scale
-    if (!is.null(scale[i])) {
-      # Allow scale to be specified as a character expression such as "1 / 250"
-      sc <- ifelse(is.character(scale[i]), eval(parse(text=scale[i])), scale[i])
-      trj <- TrajScale(trj, sc, units)
-    }
+    if (!is.null(trj)) {
+      # Scale
+      if (!is.null(scale[i])) {
+        # Allow scale to be specified as a character expression such as "1 / 250"
+        sc <- ifelse(is.character(scale[i]), eval(parse(text=scale[i])), scale[i])
+        trj <- TrajScale(trj, sc, units)
+      }
 
-    # Smooth
-    if (is.numeric(smoothP) && is.numeric(smoothN)) {
-      trj <- TrajSmoothSG(trj, 3, 101)
+      # Smooth
+      if (is.numeric(smoothP) && is.numeric(smoothN)) {
+        trj <- TrajSmoothSG(trj, 3, 101)
+      }
     }
 
     result[[i]] <- trj
   }
+
+  # Check for errors
+  if (length(errors) > 0)
+    stop(paste(errors, collapse = "\n"))
 
   result
 }
