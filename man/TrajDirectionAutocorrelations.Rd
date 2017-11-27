@@ -9,8 +9,8 @@ TrajDirectionAutocorrelations(trj, deltaSMax = round(nrow(trj)/4))
 \arguments{
 \item{trj}{The trajectory to calculate the directional autocorrelations for.}
 
-\item{deltaSMax}{Maximum delta s to calculate, default is 1/2 the number of
-segments in the trajectory.}
+\item{deltaSMax}{Maximum delta s to calculate, default is \eqn{1/4} the
+number of segments in the trajectory.}
 }
 \value{
 a data frame with 2 columns, \code{deltaS} and \code{C}.
@@ -23,5 +23,9 @@ in the trajectory must be the same length. deltaS is specified in number of
 segments.
 }
 \references{
-Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). doi:10.1098/rspb.2017.0308
+Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017).
+  Walking like an ant: a quantitative and experimental approach to
+  understanding locomotor mimicry in the jumping spider Myrmarachne
+  formicaria. Proceedings of the Royal Society B: Biological Sciences,
+  284(1858). doi:10.1098/rspb.2017.0308
 }

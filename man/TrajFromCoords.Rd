@@ -4,10 +4,11 @@
 \alias{TrajFromCoords}
 \title{Create a Trajectory Object}
 \usage{
-TrajFromCoords(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50)
+TrajFromCoords(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50)
 }
 \arguments{
-\item{trj}{data frame containing x & y columns.}
+\item{track}{data frame containing cartesian coordinates and optionally times
+for the poiints in the trajectory.}
 
 \item{xCol}{Name or index of the \code{x} column in \code{track} (default 1).}
 
@@ -21,16 +22,21 @@ times.}
 }
 \value{
 An object with class "\code{Trajectory}", which is a data.frame with
-  the following components:
-  TODO
+  the following components: \item{x}{X coordinates of trajectory points.}
+  \item{y}{Y coordinates of trajectory points.} \item{time}{Time (secs) for
+  each point. if \code{timeCol} is specified, values are
+  \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
+  \item{displacementTime}{Frame times, with frame 1 at time \code{0}.}
+  \item{polar}{Coordinates represented as complex number, to simplify working
+  with segment angles.} \item{displacement}{Displacements between each pair
+  of consecutive points.}
 }
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
 2-dimensional cartesian coordinates and some metadata.
 }
 \details{
-If \code{track} contains a \code{time} (or \code{Time}) column, it is assumed
-to contain the time (in seconds) of each data point. Otherwise times are
-calculated for each point as \code{(frame - 1) / fps} where \code{frame} is
-the index of the point.
+If \code{timeCol} is specified, it is assumed to contain the time (in
+seconds) of each data point. Otherwise times are calculated for each point as
+\code{(frame - 1) / fps} where \code{frame} is the index of the point.
 }

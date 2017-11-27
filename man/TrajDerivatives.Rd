@@ -2,13 +2,16 @@
 % Please edit documentation in R/trajectory.R
 \name{TrajDerivatives}
 \alias{TrajDerivatives}
-\title{Calculates speed and linear acceleration along a track over time.}
+\title{Calculates speed and linear acceleration along a trajectory over time.}
 \usage{
 TrajDerivatives(trj)
 }
 \value{
-list with values \code{speed}, \code{speedTimes}, \code{acceleration}, \code{accelerationTimes}
+A list with components: \item{speed}{numeric vector, speed between each pair of trajectory points.}
+  \item{speedTimes}{numeric vector, times corresponding to values in \code{speed}.}
+  \item{acceleration}{numeric vector.}
+  \item{accelerationTimes}{numeric vector.}
 }
 \description{
-Calculates speed and linear acceleration along a track over time.
+Calculates speed and linear acceleration along a trajectory over time.
 }

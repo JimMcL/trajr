@@ -44,7 +44,8 @@ A list of trajectories.
 }
 \description{
 Reads multiple trajectories from files, performs some basic sanity checks on
-them, and optionally smooths and scales them.
+them, and optionally smooths and scales them. Attempts to collect and report
+errors for multiple trajectories in a single call.
 }
 \examples{
 # Names of CSV files containing trajectory coordinates
