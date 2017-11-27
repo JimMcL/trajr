@@ -57,7 +57,7 @@
 #' @return a data frame with 2 columns, \code{deltaS} and \code{C}.
 #'
 #' @references Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). doi:10.1098/rspb.2017.0308
-TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 2)) {
+TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4)) {
 
   # The guts of the autocorrelation function
   # Calculates autocorrelation for a single delta s
@@ -76,19 +76,22 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 2))
              C = sapply(deltaSs, .deltaCorr, trj))
 }
 
-#' First direction autocorrelation minimum
+#' First direction autocorrelation minimum/maximum
 #'
-#' Determines the coordinates of the first local minimum for \code{C} in the
-#' direction autocorrelation function of a trajectory as returned by
+#' Determines the coordinates of the first local minimum/maximum of \code{C} in
+#' the direction autocorrelation function of a trajectory as returned by
 #' \code{\link{TrajDirectionAutocorrelations}}. The end point is excluded from
-#' consideration as minimum.
+#' consideration as a minimum, similarly the start point will not be returned as a
+#' maximum.
 #'
 #' @param corr Direction autocorrelation of a trajectory.
-#' @param windowSize Size of window used to define what constitutes a local mimimum.
+#' @param windowSize Size of window used to define what constitutes a local
+#'   mimimum/maximum.
 #' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
-#'   NULL if there is no local minimum (other than the end point).
+#'   NULL if there is no local minimum/maximum.
+#' @name DAMinMax
 #'
-#' @seealso \code{\link{TrajDAFindFirstMaximum}}, \code{\link{TrajDirectionAutocorrelations}}
+#' @seealso \code{\link{TrajDirectionAutocorrelations}}
 #'
 #' @examples
 #' # Calculate direction autocorrelation for trj
@@ -102,6 +105,9 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 2))
 #' points(minPt["deltaS"], minPt["C"], pch = 16, col = "red", lwd = 2)
 #' points(minPt["deltaS"], minPt["C"], col = "black", lwd = 2)
 #'
+NULL
+
+#' @rdname DAMinMax
 TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
   # Ignore local minimum if it's the end of the track
   windowSize <- min(length(corr$C) - 1, windowSize)
@@ -111,32 +117,7 @@ TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
   }
 }
 
-#' First direction autocorrelation maximum
-#'
-#' Determines the coordinates of the first local maximum for \code{C} in the
-#' direction autocorrelation function of a trajectory as returned by
-#' \code{\link{TrajDirectionAutocorrelations}}. The start point is excluded from
-#' consideration as maximum.
-#'
-#' @param corr Direction autocorrelation of a trajectory.
-#' @param windowSize Size of window used to define what constitutes a local maximum.
-#' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
-#'   NULL if there is no local minimum (other than the start point).
-#'
-#' @seealso \code{\link{TrajDAFindFirstMinimum}}, \code{\link{TrajDirectionAutocorrelations}}
-#'
-#' @examples
-#' # Calculate direction autocorrelation for trj
-#' corr <- TrajDirectionAutocorrelations(trj)
-#' # Extract first local maximum from autocorrelation
-#' minPt <- TrajDAFindFirstMaximum(corr, 50)
-#'
-#' # Plot the autocorrelation function
-#' plot(corr)
-#' # Plot a red dot with a black outline at the first maximum
-#' points(minPt["deltaS"], minPt["C"], pch = 16, col = "red", lwd = 2)
-#' points(minPt["deltaS"], minPt["C"], col = "black", lwd = 2)
-#'
+#' @rdname DAMinMax
 TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
   windowSize <- min(length(corr$C) - 1, windowSize)
   # Ignore local maxima if it's the start of the track

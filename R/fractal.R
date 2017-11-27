@@ -67,5 +67,5 @@ TrajFractalDimension <- function(trj, stepSizes) {
   l <- lm(log(fi$pathlength) ~ log(fi$stepsize))
   slope <- l$coefficients[2]
   # Fractal dimension
-  1 - slope
+  unname(1 - slope)
 }

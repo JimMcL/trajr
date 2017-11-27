@@ -67,7 +67,8 @@
 #' scale <- c('1/1200', '1/1350', '1/1300')
 #' # Files have columns y, x
 #' csvStruct <- list(x = 2, y = 1)
-#' # Apply default smoothing, and the files are conventional CSV, so no need to specify csvReadFn
+#' # Apply default smoothing, and the files are formatted as conventional CSV,
+#' # so there's no need to specify csvReadFn
 #' trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
 #'                    scale = scale, units = "m",
 #'                    csvStruct = csvStruct, rootDir = rootDir)
@@ -93,7 +94,7 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
     # Convert to a trajectory
     trj <- withCallingHandlers(
       TrajFromCoords(coords, fps = fps[i], xCol = csvStruct$x, yCol = csvStruct$y, timeCol = csvStruct$time),
-      error = function (e) stop(sprintf("Trajectory file %s:\n%s", fileNames[i], e))
+      error = function (e) stop(sprintf("Trajectory file %s (index %d):\n%s", fileNames[i], i, e))
     )
 
     # Scale
@@ -114,12 +115,64 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
   result
 }
 
-#' Statistically characterise a list of trajectories
+#' Merge trajectory characteristics
 #'
-#' Builds a data frame containing statistical values for multiple trajectories.
-#' Each row contains the statistics for a single trajectory.
-#' 
+#' Builds a data frame by combining rows of statistical values for multiple trajectories.
+#'
+#' @section Note:
+#' Any NULL valued statistics are converted to NAs.
+#'
 #' @param trjs List of trajectories to be characterised.
-TrajsCharacterise <- function(trjs, statsFn) {
-  
+#' @param statsFn Function to calculate statistics of interest for a single trajectory.
+TrajsMergeStats <- function(trjs, statsFn) {
+  result <- data.frame()
+  nc <- NA
+  rowNum <- 1
+  for (trj in trjs) {
+    row <- statsFn(trj)
+    # Replace NULL with NA because NULL values are removed by rbind, resulting
+    # in: invalid list argument: all variables should have the same length
+    row[sapply(row, is.null)] <- NA
+
+    if(is.na(nc))
+      nc <- length(row)
+    else if (nc != length(row))
+      stop(sprintf("Statistics for trajectory %d contain %d values, but expected %d", rowNum, length(row), nc))
+    result <- rbind(result, row)
+
+    rowNum <- rowNum + 1
+  }
+  result
+}
+
+#' Replace NAs in a data frame
+#'
+#' Replaces NAs in a single column of a data frame with an uninformative numeric
+#' replacement value, so that a principal components analysis can be applied
+#' without discarding data. Optionally adds a new "flag" column which contains
+#' \code{1} for each row which originally contained NA, otherwise \code{0}.
+#'
+#' @param df Data frame to be adjusted.
+#' @param column Name or index of the column to be adjusted.
+#' @param replacementValue Numeric value to use instead of NA.
+#' @param flagColumn If not NULL, specifies the name of a new column to be added
+#'   to the data frame, with value 0 for non-NA rows, 1 for NA rows. The column
+#'   is added regardless of whether there are any NAs in the data.
+#' @return A copy of \code{df} with NAs replaced in \code{column}.
+#'
+#' @seealso \code{\link[stats]{prcomp}}
+#'
+#' @examples
+#' df <- data.frame(x = c(1, 2, 3), y = c(NA, 5, 6), z = c(NA, NA, 9))
+#' df <- TrajsStatsReplaceNAs(df, "y", flagColumn = "y.was.NA")
+#' print(df)
+TrajsStatsReplaceNAs <- function(df, column, replacementValue = mean(df[,column], na.rm = TRUE), flagColumn = NULL) {
+  # Are there any NAs in the column?
+  col <- df[,column]
+  nas <- which(is.na(col))
+  df[nas,column] <- replacementValue
+  if (!is.null(flagColumn)) {
+    df[,flagColumn] <- as.numeric(is.na(col))
+  }
+  df
 }
