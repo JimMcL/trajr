@@ -1,3 +1,63 @@
+# Contains functions to calculate various measures of trajectory straightness or tortuosity
+
+.rad2deg <- function(rad) { rad * 180 / pi}
+.deg2rad <- function(deg) { deg * pi / 180}
+
+
+#' Straightness of a Trajectory
+#'
+#' Calculates the straightness index of a trajectory, \eqn{D / L}, where
+#' \code{D} is the beeline distance between the first and last points in the
+#' trajectory,and \code{L} is the path length travelled.
+#'
+#' @param trj Trajectory to calculate straightness of.
+#' @return The straightness index of \code{trj}, which is a value between 0
+#'   (infinitely tortuous) to 1 (a straight line).
+#'
+#' @seealso \code{\link{TrajDistance}} for trajectory distance, and
+#'   \code{\link{TrajLength}} for trajectory path length.
+#'
+#' @references Batschelet, E. (1981). Circular statistics in biology. ACADEMIC
+#' PRESS, 111 FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
+#'
+#' Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
+#' path. Journal of Theoretical Biology, 229(2), 209-220.
+#' doi:10.1016/j.jtbi.2004.03.016
+
+TrajStraightness <- function(trj) {
+  TrajDistance(trj) / TrajLength(trj)
+}
+
+#' Directional change (DC)
+#'
+#' Calculates the time variation of directional change (DC) of a trajectory
+#' \emph{sensu} Kitamura & Imafuku (2015). Directional change is defined as the
+#' angular change (in degrees) between any two points in the trajectory, divided
+#' by the time difference between the two points.
+#'
+#' This function returns the DC for each pair of consecutive points. Kitamura &
+#' Imafuku (2015) used the mean and the standard deviation of DC for portions of
+#' trajectories as index values of nonlinearity and irregularity respectively.
+#'
+#' @param trj Track to calculate DC for.
+#' @param nFrames Frame delta to process: if 1, every frame is processed, if 2,
+#'   every 2nd frame is processed, and so on. Default is 1.
+#' @return The directional change (DC) between every pair of consecutive points
+#'   in the trajectory, i.e. the returned vector will have length
+#'   \code{(nrow(trj) - 1)}.
+#'
+#' @examples
+#' SD = mean(TrajDirectionalChange(trj))
+#' SDDC = sd(TrajDirectionalChange(trj))
+#'
+#' @references Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight
+#'   path of Batesian intraspecific polymorphic butterfly Papilio polytes.
+#'   Proceedings of the Royal Society B: Biological Sciences, 282(1809).
+#'   doi:10.1098/rspb.2015.0483
+TrajDirectionalChange <- function(trj, nFrames = 1) {
+  .rad2deg(TrajAngles(trj, nFrames)) / diff(trj$displacementTime, nFrames)
+}
+
 
 # Directional autocorrelation functions ##########################################################
 
@@ -52,11 +112,15 @@
 #' segments.
 #'
 #' @param trj The trajectory to calculate the directional autocorrelations for.
-#' @param deltaSMax Maximum delta s to calculate, default is 1/2 the number of
-#'   segments in the trajectory.
+#' @param deltaSMax Maximum delta s to calculate, default is \eqn{1/4} the
+#'   number of segments in the trajectory.
 #' @return a data frame with 2 columns, \code{deltaS} and \code{C}.
 #'
-#' @references Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). doi:10.1098/rspb.2017.0308
+#' @references Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017).
+#'   Walking like an ant: a quantitative and experimental approach to
+#'   understanding locomotor mimicry in the jumping spider Myrmarachne
+#'   formicaria. Proceedings of the Royal Society B: Biological Sciences,
+#'   284(1858). doi:10.1098/rspb.2017.0308
 TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4)) {
 
   # The guts of the autocorrelation function

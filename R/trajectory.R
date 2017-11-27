@@ -1,4 +1,4 @@
-# Sesiidae trajectory analysis
+# Trajectory analysis
 
 
 .MTA_FPS <- 'fps'
@@ -42,12 +42,12 @@
 #' \code{TrajFromCoords} creates a new trajectory object from a set of
 #' 2-dimensional cartesian coordinates and some metadata.
 #'
-#' If \code{track} contains a \code{time} (or \code{Time}) column, it is assumed
-#' to contain the time (in seconds) of each data point. Otherwise times are
-#' calculated for each point as \code{(frame - 1) / fps} where \code{frame} is
-#' the index of the point.
+#' If \code{timeCol} is specified, it is assumed to contain the time (in
+#' seconds) of each data point. Otherwise times are calculated for each point as
+#' \code{(frame - 1) / fps} where \code{frame} is the index of the point.
 #'
-#' @param trj data frame containing x & y columns.
+#' @param track data frame containing cartesian coordinates and optionally times
+#'   for the poiints in the trajectory.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
 #' @param yCol Name or index of the \code{y} column in \code{track} (default 2).
 #' @param timeCol optional name or index of the column which contains frame
@@ -56,9 +56,18 @@
 #'   \code{track} does not contain a \code{time} column.
 #'
 #' @return An object with class "\code{Trajectory}", which is a data.frame with
-#'   the following components:
-#'   TODO
-TrajFromCoords <- function(trj, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
+#'   the following components: \item{x}{X coordinates of trajectory points.}
+#'   \item{y}{Y coordinates of trajectory points.} \item{time}{Time (secs) for
+#'   each point. if \code{timeCol} is specified, values are
+#'   \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
+#'   \item{displacementTime}{Frame times, with frame 1 at time \code{0}.}
+#'   \item{polar}{Coordinates represented as complex number, to simplify working
+#'   with segment angles.} \item{displacement}{Displacements between each pair
+#'   of consecutive points.}
+TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
+
+  trj <- track
+
   # Ensure column names are as expected
   renm <- function(col, name) {
     if (is.numeric(col)) {
@@ -166,7 +175,7 @@ TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {
 }
 
 
-# ---- Trajectory query and display ----
+# ---- Trajectory query ----
 
 #' Returns the frames-per-second recorded for this trajectory
 TrajGetFPS <- function(trj) { attr(trj, .MTA_FPS) }
@@ -213,9 +222,12 @@ TrajAngles <- function(trj, lag = 1) {
   angles
 }
 
-#' Calculates speed and linear acceleration along a track over time.
+#' Calculates speed and linear acceleration along a trajectory over time.
 #'
-#' @return list with values \code{speed}, \code{speedTimes}, \code{acceleration}, \code{accelerationTimes}
+#' @return A list with components: \item{speed}{numeric vector, speed between each pair of trajectory points.}
+#'   \item{speedTimes}{numeric vector, times corresponding to values in \code{speed}.}
+#'   \item{acceleration}{numeric vector.}
+#'   \item{accelerationTimes}{numeric vector.}
 TrajDerivatives <- function(trj) {
   # Note that displacements are the (polar) displacements from 1 point to the next
   d <- Mod(trj$displacement)
@@ -241,30 +253,3 @@ TrajLength <- function(trj) {
 TrajDistance <- function(trj) {
   Mod(diff(trj$polar[c(1,length(trj$polar))]))
 }
-
-#' Straightness of a Trajectory
-#'
-#' Calculates the straightness index of a trajectory, \code{D / L}, where
-#' \code{D} is the beeline distance between the first and last points in the
-#' trajectory,and \code{L} is the path length travelled.
-#'
-#' @param trj Trajectory to calculate straightness of.
-#' @return The straightness index of \code{trj}.
-TrajStraightness <- function(trj) {
-  TrajDistance(trj) / TrajLength(trj)
-}
-
-#' Directional change (DC)
-#'
-#' Calculates the directional change (DC) of a trajectory \emph{sensu} Kitamura & Imafuku (2015).
-#'
-#' @param trj Track to calculate DC for.
-#' @param nFrames Frame delta to process: if 1, every frame is processed, if 2,
-#'   every 2nd frame is processed, and so on. Default is 1.
-#'
-#' @references
-#' Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483
-TrajDirectionalChange <- function(trj, nFrames = 1) {
-  TrajAngles(trj, nFrames) / diff(trj$displacementTime, nFrames)
-}
-
