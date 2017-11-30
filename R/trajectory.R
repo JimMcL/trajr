@@ -16,6 +16,10 @@
   # Calculate displacements from each point to the next
   trj$displacement <- c(0, diff(trj$polar))
 
+  # Give it a special class
+  if (class(trj)[1] != "Trajectory")
+    class(trj) <- c("Trajectory", class(trj))
+
   trj
 }
 
@@ -102,9 +106,6 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) 
   attr(trj, .MTA_FPS) <- fps
 
   trj <- .fillInTraj(trj)
-
-  # Give it a special class
-  class(trj) <- c("Trajectory", class(trj))
 
   trj
 }
