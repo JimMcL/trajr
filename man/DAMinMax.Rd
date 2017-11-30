@@ -28,8 +28,10 @@ consideration as a minimum, similarly the start point will not be returned as a
 maximum.
 }
 \examples{
-# Calculate direction autocorrelation for trj
-corr <- TrajDirectionAutocorrelations(trj)
+# Resample to fixed path length
+resampled <- TrajRediscretize(trj, .005)
+# Calculate direction autocorrelation for resampled trajectory
+corr <- TrajDirectionAutocorrelations(resampled)
 # Extract first local minimum from autocorrelation
 minPt <- TrajDAFindFirstMinimum(corr, 50)
 

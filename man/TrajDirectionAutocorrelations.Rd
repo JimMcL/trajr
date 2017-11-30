@@ -29,3 +29,6 @@ Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017).
   formicaria. Proceedings of the Royal Society B: Biological Sciences,
   284(1858). doi:10.1098/rspb.2017.0308
 }
+\seealso{
+TrajDAFindFirstMinimum, TrajPlotDirectionAutocorrelations
+}
