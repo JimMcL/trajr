@@ -1,4 +1,4 @@
-# Trajectory analysis
+# Trajectory construction and modification functions
 
 
 .MTA_FPS <- 'fps'
@@ -68,6 +68,8 @@
 #'   \item{polar}{Coordinates represented as complex number, to simplify working
 #'   with segment angles.} \item{displacement}{Displacements between each pair
 #'   of consecutive points.}
+#'
+#' @export
 TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
 
   trj <- track
@@ -129,6 +131,8 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) 
 #' # trajectory by the approriate factor
 #' scale <- 10 / 47 * 1000
 #' scaled <- TrajScale(trj, scale, "m")
+#'
+#' @export
 TrajScale <- function(trj, scale, units, yScale = scale) {
   trj$x <- trj$x * scale
   trj$y <- trj$y * scale
@@ -139,7 +143,15 @@ TrajScale <- function(trj, scale, units, yScale = scale) {
   .fillInTraj(trj)
 }
 
-#' Rotates a trajectory so that angle(finish - start) == angle
+#' Rotate a trajectory
+#'
+#' Rotates a trajectory so that \code{angle(finish - start) == angle}
+#'
+#' @param trj The trajectory to be rotated.
+#' @param angle The angle between the first and last points in the rotated trajectory.
+#' @return A new trajectory which is a rotated version of the input trajectory.
+#'
+#' @export
 TrajRotate <- function(trj, angle = 0) {
   # Calculate current orientation
   orient <- Arg(track$polar[length(track$polar)] - track$polar[1])
@@ -169,88 +181,11 @@ TrajRotate <- function(trj, angle = 0) {
 #' @seealso \code{\link[signal]{sgolayfilt}}
 #' @examples
 #' trj <- TrajSmoothSG(trj, 3, 101)
+#'
+#' @export
 TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {
   trj$x <- signal::sgolayfilt(trj$x, p, n)
   trj$y <- signal::sgolayfilt(trj$y, p, n)
   .fillInTraj(trj)
 }
 
-
-# ---- Trajectory query ----
-
-#' Returns the frames-per-second recorded for this trajectory
-TrajGetFPS <- function(trj) { attr(trj, .MTA_FPS) }
-
-#' Returns the number of frames recorded for this trajectory
-TrajGetNFrames <- function(trj) { attr(trj, .MTA_NFRAMES) }
-
-#' Plot method for trajectories
-#'
-#' The plot method for Trajectory objects.
-#'
-#' @param trj The trajectory to be plotted.
-#' @param draw.start.pt if TRUE, draws a dot at the start point of the trajectory.
-#' @param add If TRUE, the trajectory is added to the current plot.
-#' @param type,xlim,ylim,asp plotting parameters with useful defaults.
-plot.Trajectory <- function(trj, draw.start.pt = TRUE, add = FALSE,
-                            type = 'l',
-                            xlim = range(trj$x), ylim = range(trj$y),
-                            asp = 1, ...) {
-  if (!add) {
-    plot.default(NULL, xlim = xlim, ylim = ylim, asp = 1, ...)
-  }
-  lines(y ~ x, data = trj, type = type, ...)
-  if (draw.start.pt)
-    points(trj$x[1], trj$y[1], pch = 16, cex = .8)
-}
-
-
-# ---- Trajectory analysis ----
-
-#' Turning angles of a Trajectory
-#'
-#' Calculates the angles (in radians) of each segment relative to the previous segment.
-#'
-#' @param trj the trajectory whose whose angles are to be calculated.
-#' @param lag Angles between every lag'th segment is calculated.
-TrajAngles <- function(trj, lag = 1) {
-  angles <- diff(Arg(trj$displacement), lag)
-  # Normalise so that -pi < angle <= pi
-  ii <- angles <= -pi
-  angles[ii] <- angles[ii] + 2 * pi
-  ii <- angles > pi
-  angles[ii] <- angles[ii] - 2 * pi
-  angles
-}
-
-#' Calculates speed and linear acceleration along a trajectory over time.
-#'
-#' @return A list with components: \item{speed}{numeric vector, speed between each pair of trajectory points.}
-#'   \item{speedTimes}{numeric vector, times corresponding to values in \code{speed}.}
-#'   \item{acceleration}{numeric vector.}
-#'   \item{accelerationTimes}{numeric vector.}
-TrajDerivatives <- function(trj) {
-  # Note that displacements are the (polar) displacements from 1 point to the next
-  d <- Mod(trj$displacement)
-  t <- trj$displacementTime
-
-  # Calculate speed
-  v <- d[2:length(d)] / diff(t)
-  vt <- t[2:length(t)]
-  # Calculate linear acceleration
-  a <- diff(v) / diff(vt)
-  at <- vt[2:length(vt)]
-
-  list(speed = v, speedTimes = vt, acceleration = a, accelerationTimes = at)
-}
-
-#' Calculates the cumulative length of a track, which is the distance travelled
-TrajLength <- function(trj) {
-  sum(Mod(diff(trj$polar)))
-}
-
-#' Calculates the distance between the start and end of a trajectory.
-#' Also called the diffusion distance, net distance, or bee-line from start to finish.
-TrajDistance <- function(trj) {
-  Mod(diff(trj$polar[c(1,length(trj$polar))]))
-}

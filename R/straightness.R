@@ -23,7 +23,8 @@
 #' Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
 #' path. Journal of Theoretical Biology, 229(2), 209-220.
 #' doi:10.1016/j.jtbi.2004.03.016
-
+#'
+#' @export
 TrajStraightness <- function(trj) {
   TrajDistance(trj) / TrajLength(trj)
 }
@@ -54,6 +55,8 @@ TrajStraightness <- function(trj) {
 #'   path of Batesian intraspecific polymorphic butterfly Papilio polytes.
 #'   Proceedings of the Royal Society B: Biological Sciences, 282(1809).
 #'   doi:10.1098/rspb.2015.0483
+#'
+#' @export
 TrajDirectionalChange <- function(trj, nFrames = 1) {
   .rad2deg(TrajAngles(trj, nFrames)) / diff(trj$displacementTime, nFrames)
 }
@@ -124,6 +127,7 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #'   formicaria. Proceedings of the Royal Society B: Biological Sciences,
 #'   284(1858). doi:10.1098/rspb.2017.0308
 #'
+#' @export
 TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4)) {
 
   # The guts of the autocorrelation function
@@ -177,6 +181,8 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 NULL
 
 #' @rdname DAMinMax
+#'
+#' @export
 TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
   # Ignore local minimum if it's the end of the track
   windowSize <- min(length(corr$C) - 1, windowSize)
@@ -187,6 +193,8 @@ TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
 }
 
 #' @rdname DAMinMax
+#'
+#' @export
 TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
   windowSize <- min(length(corr$C) - 1, windowSize)
   # Ignore local maxima if it's the start of the track
@@ -199,8 +207,9 @@ TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
 #' Plot direction autocorrelation function
 #'
 #' Calculate the direction autocorrelation for a trajectory, then plot the
-#' result. \code{trj} must have a constant step length (see
-#' \code{\link{TrajDirectionAutocorrelations}} for further details).
+#' result, with a dot at the first local minimum. \code{trj} must have a
+#' constant step length (see \code{\link{TrajDirectionAutocorrelations}} for
+#' further details).
 #'
 #' @param trj Trajectory to be plotted.
 #' @param deltaSMax Maximum delta s to calculated, see
@@ -208,6 +217,8 @@ TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
 #' @param firstMinWindowSize If not NULL, specifies a window size used to
 #'   calculate the first local minimum, which is then plotted as a point.
 #' @param type,xlab,ylab Defaults for plotting.
+#'
+#' @export
 TrajPlotDirectionAutocorrelations <- function(trj,
                                               deltaSMax = round(nrow(trj) / 4),
                                               firstMinWindowSize = 10,
@@ -240,6 +251,7 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #' @param trj Trajectory to calculate sinuosity of.
 #' @return The sinuosity of \code{trj}.
 #'
+#' @export
 TrajSinuosity <- function(trj) {
   # Discard initial 0-length segment
   trj <- tail(trj$displacement, -1)
@@ -253,6 +265,8 @@ TrajSinuosity <- function(trj) {
 #' E-max from Cheung et al., (2007)
 #'
 #' Not yet tested
+#'
+#' @export
 TrajEmax <- function(trj, eMaxB = FALSE) {
 
   .beta <- function(points) {

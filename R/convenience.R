@@ -73,6 +73,8 @@
 #' trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
 #'                    scale = scale, units = "m",
 #'                    csvStruct = csvStruct, rootDir = rootDir)
+#'
+#' @export
 TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
                        smoothP = 3, smoothN = 41,
                        rootDir = NULL,
@@ -138,6 +140,8 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
 #'
 #' @param trjs List of trajectories to be characterised.
 #' @param statsFn Function to calculate statistics of interest for a single trajectory.
+#'
+#' @export
 TrajsMergeStats <- function(trjs, statsFn) {
   result <- data.frame()
   nc <- NA
@@ -180,6 +184,8 @@ TrajsMergeStats <- function(trjs, statsFn) {
 #' df <- data.frame(x = c(1, 2, 3), y = c(NA, 5, 6), z = c(NA, NA, 9))
 #' df <- TrajsStatsReplaceNAs(df, "y", flagColumn = "y.was.NA")
 #' print(df)
+#'
+#' @export
 TrajsStatsReplaceNAs <- function(df, column, replacementValue = mean(df[,column], na.rm = TRUE), flagColumn = NULL) {
   # Are there any NAs in the column?
   col <- df[,column]
