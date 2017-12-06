@@ -10,11 +10,15 @@ TrajDerivatives(trj)
 \item{trj}{Trajectory whose speed and acceleration is to be calculated.}
 }
 \value{
-A list with components: \item{speed}{numeric vector, speed between each pair of trajectory points.}
-  \item{speedTimes}{numeric vector, times corresponding to values in \code{speed}.}
-  \item{acceleration}{numeric vector.}
-  \item{accelerationTimes}{numeric vector.}
+A list with components: \item{speed}{numeric vector, speed between
+  each pair of trajectory points.} \item{speedTimes}{numeric vector, times
+  corresponding to values in \code{speed}.} \item{acceleration}{numeric
+  vector.} \item{accelerationTimes}{numeric vector.}
 }
 \description{
 Calculates speed and linear acceleration along a trajectory over time.
+}
+\seealso{
+\code{\link{TrajSpeedIntervals}} for analysing intervals within the
+  trajectory of low or high speed.
 }

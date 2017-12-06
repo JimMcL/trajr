@@ -17,7 +17,7 @@ test_that("Trajectory creation", {
   expect_equal(range(trj$y), yRange)
 
   # Scaling
-  scale <- .1
+  scale <- 1 / 2500
   scaled <- TrajScale(trj, scale, "m")
   #plot(scaled)
   expect_false(is.null(scaled))
@@ -33,17 +33,17 @@ test_that("Trajectory creation", {
 
   # Derivatives
   derivs <- TrajDerivatives(smoothed)
-  plot(derivs$speed, type = 'l', col = 'red')
-  plot(derivs$acceleration, type = 'l')
+  #plot(derivs$speed, type = 'l', col = 'red')
+  #plot(derivs$acceleration, type = 'l')
 
   # Rediscretization
-  rd <- TrajRediscretize(smoothed, .05)
-  #TrajPlot(rd)
+  rd <- TrajRediscretize(smoothed, .001)
+  #plot(rd)
 
   expect_true(TrajStraightness(smoothed) < 1)
   expect_true(TrajStraightness(smoothed) > 0)
 
-  corr <- TrajDirectionAutocorrelations(TrajRediscretize(smoothed, .5))
+  corr <- TrajDirectionAutocorrelations(rd)
   # plot(corr, type='l')
   mn <- TrajDAFindFirstMinimum(corr, 10)
   # points(mn["deltaS"], mn["C"], pch = 16, col = "red", lwd = 2)
@@ -55,4 +55,81 @@ test_that("Trajectory creation", {
   sinuosity <- TrajSinuosity(rd)
 
   emax <- TrajEmax(smoothed)
+})
+
+test_that("Speed intervals", {
+  plotIntervalsByTime <- function(smoothed, slowerThan, fasterThan, intervals) {
+    derivs <- TrajDerivatives(smoothed)
+    speed <- derivs$speed
+    plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = 'Time (sec)', ylab = "Speed")
+    abline(h = slowerThan, col = "red")
+    abline(h = fasterThan, col = "green")
+    rect(intervals$startTime, min(speed), intervals$stopTime, max(speed), col = JTransparentColour("blue", 30), border = NA)
+  }
+
+  plotIntervalsByFrame <- function(smoothed, slowerThan, fasterThan, intervals) {
+    derivs <- TrajDerivatives(smoothed)
+    speed <- derivs$speed
+    plot(speed, type = 'l', xlab = 'Frame number', ylab = "Speed")
+    abline(h = slowerThan, col = "red")
+    abline(h = fasterThan, col = "green")
+    rect(intervals$startFrame, min(speed), intervals$stopFrame, max(speed), col = JTransparentColour("blue", 30), border = NA)
+  }
+
+  # 1 Interval with no start and 1 stop
+  set.seed(1)
+  trj <- TrajGenerate(200, random = TRUE)
+  slowerThan = NULL
+  fasterThan = 120
+  smoothed <- TrajSmoothSG(trj, 3, 101)
+  intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_true(nrow(intervals) == 1)
+
+  # 1 Interval with 1 start and no stop
+  set.seed(2)
+  trj <- TrajGenerate(200, random = TRUE)
+  slowerThan = NULL
+  fasterThan = 120
+  smoothed <- TrajSmoothSG(trj, 3, 101)
+  intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_true(nrow(intervals) == 1)
+
+  # 0 intervals
+  set.seed(3)
+  trj <- TrajGenerate(200, random = TRUE)
+  slowerThan = NULL
+  fasterThan = 200
+  smoothed <- TrajSmoothSG(trj, 3, 101)
+  intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_true(nrow(intervals) == 0)
+
+  # 3 intervals
+  set.seed(4)
+  trj <- TrajGenerate(200, random = TRUE)
+  slowerThan = 150
+  fasterThan = 90
+  smoothed <- TrajSmoothSG(trj, 3, 101)
+  intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_true(nrow(intervals) == 3)
+
+  # 3 intervals
+  set.seed(4)
+  trj <- TrajGenerate(200, random = TRUE)
+  slowerThan = 50
+  fasterThan = NULL
+  smoothed <- TrajSmoothSG(trj, 3, 101)
+  intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_true(nrow(intervals) == 3)
+
+  # 2 intervals
+  set.seed(4)
+  trj <- TrajGenerate(20, random = TRUE)
+  slowerThan = 92
+  fasterThan = NULL
+  intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_true(nrow(intervals) == 2)
+
+
+  # plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  # plotIntervalsByFrame(trj, slowerThan, fasterThan, intervals)
 })
