@@ -1,9 +1,10 @@
 # Trajectory construction and modification functions
 
 
-.MTA_FPS <- 'fps'
-.MTA_NFRAMES <- 'numFrames'
-.MTA_UNITS <- 'units'
+# Names of attributes
+.TRAJ_FPS <- 'fps'
+.TRAJ_NFRAMES <- 'numFrames'
+.TRAJ_UNITS <- 'units'
 
 # ---- Private functions ----
 
@@ -102,10 +103,10 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) 
   trj$displacementTime <- trj$time[1:nrow(trj)] - trj$time[1]
 
   # Save number of frames
-  attr(trj, .MTA_NFRAMES) <- nrow(trj)
+  attr(trj, .TRAJ_NFRAMES) <- nrow(trj)
 
   # Save frame rate
-  attr(trj, .MTA_FPS) <- fps
+  attr(trj, .TRAJ_FPS) <- fps
 
   trj <- .fillInTraj(trj)
 
@@ -126,8 +127,10 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) 
 #' @return new scaled trajectory.
 #'
 #' @examples
+#' set.seed(42)
+#' trj <- TrajGenerate()
 #' # original trajectory units are pixels, measured as having
-#' #  47 pixels in 10 mm, so to convert to metres, scale the
+#' # 47 pixels in 10 mm, so to convert to metres, scale the
 #' # trajectory by the approriate factor
 #' scale <- 10 / 47 * 1000
 #' scaled <- TrajScale(trj, scale, "m")
@@ -138,7 +141,7 @@ TrajScale <- function(trj, scale, units, yScale = scale) {
   trj$y <- trj$y * scale
 
   # Save units
-  attr(trj, .MTA_UNITS) <- units
+  attr(trj, .TRAJ_UNITS) <- units
 
   .fillInTraj(trj)
 }
@@ -154,14 +157,14 @@ TrajScale <- function(trj, scale, units, yScale = scale) {
 #' @export
 TrajRotate <- function(trj, angle = 0) {
   # Calculate current orientation
-  orient <- Arg(track$polar[length(track$polar)] - track$polar[1])
+  orient <- Arg(trj$polar[length(trj$polar)] - trj$polar[1])
   # Calculate required rotation
   alpha <- angle - orient
   # Rotation matrix
   rm <- matrix(c(cos(alpha), sin(alpha), -sin(alpha), cos(alpha)), ncol = 2)
 
   # New track is old track rotated
-  nt <- as.data.frame(t(rm %*% (t(track[,c('x', 'y')]))))
+  nt <- as.data.frame(t(rm %*% (t(trj[,c('x', 'y')]))))
   colnames(nt) <- c('x', 'y')
   trj$x <- nt$x
   trj$y <- nt$y
@@ -176,11 +179,15 @@ TrajRotate <- function(trj, angle = 0) {
 #' @param trj The trajectory to be smoothed.
 #' @param p polynomial order.
 #' @param n Filter length (or window size), must be an odd number.
-#' @return a new trajectory which is a smoothed version of the input trajectory.
+#' @return A new trajectory which is a smoothed version of the input trajectory.
 #'
 #' @seealso \code{\link[signal]{sgolayfilt}}
 #' @examples
-#' trj <- TrajSmoothSG(trj, 3, 101)
+#' set.seed(3)
+#' trj <- TrajGenerate(500, random = TRUE, angularErrorSd = .25)
+#' smoothed <- TrajSmoothSG(trj, 3, 31)
+#' plot(trj)
+#' plot(smoothed, col = "red", add = TRUE)
 #'
 #' @export
 TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {

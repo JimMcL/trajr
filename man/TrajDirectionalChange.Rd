@@ -29,6 +29,8 @@ Imafuku (2015) used the mean and the standard deviation of DC for portions of
 trajectories as index values of nonlinearity and irregularity respectively.
 }
 \examples{
+set.seed(42)
+trj <- TrajGenerate()
 SD = mean(TrajDirectionalChange(trj))
 SDDC = sd(TrajDirectionalChange(trj))
 

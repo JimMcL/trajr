@@ -6,7 +6,7 @@
 \usage{
 TrajsBuild(fileNames, fps, scale = NULL, units = NULL, csvStruct = list(x
   = 1, y = 2, time = NULL), smoothP = 3, smoothN = 41, rootDir = NULL,
-  csvReadFn = read.csv)
+  csvReadFn = utils::read.csv)
 }
 \arguments{
 \item{fileNames}{Vector of the names of CSV files containing trajectory
@@ -48,10 +48,11 @@ them, and optionally smooths and scales them. Attempts to collect and report
 errors for multiple trajectories in a single call.
 }
 \examples{
+\dontrun{
 # Names of CSV files containing trajectory coordinates
 fileNames <- c('xy001.csv', 'xy003.csv', 'xy004.csv')
 # The files are all located under this directory
-rootDir <- 'c:/Jim/data'
+rootDir <- '.'
 # Scale is 1 / pixels per metre
 scale <- c('1/1200', '1/1350', '1/1300')
 # Files have columns y, x
@@ -61,6 +62,8 @@ csvStruct <- list(x = 2, y = 1)
 trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
                    scale = scale, units = "m",
                    csvStruct = csvStruct, rootDir = rootDir)
+}
+
 }
 \seealso{
 \code{\link[utils]{read.csv}}, \code{\link{TrajFromCoords}},

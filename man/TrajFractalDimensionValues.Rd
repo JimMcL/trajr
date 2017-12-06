@@ -18,9 +18,12 @@ Data frame with columns \code{stepsize} (\eqn{\delta}) and \code{pathlength} ((\
 Calculates path length (\eqn{L(\delta)}) for a range of step sizes (\eqn{\delta}).
 }
 \examples{
+set.seed(42)
+trj <- TrajGenerate()
 plot(TrajFractalDimensionValues(trj, TrajFractalStepSizes(trj)), log = "xy", pch = 16, cex = .5)
+
 }
 \seealso{
 \code{\link{TrajFractalStepSizes}} for a possible calculation of \code{stepSizes}.
-\code{\link{TrajFractalDimension}}
+\code{\link{TrajFractalDimension}} for fractal dimension calculation.
 }

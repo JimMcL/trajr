@@ -25,4 +25,5 @@ Based on the appendix in Bovet and Benhamou, (1988)
 }
 \references{
 Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
+#'
 }

@@ -5,7 +5,7 @@ Version: 0.0.0.9000
 Authors@R: person("Jim", "McLean", email = "jim.mclean@optusnet.com.au",
     role = c("aut", "cre"))
 Description: A toolbox to assist with statistical analysis of 2-dimensional animal trajectories.
-License: License: MIT + LICENSE
+License: MIT + file LICENSE
 URL: https://github.com/JimMcL/trajr
 BugReports: https://github.com/JimMcL/trajr/issues
 Encoding: UTF-8

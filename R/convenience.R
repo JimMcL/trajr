@@ -60,10 +60,11 @@
 #'   \code{\link{TrajScale}}, \code{\link{TrajSmoothSG}}
 #'
 #' @examples
+#'\dontrun{
 #' # Names of CSV files containing trajectory coordinates
 #' fileNames <- c('xy001.csv', 'xy003.csv', 'xy004.csv')
 #' # The files are all located under this directory
-#' rootDir <- 'c:/Jim/data'
+#' rootDir <- '.'
 #' # Scale is 1 / pixels per metre
 #' scale <- c('1/1200', '1/1350', '1/1300')
 #' # Files have columns y, x
@@ -73,12 +74,13 @@
 #' trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
 #'                    scale = scale, units = "m",
 #'                    csvStruct = csvStruct, rootDir = rootDir)
+#'}
 #'
 #' @export
 TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
                        smoothP = 3, smoothN = 41,
                        rootDir = NULL,
-                       csvReadFn = read.csv) {
+                       csvReadFn = utils::read.csv) {
   # Check that file names are unique
   if (any(table(fileNames) > 1)) {
     stop(sprintf("List of file names contains duplicates: %s\n", paste(names(which(table(fileNames) > 1)), collapse = ", ")))
@@ -182,6 +184,7 @@ TrajsMergeStats <- function(trjs, statsFn) {
 #'
 #' @examples
 #' df <- data.frame(x = c(1, 2, 3), y = c(NA, 5, 6), z = c(NA, NA, 9))
+#' # Eliminate NAs in y, add flag column, ignore other NAs
 #' df <- TrajsStatsReplaceNAs(df, "y", flagColumn = "y.was.NA")
 #' print(df)
 #'

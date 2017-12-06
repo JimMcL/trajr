@@ -2,10 +2,18 @@
 % Please edit documentation in R/trajectory.R
 \name{TrajRotate}
 \alias{TrajRotate}
-\title{Rotates a trajectory so that angle(finish - start) == angle}
+\title{Rotate a trajectory}
 \usage{
 TrajRotate(trj, angle = 0)
 }
+\arguments{
+\item{trj}{The trajectory to be rotated.}
+
+\item{angle}{The angle between the first and last points in the rotated trajectory.}
+}
+\value{
+A new trajectory which is a rotated version of the input trajectory.
+}
 \description{
-Rotates a trajectory so that angle(finish - start) == angle
+Rotates a trajectory so that \code{angle(finish - start) == angle}
 }

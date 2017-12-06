@@ -28,15 +28,19 @@ consideration as a minimum, similarly the start point will not be returned as a
 maximum.
 }
 \examples{
+set.seed(42)
+trj <- TrajGenerate(600, angularErrorSd = 1)
+smoothed <- TrajSmoothSG(trj, 3, 11)
+
 # Resample to fixed path length
-resampled <- TrajRediscretize(trj, .005)
+resampled <- TrajRediscretize(smoothed, 1)
 # Calculate direction autocorrelation for resampled trajectory
-corr <- TrajDirectionAutocorrelations(resampled)
+corr <- TrajDirectionAutocorrelations(resampled, 100)
 # Extract first local minimum from autocorrelation
-minPt <- TrajDAFindFirstMinimum(corr, 50)
+minPt <- TrajDAFindFirstMinimum(corr, 20)
 
 # Plot the autocorrelation function
-plot(corr)
+plot(corr, type ='l')
 # Plot a red dot with a black outline at the first minimum
 points(minPt["deltaS"], minPt["C"], pch = 16, col = "red", lwd = 2)
 points(minPt["deltaS"], minPt["C"], col = "black", lwd = 2)

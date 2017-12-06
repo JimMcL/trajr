@@ -65,7 +65,7 @@
   }
 
   # Truncate result to actual length
-  result <- head(result, I)
+  result <- utils::head(result, I)
 
   result
 }

@@ -7,22 +7,29 @@
 #'
 #' The plot method for Trajectory objects.
 #'
-#' @param trj The trajectory to be plotted.
+#' @param x An object of class "Trajectory", the trajectory to be plotted.
 #' @param draw.start.pt if TRUE, draws a dot at the start point of the trajectory.
 #' @param add If TRUE, the trajectory is added to the current plot.
 #' @param type,xlim,ylim,asp plotting parameters with useful defaults.
+#' @param ... Additional arguments are passed to \code{\link{plot}}.
+#'
+#' @seealso \code{\link{TrajFromCoords}}
+#' @examples
+#' set.seed(42)
+#' trj <- TrajGenerate(angularErrorSd = 1.3)
+#' plot(trj)
 #'
 #' @export
-plot.Trajectory <- function(trj, draw.start.pt = TRUE, add = FALSE,
+plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE,
                             type = 'l',
-                            xlim = range(trj$x), ylim = range(trj$y),
+                            xlim = range(x$x), ylim = range(x$y),
                             asp = 1, ...) {
   if (!add) {
-    NextMethod(NULL, xlim = xlim, ylim = ylim, asp = 1, ...)
+    graphics::plot(NULL, xlim = xlim, ylim = ylim, asp = asp, ...)
   }
-  lines(y ~ x, data = trj, type = type, ...)
+  graphics::lines(y ~ x, data = x, type = type, ...)
   if (draw.start.pt)
-    points(trj$x[1], trj$y[1], pch = 16, cex = .8)
+    graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
 }
 
 # ---- Trajectory query ----
@@ -32,14 +39,14 @@ plot.Trajectory <- function(trj, draw.start.pt = TRUE, add = FALSE,
 #' @param trj Trajectory to query
 #'
 #' @export
-TrajGetFPS <- function(trj) { attr(trj, .MTA_FPS) }
+TrajGetFPS <- function(trj) { attr(trj, .TRAJ_FPS) }
 
 #' Returns the number of frames recorded for this trajectory
 #'
 #' @param trj Trajectory to query
 #'
 #' @export
-TrajGetNFrames <- function(trj) { attr(trj, .MTA_NFRAMES) }
+TrajGetNFrames <- function(trj) { attr(trj, .TRAJ_NFRAMES) }
 
 # ---- Trajectory analysis ----
 

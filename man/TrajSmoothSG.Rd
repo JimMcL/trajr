@@ -14,13 +14,18 @@ TrajSmoothSG(trj, p = 3, n = p + 3 - p\%\%2)
 \item{n}{Filter length (or window size), must be an odd number.}
 }
 \value{
-a new trajectory which is a smoothed version of the input trajectory.
+A new trajectory which is a smoothed version of the input trajectory.
 }
 \description{
 Smooths a trajectory using a Savitzky-Golay smoothing filter.
 }
 \examples{
-trj <- TrajSmoothSG(trj, 3, 101)
+set.seed(3)
+trj <- TrajGenerate(500, random = TRUE, angularErrorSd = .25)
+smoothed <- TrajSmoothSG(trj, 3, 31)
+plot(trj)
+plot(smoothed, col = "red", add = TRUE)
+
 }
 \seealso{
 \code{\link[signal]{sgolayfilt}}

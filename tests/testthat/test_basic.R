@@ -5,7 +5,7 @@ context("trajectory creation")
 test_that("Trajectory creation", {
   csvFile <- "../testdata/096xypts.csv"
   expect_true(file.exists(csvFile))
-  coords <- read.csv(csvFile, stringsAsFactors = FALSE)
+  coords <- utils::read.csv(csvFile, stringsAsFactors = FALSE)
   expect_false(is.null(coords))
   trj <- TrajFromCoords(coords, fps = 1000)
 

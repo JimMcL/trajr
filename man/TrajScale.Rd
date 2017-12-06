@@ -25,9 +25,12 @@ Scales the cartesian coordinates in a trajectory, for example, to convert
 units from pixels to metres.
 }
 \examples{
+set.seed(42)
+trj <- TrajGenerate()
 # original trajectory units are pixels, measured as having
-#  47 pixels in 10 mm, so to convert to metres, scale the
+# 47 pixels in 10 mm, so to convert to metres, scale the
 # trajectory by the approriate factor
 scale <- 10 / 47 * 1000
 scaled <- TrajScale(trj, scale, "m")
+
 }

@@ -48,6 +48,8 @@ TrajStraightness <- function(trj) {
 #'   \code{(nrow(trj) - 1)}.
 #'
 #' @examples
+#' set.seed(42)
+#' trj <- TrajGenerate()
 #' SD = mean(TrajDirectionalChange(trj))
 #' SDDC = sd(TrajDirectionalChange(trj))
 #'
@@ -97,7 +99,7 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
     }
   }
 
-  head(maxima, nm)
+  utils::head(maxima, nm)
 }
 
 # Returns the mean segment length of a trajectory
@@ -165,15 +167,19 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 #' @seealso \code{\link{TrajDirectionAutocorrelations}}
 #'
 #' @examples
+#' set.seed(42)
+#' trj <- TrajGenerate(600, angularErrorSd = 1)
+#' smoothed <- TrajSmoothSG(trj, 3, 11)
+#'
 #' # Resample to fixed path length
-#' resampled <- TrajRediscretize(trj, .005)
+#' resampled <- TrajRediscretize(smoothed, 1)
 #' # Calculate direction autocorrelation for resampled trajectory
-#' corr <- TrajDirectionAutocorrelations(resampled)
+#' corr <- TrajDirectionAutocorrelations(resampled, 100)
 #' # Extract first local minimum from autocorrelation
-#' minPt <- TrajDAFindFirstMinimum(corr, 50)
+#' minPt <- TrajDAFindFirstMinimum(corr, 20)
 #'
 #' # Plot the autocorrelation function
-#' plot(corr)
+#' plot(corr, type ='l')
 #' # Plot a red dot with a black outline at the first minimum
 #' points(minPt["deltaS"], minPt["C"], pch = 16, col = "red", lwd = 2)
 #' points(minPt["deltaS"], minPt["C"], col = "black", lwd = 2)
@@ -212,11 +218,12 @@ TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
 #' further details).
 #'
 #' @param trj Trajectory to be plotted.
-#' @param deltaSMax Maximum delta s to calculated, see
+#' @param deltaSMax Maximum delta s to be calculated, see
 #'   \code{\link{TrajDirectionAutocorrelations}} for details.
 #' @param firstMinWindowSize If not NULL, specifies a window size used to
 #'   calculate the first local minimum, which is then plotted as a point.
 #' @param type,xlab,ylab Defaults for plotting.
+#' @param ... Additional arguments passed to \code{\link{plot}}.
 #'
 #' @export
 TrajPlotDirectionAutocorrelations <- function(trj,
@@ -229,15 +236,15 @@ TrajPlotDirectionAutocorrelations <- function(trj,
   corr <- TrajDirectionAutocorrelations(trj, deltaSMax)
 
   # Plot the autocorrelation function
-  plot(corr, type = type, xlab = xlab, ylab = ylab, ...)
+  graphics::plot(corr, type = type, xlab = xlab, ylab = ylab, ...)
 
   # Optionally plot first minimum
   if (!is.null(firstMinWindowSize)) {
     # Extract first local minimum from autocorrelation
     minPt <- TrajDAFindFirstMinimum(corr, firstMinWindowSize)
     # Plot a red dot with a black outline at the first minimum
-    points(minPt["deltaS"], minPt["C"], pch = 16, col = "red", lwd = 2)
-    points(minPt["deltaS"], minPt["C"], col = "black", lwd = 2)
+    graphics::points(minPt["deltaS"], minPt["C"], pch = 16, col = "red", lwd = 2)
+    graphics::points(minPt["deltaS"], minPt["C"], col = "black", lwd = 2)
   }
 }
 
@@ -254,9 +261,9 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #' @export
 TrajSinuosity <- function(trj) {
   # Discard initial 0-length segment
-  trj <- tail(trj$displacement, -1)
+  trj <- utils::tail(trj$displacement, -1)
   segLen <- .TrajSegLen(trj)
-  1.18 * sd(diff(Arg(trj))) / sqrt(segLen)
+  1.18 * stats::sd(diff(Arg(trj))) / sqrt(segLen)
 }
 
 
@@ -265,6 +272,10 @@ TrajSinuosity <- function(trj) {
 #' E-max from Cheung et al., (2007)
 #'
 #' Not yet tested
+#'
+#' @param trj Trajectory to be analysed.
+#' @param eMaxB If TRUE, calculates and returns E-max b, otherwise return E-max.
+#' @return E-max for \code{trj}.
 #'
 #' @export
 TrajEmax <- function(trj, eMaxB = FALSE) {

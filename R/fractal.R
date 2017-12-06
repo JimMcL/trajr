@@ -38,6 +38,8 @@ TrajFractalStepSizes <- function(trj, smallestStepFactor = .0001, largestStepFac
 #' \code{\link{TrajFractalDimension}} for fractal dimension calculation.
 #'
 #' @examples
+#' set.seed(42)
+#' trj <- TrajGenerate()
 #' plot(TrajFractalDimensionValues(trj, TrajFractalStepSizes(trj)), log = "xy", pch = 16, cex = .5)
 #'
 #' @export
@@ -69,7 +71,7 @@ TrajFractalDimension <- function(trj, stepSizes) {
   # Calculate path length for a range of step sizes
   fi <- TrajFractalDimensionValues(trj, stepSizes)
   # Calculate slope of points on log/log axes
-  l <- lm(log(fi$pathlength) ~ log(fi$stepsize))
+  l <- stats::lm(log(fi$pathlength) ~ log(fi$stepsize))
   slope <- l$coefficients[2]
   # Fractal dimension
   unname(1 - slope)

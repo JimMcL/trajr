@@ -6,6 +6,14 @@
 \usage{
 TrajEmax(trj, eMaxB = FALSE)
 }
+\arguments{
+\item{trj}{Trajectory to be analysed.}
+
+\item{eMaxB}{If TRUE, calculates and returns E-max b, otherwise return E-max.}
+}
+\value{
+E-max for \code{trj}.
+}
 \description{
 Not yet tested
 }
