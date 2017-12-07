@@ -2,16 +2,27 @@
 
 #' Generate a random trajectory
 #'
-#' Generates a trajectory - either a random search or a directed path.
+#' Generates a trajectory - either a random search (corresponding to an animal
+#' navigating without a compass) or a directed or oriented path (corresponding
+#' to an animal navigating with a compass).
 #'
 #' @param n Number of steps in the trajectory.
-#' @param random If TRUE, a random search trajectory is returned, otherwise a directory trajectory is returned.
-#' @param stepLength Mean length of each step in the trajectory, in arbitrary length units.
+#' @param random If TRUE, a random search trajectory is returned, otherwise a
+#'   directory trajectory is returned.
+#' @param stepLength Mean length of each step in the trajectory, in arbitrary
+#'   length units.
 #' @param angularErrorSd Standard deviation of angular errors in radians.
 #' @param linearErrorSd Standard deviation of linear step length errors.
-#' @param fps Simulated frames-per-second - used to generate times for each coordinate in the trajectory.
+#' @param fps Simulated frames-per-second - used to generate times for each
+#'   point in the trajectory.
 #'
 #' @return A new Trajectory.
+#'
+#' @references
+#'
+#' Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007). Animal
+#' navigation: the difficulty of moving in a straight line. Biological
+#' Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
 #'
 #' @export
 TrajGenerate <- function(n = 1000, random = FALSE, stepLength = 2, angularErrorSd = 0.5, linearErrorSd = 0.2, fps = 50) {

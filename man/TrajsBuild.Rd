@@ -47,13 +47,25 @@ Reads multiple trajectories from files, performs some basic sanity checks on
 them, and optionally smooths and scales them. Attempts to collect and report
 errors for multiple trajectories in a single call.
 }
+\details{
+For each file name in \code{fileNames}, searches through the folder
+\code{rootDir} (unless it's \code{NULL}) to find the file, then reads the
+file by calling \code{csvReadFn} to obtain a set of coordinates and
+optionally times. A Trajectory is constructed by passing the coordinates to
+\code{\link{TrajFromCoords}}, passing in the appropriate \code{fps} value,
+and x, y and time column names/indices from \code{csvStruct}. If \code{scale}
+is not \code{NULL}, the trajectory is then scaled by calling
+\code{\link{TrajScale}}. If \code{smoothP} and \code{smoothN} are not
+\code{NULL}, the trajectory is smoothed by calling
+\code{\link{TrajSmoothSG}}.
+}
 \examples{
 \dontrun{
 # Names of CSV files containing trajectory coordinates
 fileNames <- c('xy001.csv', 'xy003.csv', 'xy004.csv')
-# The files are all located under this directory
+# The files are all located somewhere under this directory
 rootDir <- '.'
-# Scale is 1 / pixels per metre
+# Scale for these files is 1 / pixels per metre
 scale <- c('1/1200', '1/1350', '1/1300')
 # Files have columns y, x
 csvStruct <- list(x = 2, y = 1)

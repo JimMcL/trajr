@@ -177,8 +177,9 @@ TrajRotate <- function(trj, angle = 0) {
 #' Smooths a trajectory using a Savitzky-Golay smoothing filter.
 #'
 #' @param trj The trajectory to be smoothed.
-#' @param p polynomial order.
-#' @param n Filter length (or window size), must be an odd number.
+#' @param p polynomial order (passed to \code{\link[signal]{sgolayfilt}}).
+#' @param n Filter length (or window size), must be an odd number.  Passed to
+#'   \code{\link[signal]{sgolayfilt}}.
 #' @return A new trajectory which is a smoothed version of the input trajectory.
 #'
 #' @seealso \code{\link[signal]{sgolayfilt}}

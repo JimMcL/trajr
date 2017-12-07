@@ -133,3 +133,15 @@ test_that("Speed intervals", {
   # plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
   # plotIntervalsByFrame(trj, slowerThan, fasterThan, intervals)
 })
+
+test_that("Emax", {
+  set.seed(1)
+  trj1 <- TrajGenerate(1000, angularErrorSd = .5)
+  trj2 <- TrajGenerate(1000, angularErrorSd = .2)
+  # trj2 (black) should be straighter than trj1 (red)
+  plot(trj2, asp = NULL, xlim = range(c(trj1$x, trj2$x)), ylim = range(c(trj1$y, trj2$y)))
+  plot(trj1, col = "red", add = TRUE)
+
+  TrajEmax(trj1)
+  TrajEmax(trj2)
+})

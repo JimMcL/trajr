@@ -252,11 +252,17 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 
 #' Sinuosity of a trajectory
 #'
-#' Calculates the sinuosity of a trajectory as defined by Benhamou (2004), which
-#' is: \deqn{S = 1.18\sigma_{q} / \sqrtq}.
+#' Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
+#' (1988), which is: \eqn{S = 1.18\sigma / \sqrtq}.
 #'
 #' @param trj Trajectory to calculate sinuosity of.
 #' @return The sinuosity of \code{trj}.
+#'
+#' @references
+#'
+#' Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements
+#' using a correlated random walk model. Journal of Theoretical Biology, 131(4),
+#' 419-433. doi:10.1016/S0022-5193(88)80038-9
 #'
 #' @export
 TrajSinuosity <- function(trj) {
@@ -276,6 +282,10 @@ TrajSinuosity <- function(trj) {
 #' @param trj Trajectory to be analysed.
 #' @param eMaxB If TRUE, calculates and returns E-max b, otherwise return E-max.
 #' @return E-max for \code{trj}.
+#'
+#' @references Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007).
+#' Animal navigation: the difficulty of moving in a straight line. Biological
+#' Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
 #'
 #' @export
 TrajEmax <- function(trj, eMaxB = FALSE) {

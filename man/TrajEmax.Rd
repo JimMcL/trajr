@@ -17,3 +17,8 @@ E-max for \code{trj}.
 \description{
 Not yet tested
 }
+\references{
+Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007).
+Animal navigation: the difficulty of moving in a straight line. Biological
+Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
+}

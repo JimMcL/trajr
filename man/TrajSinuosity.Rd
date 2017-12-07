@@ -13,6 +13,11 @@ TrajSinuosity(trj)
 The sinuosity of \code{trj}.
 }
 \description{
-Calculates the sinuosity of a trajectory as defined by Benhamou (2004), which
-is: \deqn{S = 1.18\sigma_{q} / \sqrtq}.
+Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
+(1988), which is: \eqn{S = 1.18\sigma / \sqrtq}.
+}
+\references{
+Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements
+using a correlated random walk model. Journal of Theoretical Biology, 131(4),
+419-433. doi:10.1016/S0022-5193(88)80038-9
 }

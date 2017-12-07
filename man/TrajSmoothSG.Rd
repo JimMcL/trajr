@@ -9,9 +9,10 @@ TrajSmoothSG(trj, p = 3, n = p + 3 - p\%\%2)
 \arguments{
 \item{trj}{The trajectory to be smoothed.}
 
-\item{p}{polynomial order.}
+\item{p}{polynomial order (passed to \code{\link[signal]{sgolayfilt}}).}
 
-\item{n}{Filter length (or window size), must be an odd number.}
+\item{n}{Filter length (or window size), must be an odd number.  Passed to
+\code{\link[signal]{sgolayfilt}}.}
 }
 \value{
 A new trajectory which is a smoothed version of the input trajectory.
