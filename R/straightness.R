@@ -250,10 +250,18 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #' Sinuosity of a trajectory
 #'
 #' Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
-#' (1988), which is: \eqn{S = 1.18\sigma / \sqrtq}.
+#' (1988), which is: \eqn{S = 1.18\sigma / \sqrtq} where \eqn{\sigma} is the
+#' standard deviation of the step turning angles and \eqn{q} is the mean step
+#' length.
 #'
 #' @param trj Trajectory to calculate sinuosity of.
+#' @param compass.direction if not \code{NULL}, turning angles are calculated
+#'   for a directed walk, assuming the specified compass direction (in radians).
+#'   Otherwise, a random walk is assumed.
 #' @return The sinuosity of \code{trj}.
+#'
+#' @seealso \code{\link{TrajAngles}} for the turning angles in a trajectory,
+#'   \code{\link{TrajMeanStepLength}} for the mean step length.
 #'
 #' @references
 #'
@@ -262,11 +270,9 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #' 419-433. doi:10.1016/S0022-5193(88)80038-9
 #'
 #' @export
-TrajSinuosity <- function(trj) {
+TrajSinuosity <- function(trj, compass.direction = NULL) {
   segLen <- TrajMeanStepLength(trj)
-  # Discard initial 0-length segment
-  trj <- utils::tail(trj$displacement, -1)
-  1.18 * stats::sd(diff(Arg(trj))) / sqrt(segLen)
+  1.18 * stats::sd(TrajAngles(trj, compass.direction = compass.direction)) / sqrt(segLen)
 }
 
 
@@ -279,6 +285,9 @@ TrajSinuosity <- function(trj) {
 #'
 #' @param trj Trajectory to be analysed.
 #' @param eMaxB If TRUE, calculates and returns E-max b, otherwise return E-max.
+#' @param compass.direction if not \code{NULL}, turning angles are calculated
+#'   for a directed walk, assuming the specified compass direction (in radians).
+#'   Otherwise, a random walk is assumed.
 #' @return E-max for \code{trj}.
 #'
 #' @references Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007).
@@ -288,20 +297,7 @@ TrajSinuosity <- function(trj) {
 #' @export
 TrajEmax <- function(trj, eMaxB = FALSE, compass.direction = NULL) {
 
-  # # Calculate beta, E(cos angles) = mean(cos(angles))
-  # .beta <- function(points) {
-  #   # Calculate difference in angle for every consecutive pair of segments, take cos, then mean
-  #   mean(cos(diff(Arg(points))))
-  # }
-  #
-  # if (is.null(compass.direction)) {
-  #   # Random walk - turning angles are relative to previous step
-  #   b <- mean(cos(TrajAngles(trj)))
-  # } else {
-  #   #b <- mean(cos(Arg(trj$displacement) - compass.direction))
-  # }
-
-    # E(Cos(angles)) = mean(cos(angles))
+  # E(cos(angles)) = mean(cos(angles))
   b <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)))
 
   # If it's E max b, multiply by mean step length
