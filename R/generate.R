@@ -36,7 +36,7 @@
 #' 99(3), 197-217. doi:10.1007/s00422-008-0251-z
 #'
 #' @export
-TrajGenerate <- function(n = 1000, random = FALSE, stepLength = 2, angularErrorSd = 0.5, linearErrorSd = 0.2, fps = 50) {
+TrajGenerate <- function(n = 1000, random = TRUE, stepLength = 2, angularErrorSd = 0.5, linearErrorSd = 0.2, fps = 50) {
   angularErrors <- stats::rnorm(n, sd = angularErrorSd)
   linearErrors <- stats::rnorm(n, sd = linearErrorSd)
   steps <- complex(length.out = n, modulus = stepLength + linearErrors, argument = angularErrors)
