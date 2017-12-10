@@ -64,7 +64,8 @@ test_that("Speed intervals", {
     plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = 'Time (sec)', ylab = "Speed")
     abline(h = slowerThan, col = "red")
     abline(h = fasterThan, col = "green")
-    rect(intervals$startTime, min(speed), intervals$stopTime, max(speed), col = JTransparentColour("blue", 30), border = NA)
+    if (nrow(intervals) > 0)
+      rect(intervals$startTime, min(speed), intervals$stopTime, max(speed), col = "#0000FF1E", border = NA)
   }
 
   plotIntervalsByFrame <- function(smoothed, slowerThan, fasterThan, intervals) {
@@ -73,7 +74,8 @@ test_that("Speed intervals", {
     plot(speed, type = 'l', xlab = 'Frame number', ylab = "Speed")
     abline(h = slowerThan, col = "red")
     abline(h = fasterThan, col = "green")
-    rect(intervals$startFrame, min(speed), intervals$stopFrame, max(speed), col = JTransparentColour("blue", 30), border = NA)
+    if (nrow(intervals) > 0)
+      rect(intervals$startFrame, min(speed), intervals$stopFrame, max(speed), col = "#0000FF1E", border = NA)
   }
 
   # 1 Interval with no start and 1 stop
@@ -83,6 +85,7 @@ test_that("Speed intervals", {
   fasterThan = 120
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 1)
 
   # 1 Interval with 1 start and no stop
@@ -92,6 +95,7 @@ test_that("Speed intervals", {
   fasterThan = 120
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 1)
 
   # 0 intervals
@@ -101,6 +105,7 @@ test_that("Speed intervals", {
   fasterThan = 200
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 0)
 
   # 3 intervals
@@ -110,6 +115,7 @@ test_that("Speed intervals", {
   fasterThan = 90
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 3)
 
   # 3 intervals
@@ -119,6 +125,7 @@ test_that("Speed intervals", {
   fasterThan = NULL
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 3)
 
   # 2 intervals
@@ -127,11 +134,17 @@ test_that("Speed intervals", {
   slowerThan = 92
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 2)
 
-
-  # plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
-  # plotIntervalsByFrame(trj, slowerThan, fasterThan, intervals)
+  # Interval wholly contained within a segment
+  set.seed(4)
+  trj <- TrajGenerate(10, random = TRUE)
+  slowerThan = 110
+  fasterThan = 107
+  intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
+  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  expect_true(nrow(intervals) == 0)
 })
 
 test_that("Emax", {
