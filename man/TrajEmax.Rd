@@ -10,6 +10,10 @@ TrajEmax(trj, eMaxB = FALSE, compass.direction = NULL)
 \item{trj}{Trajectory to be analysed.}
 
 \item{eMaxB}{If TRUE, calculates and returns E-max b, otherwise return E-max.}
+
+\item{compass.direction}{if not \code{NULL}, turning angles are calculated
+for a directed walk, assuming the specified compass direction (in radians).
+Otherwise, a random walk is assumed.}
 }
 \value{
 E-max for \code{trj}.

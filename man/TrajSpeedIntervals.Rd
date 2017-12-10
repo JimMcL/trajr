@@ -4,16 +4,20 @@
 \alias{TrajSpeedIntervals}
 \title{Calculate speed time intervals}
 \usage{
-TrajSpeedIntervals(trj, fasterThan = NULL, slowerThan = NULL)
+TrajSpeedIntervals(trj, fasterThan = NULL, slowerThan = NULL,
+  interpolateTimes = TRUE)
 }
 \arguments{
 \item{trj}{Trajectory to be analysed.}
 
-\item{fasterThan}{If not NULL, intervals will cover time periods where speed
-exceeds this value.}
+\item{fasterThan}{If not \code{NULL}, intervals will cover time periods where
+speed exceeds this value.}
 
-\item{slowerThan}{If not NULL, intervals will cover time periods where speed
-is lower than this value.}
+\item{slowerThan}{If not \code{NULL}, intervals will cover time periods where
+speed is lower than this value.}
+
+\item{interpolateTimes}{If \code{TRUE}, times will be linearly interpolated
+between frames.}
 }
 \value{
 data.frame, each row is an interval, with columns:
@@ -27,23 +31,24 @@ Calculates and returns a list of time intervals during which speed is slower
 and/or faster than specified values.
 }
 \examples{
-plotIntervals <- function(smoothed, intervals, slowerThan = NULL, fasterThan = NULL) {
+plotIntervals <- function(smoothed, slowerThan = NULL, fasterThan = NULL) {
   derivs <- TrajDerivatives(smoothed)
   speed <- derivs$speed
   plot(x = derivs$speedTimes, y = speed, type = 'l',
        xlab = 'Time (sec)', ylab = "Speed")
   abline(h = slowerThan, col = "red")
   abline(h = fasterThan, col = "green")
+  intervals <- TrajSpeedIntervals(smoothed, fasterThan = fasterThan, slowerThan = slowerThan)
   rect(intervals$startTime, min(speed), intervals$stopTime, max(speed),
        col = "#0000FF1E", border = NA)
+  intervals
 }
 
 # Plot speed, highlighting intervals where speed drops below 50 units/sec
 set.seed(4)
 trj <- TrajGenerate(200, random = TRUE)
 smoothed <- TrajSmoothSG(trj, 3, 101)
-intervals <- TrajSpeedIntervals(smoothed, slowerThan = 50)
-plotIntervals(smoothed, intervals, 50, NULL)
+intervals <- plotIntervals(smoothed, 50, NULL)
 
 # Report the duration of the maximum period of low speed
 cat(sprintf("Duration of the longest low-speed interval was \%g secs\\n", max(intervals$duration)))

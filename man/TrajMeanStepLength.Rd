@@ -6,6 +6,9 @@
 \usage{
 TrajMeanStepLength(trj)
 }
+\arguments{
+\item{trj}{Trajectory to query}
+}
 \description{
 Returns the mean segment length of a trajectory
 }

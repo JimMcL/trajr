@@ -4,7 +4,7 @@
 \alias{TrajGenerate}
 \title{Generate a random trajectory}
 \usage{
-TrajGenerate(n = 1000, random = FALSE, stepLength = 2,
+TrajGenerate(n = 1000, random = TRUE, stepLength = 2,
   angularErrorSd = 0.5, linearErrorSd = 0.2, fps = 50)
 }
 \arguments{

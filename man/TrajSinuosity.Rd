@@ -4,20 +4,30 @@
 \alias{TrajSinuosity}
 \title{Sinuosity of a trajectory}
 \usage{
-TrajSinuosity(trj)
+TrajSinuosity(trj, compass.direction = NULL)
 }
 \arguments{
 \item{trj}{Trajectory to calculate sinuosity of.}
+
+\item{compass.direction}{if not \code{NULL}, turning angles are calculated
+for a directed walk, assuming the specified compass direction (in radians).
+Otherwise, a random walk is assumed.}
 }
 \value{
 The sinuosity of \code{trj}.
 }
 \description{
 Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
-(1988), which is: \eqn{S = 1.18\sigma / \sqrtq}.
+(1988), which is: \eqn{S = 1.18\sigma / \sqrtq} where \eqn{\sigma} is the
+standard deviation of the step turning angles and \eqn{q} is the mean step
+length.
 }
 \references{
 Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements
 using a correlated random walk model. Journal of Theoretical Biology, 131(4),
 419-433. doi:10.1016/S0022-5193(88)80038-9
+}
+\seealso{
+\code{\link{TrajAngles}} for the turning angles in a trajectory,
+  \code{\link{TrajMeanStepLength}} for the mean step length.
 }
