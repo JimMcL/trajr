@@ -8,9 +8,13 @@
 #' The plot method for Trajectory objects.
 #'
 #' @param x An object of class "Trajectory", the trajectory to be plotted.
-#' @param draw.start.pt if TRUE, draws a dot at the start point of the trajectory.
+#' @param draw.start.pt if TRUE, draws a dot at the start point of the
+#'   trajectory.
 #' @param add If TRUE, the trajectory is added to the current plot.
-#' @param type,xlim,ylim,asp plotting parameters with useful defaults.
+#' @param turning.angles If \code{random} or \code{directed}, draws step turning
+#'   angles. \code{directed} assumes errors are relative to the first recorded
+#'   step angle. \code{random} assumes errors are relative to the previous step.
+#' @param type,xlim,ylim,xlab,ylab,asp plotting parameters with useful defaults.
 #' @param ... Additional arguments are passed to \code{\link{plot}}.
 #'
 #' @seealso \code{\link{TrajFromCoords}}
@@ -20,27 +24,73 @@
 #' plot(trj)
 #'
 #' @export
-plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE,
+plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles = NULL,
                             type = 'l',
-                            xlim = range(x$x), ylim = range(x$y),
+                            xlim = extendrange(x$x), ylim = extendrange(x$y),
+                            xlab = "x", ylab = "y",
                             asp = 1, ...) {
   if (!add) {
-    graphics::plot(NULL, xlim = xlim, ylim = ylim, asp = asp, ...)
+    graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp, ...)
   }
   graphics::lines(y ~ x, data = x, type = type, ...)
   if (draw.start.pt)
     graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
+
+  if (!is.null(turning.angles)) {
+    # There are n steps, but n+1 coordinates
+    n <- nrow(x) - 1
+    steps <- x[1:n,]
+    angles <- x[2:(n+1),]
+    meanStepLength <- TrajMeanStepLength(x)
+    textDisplacement <- 0.3 * meanStepLength
+    labels <- parse(text= paste("Delta[", 1:n, "]", sep=""))
+
+    if (tolower(turning.angles) == "directed") {
+      # Plot angles which represent angular errors, which reset at each step
+      segments(steps$x, steps$y, steps$x + .8 * meanStepLength, steps$y, col = "darkgrey", lty = 2)
+
+      textAngle <- Arg(angles$displacement) +
+        ifelse(Arg(x$displacement[1]) < Arg(angles$displacement), pi / 4, -pi / 6)
+      text(steps$x + textDisplacement * cos(textAngle), steps$y + textDisplacement * sin(textAngle),
+           labels = labels)
+
+      plotrix::draw.arc(steps$x, steps$y,
+                        angle1 = Arg(x$displacement[1]), angle2 = Arg(angles$displacement),
+                        radius = 0.4 * meanStepLength)
+
+    } else if (tolower(turning.angles) == "random") {
+      # Plot angles which represent angular errors, which accumulate
+      segments(steps$x, steps$y, steps$x + .8 * meanStepLength * cos(Arg(steps$displacement)),
+               steps$y + 1.7 * sin(Arg(steps$displacement)), col = "darkgrey", lty = 2)
+
+      textAngle <- Arg(angles$displacement) +
+        ifelse(Arg(steps$displacement) < Arg(angles$displacement), pi / 4, -pi / 6)
+      text(steps$x + textDisplacement * cos(textAngle), steps$y + textDisplacement * sin(textAngle),
+           labels = labels)
+
+      plotrix::draw.arc(steps$x, steps$y,
+                        angle1 = Arg(steps$displacement), angle2 = Arg(angles$displacement),
+                        radius = 0.4 * meanStepLength)
+
+    } else {
+      stop(sprintf("Invalid turning.angles (%s), must be one of 'random' or 'directed'", turning.angles))
+    }
+  }
 }
 
 # ---- Trajectory query ----
 
-#' Returns the frames-per-second recorded for this trajectory
+#' Trajectory frmes-per-second
+#'
+#' Returns the frames-per-second recorded for this trajectory.
 #'
 #' @param trj Trajectory to query
 #'
 #' @export
 TrajGetFPS <- function(trj) { attr(trj, .TRAJ_FPS) }
 
+#' Trajectory number of frames
+#'
 #' Returns the number of frames recorded for this trajectory
 #'
 #' @param trj Trajectory to query
@@ -50,16 +100,31 @@ TrajGetNFrames <- function(trj) { attr(trj, .TRAJ_NFRAMES) }
 
 # ---- Trajectory analysis ----
 
+#' Mean trajectory step length
+#'
+#' Returns the mean segment length of a trajectory
+TrajMeanStepLength <- function(trj) mean(Mod(trj$displacement))
+
 #' Turning angles of a Trajectory
 #'
-#' Calculates the angles (in radians) of each segment relative to the previous segment.
+#' Calculates the step angles (in radians) of each segment, either relative to
+#' the previous segment or relative to the specified compass direction.
 #'
 #' @param trj the trajectory whose whose angles are to be calculated.
 #' @param lag Angles between every lag'th segment is calculated.
+#' @param compass.direction If not \code{NULL}, step angles are calculated
+#'   relative to this angle (in radians), otherwise they are calculated relative
+#'   to the previous step angle.
+#'
+#' @return Step angles in radians, normalised so that \code{-pi < angle <= pi}.
 #'
 #' @export
-TrajAngles <- function(trj, lag = 1) {
-  angles <- diff(Arg(trj$displacement), lag)
+TrajAngles <- function(trj, lag = 1, compass.direction = NULL) {
+  if (is.null(compass.direction)) {
+    angles <- diff(Arg(trj$displacement), lag)
+  } else {
+    angles <- Arg(trj$displacement[2:nrow(trj)]) - compass.direction
+  }
   # Normalise so that -pi < angle <= pi
   ii <- angles <= -pi
   angles[ii] <- angles[ii] + 2 * pi

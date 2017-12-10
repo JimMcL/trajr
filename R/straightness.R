@@ -102,9 +102,6 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
   utils::head(maxima, nm)
 }
 
-# Returns the mean segment length of a trajectory
-.TrajSegLen <- function(trj) mean(Mod(trj))
-
 
 # Public functions =====================================================
 
@@ -266,40 +263,49 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #'
 #' @export
 TrajSinuosity <- function(trj) {
+  segLen <- TrajMeanStepLength(trj)
   # Discard initial 0-length segment
   trj <- utils::tail(trj$displacement, -1)
-  segLen <- .TrajSegLen(trj)
   1.18 * stats::sd(diff(Arg(trj))) / sqrt(segLen)
 }
 
 
 # E-MAX ########################################################################################
 
-#' E-max from Cheung et al., (2007)
+#' Trajectory straightness index, E-max
 #'
-#' Not yet tested
+#' \eqn{E[max]} is a single-valued measure of straightness defined by (Cheung,
+#' Zhang, Stricker, & Srinivasan, 2007).
 #'
 #' @param trj Trajectory to be analysed.
 #' @param eMaxB If TRUE, calculates and returns E-max b, otherwise return E-max.
 #' @return E-max for \code{trj}.
 #'
 #' @references Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007).
-#' Animal navigation: the difficulty of moving in a straight line. Biological
-#' Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
+#'   Animal navigation: the difficulty of moving in a straight line. Biological
+#'   Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
 #'
 #' @export
-TrajEmax <- function(trj, eMaxB = FALSE) {
+TrajEmax <- function(trj, eMaxB = FALSE, compass.direction = NULL) {
 
-  .beta <- function(points) {
-    # Calculate difference in angle for every pair of segments which are deltaS apart,
-    # take cos, then mean
-    mean(cos(diff(Arg(points))))
-  }
+  # # Calculate beta, E(cos angles) = mean(cos(angles))
+  # .beta <- function(points) {
+  #   # Calculate difference in angle for every consecutive pair of segments, take cos, then mean
+  #   mean(cos(diff(Arg(points))))
+  # }
+  #
+  # if (is.null(compass.direction)) {
+  #   # Random walk - turning angles are relative to previous step
+  #   b <- mean(cos(TrajAngles(trj)))
+  # } else {
+  #   #b <- mean(cos(Arg(trj$displacement) - compass.direction))
+  # }
 
-  b <- .beta(trj$polar)
+    # E(Cos(angles)) = mean(cos(angles))
+  b <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)))
 
-  # If it's E max b, multiply by mean path length
-  f <- ifelse(eMaxB, .TrajSegLen(trj), 1)
+  # If it's E max b, multiply by mean step length
+  f <- ifelse(eMaxB, TrajMeanStepLength(trj), 1)
 
   f * b / (1 - b)
 }
