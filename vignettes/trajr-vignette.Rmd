@@ -24,7 +24,7 @@ Trajr is an R toolkit for the statistical analysis of animal trajectories.
 
 Trajr is used to analyse 2-dimensional trajectories with an additional time component. A trajectory can also be thought of as a series of steps, each with a length and a turning angle.
 
-```{r fig.cap="A simple trajectory", fig.height=8, fig.width=6}
+```{r fig.cap="Simple random and directed trajectories", fig.height=8, fig.width=6}
 par(mar=c(4, 4, 3, 1), mfrow = c(2, 1))
 n <- 5
 
@@ -38,6 +38,26 @@ set.seed(1)
 trj <- TrajGenerate(n, random = FALSE)
 plot(trj, main = "Directed walk", turning.angles = "directed")
 
+```
+
+## Analysing trajectory speed
+
+```{r speed}
+plotIntervalsByTime <- function(trj, slowerThan, fasterThan) {
+    derivs <- TrajDerivatives(trj)
+    speed <- derivs$speed
+    plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = 'Time (sec)', ylab = "Speed")
+    abline(h = slowerThan, col = "red")
+    abline(h = fasterThan, col = "green")
+    intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
+    rect(intervals$startTime, min(speed), intervals$stopTime, max(speed), col = "#0000FF1E", border = NA)
+}
+
+set.seed(1)
+trj <- TrajGenerate(100, angularErrorSd = .2)
+# smooth as noise is amplified by speed derivation
+trj <- TrajSmoothSG(trj, 3, 41)
+plotIntervalsByTime(trj, 90, NULL)
 ```
 
 ## Expected results of navigation
@@ -61,11 +81,11 @@ simulateJourneys(random = TRUE)
 ```
 
 
-## E[max]
+## Emax
 
-Some empirical testing of Emax.
+Empirical testing of Emax with generated trajectories.
 
-```{r Emax, fig.cap="E[max] as a function of angular error", cache=TRUE, fig.height=4, fig.width=6}
+```{r Emax, fig.cap="Emax as a function of angular error", cache=TRUE, fig.height=4, fig.width=6}
 set.seed(1)
 n <- 5000
 angularErrorSd <- runif(n, 0, 2)
@@ -82,5 +102,59 @@ plot(rep(angularErrorSd, 4), c(emaxr, emaxd, emaxSm, emaxBig),
      log = 'xy', pch = '.', 
      col = c(rep('red', n), rep('blue', n), rep('green', n), rep('black', n)),
      xlab = expression(sigma["angular error"]), ylab = expression("E"["max"]))
-legend("bottomleft", c("Random walk", "Directed walk", "Random rediscretized to length 1", "Random rediscretized to length 10"), pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
+       labels <- c("Random walk", 
+                   "Directed walk", 
+                   "Random walk, step length 1", 
+                   "Random walk, step length 10")
+legend("bottomleft", labels, pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
+```
+
+
+## Sinuosity
+
+Empirical testing of Sinuosity with generated trajectories.
+
+```{r Sinuosity, fig.cap="Sinuosity as a function of angular error", cache=TRUE, fig.height=4, fig.width=6}
+set.seed(1)
+n <- 5000
+angularErrorSd <- runif(n, 0, 2)
+
+# Assess sinuosity for some different types of trajectories, all with the same angular error sd
+sinur <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])) 
+})
+sinud <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajGenerate(500, random = FALSE, angularErrorSd = angularErrorSd[i]),
+                compass.direction = 0) 
+})
+sinuSm <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajRediscretize(TrajGenerate(500, random = TRUE, 
+                                              angularErrorSd = angularErrorSd[i]), 
+                                 R = 1)) 
+})
+sinuBig <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajRediscretize(TrajGenerate(500, random = TRUE, 
+                                              angularErrorSd = angularErrorSd[i]), 
+                                 R = 10)) 
+})
+
+par(mar = c(4, 4, 1, 1))
+plot(rep(angularErrorSd, 4), c(sinur, sinud, sinuSm, sinuBig),
+     pch = '.', 
+     col = c(rep('red', n), rep('blue', n), rep('green', n), rep('black', n)),
+     xlab = expression(sigma["angular error"]), ylab = "Sinuosity")
+legend("bottomright", c("Random walk", "Directed walk", "Random walk, step length 1", "Random walk, step length 10"), pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
+```
+
+```{r}
+set.seed(1)
+n <- 5000
+angularErrorSd <- runif(n, 0, 2)
+
+xy <- sapply(1:n, function(i) {
+  trj <- TrajGenerate(500, angularErrorSd = angularErrorSd[i])
+  c(Emax = TrajEmax(trj), sinuosity = TrajSinuosity(trj))
+})
+xy <- xy[, which(xy[1,] > 0)]
+plot(log(xy[1,]), xy[2,], pch = '.', xlab = expression(log(E[max])), ylab = "Sinuosity")
 ```
