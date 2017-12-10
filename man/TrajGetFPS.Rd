@@ -2,7 +2,7 @@
 % Please edit documentation in R/query.R
 \name{TrajGetFPS}
 \alias{TrajGetFPS}
-\title{Returns the frames-per-second recorded for this trajectory}
+\title{Trajectory frmes-per-second}
 \usage{
 TrajGetFPS(trj)
 }
@@ -10,5 +10,5 @@ TrajGetFPS(trj)
 \item{trj}{Trajectory to query}
 }
 \description{
-Returns the frames-per-second recorded for this trajectory
+Returns the frames-per-second recorded for this trajectory.
 }

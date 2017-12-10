@@ -2,7 +2,7 @@
 % Please edit documentation in R/query.R
 \name{TrajGetNFrames}
 \alias{TrajGetNFrames}
-\title{Returns the number of frames recorded for this trajectory}
+\title{Trajectory number of frames}
 \usage{
 TrajGetNFrames(trj)
 }

@@ -24,15 +24,27 @@ length units.}
 point in the trajectory.}
 }
 \value{
-A new Trajectory.
+A new Trajectory with \code{n} segments and \code{n + 1} coordinate pairs.
 }
 \description{
-Generates a trajectory - either a random search (corresponding to an animal
-navigating without a compass) or a directed or oriented path (corresponding
-to an animal navigating with a compass).
+Generates a trajectory. If \code{random} is \code{TRUE}, the trajectory will
+be a random walk/idiothetic directed walk, corresponding to an animal
+navigating without a compass. If \code{random} is \code{TRUE}, it will be a
+directed walk/allothetic directed walk/oriented path, corresponding to an
+animal navigating with a compass (Cheung, Zhang, Stricker, & Srinivasan,
+2007, 2008).
+}
+\details{
+For both random and directed walks, errors are normally distributed,
+unbiased, and independent of each other, so are \emph{simple} walks in the
+terminology of Cheung, Zhang, Stricker, & Srinivasan, (2008).
 }
 \references{
 Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007). Animal
 navigation: the difficulty of moving in a straight line. Biological
 Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
+
+Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2008). Animal
+navigation: general properties of directed walks. Biological Cybernetics,
+99(3), 197-217. doi:10.1007/s00422-008-0251-z
 }

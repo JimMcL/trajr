@@ -2,9 +2,9 @@
 % Please edit documentation in R/straightness.R
 \name{TrajEmax}
 \alias{TrajEmax}
-\title{E-max from Cheung et al., (2007)}
+\title{Trajectory straightness index, E-max}
 \usage{
-TrajEmax(trj, eMaxB = FALSE)
+TrajEmax(trj, eMaxB = FALSE, compass.direction = NULL)
 }
 \arguments{
 \item{trj}{Trajectory to be analysed.}
@@ -15,10 +15,11 @@ TrajEmax(trj, eMaxB = FALSE)
 E-max for \code{trj}.
 }
 \description{
-Not yet tested
+\eqn{E[max]} is a single-valued measure of straightness defined by (Cheung,
+Zhang, Stricker, & Srinivasan, 2007).
 }
 \references{
 Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007).
-Animal navigation: the difficulty of moving in a straight line. Biological
-Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
+  Animal navigation: the difficulty of moving in a straight line. Biological
+  Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
 }

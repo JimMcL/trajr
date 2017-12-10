@@ -5,16 +5,22 @@
 \title{Plot method for trajectories}
 \usage{
 \method{plot}{Trajectory}(x, draw.start.pt = TRUE, add = FALSE,
-  type = "l", xlim = range(x$x), ylim = range(x$y), asp = 1, ...)
+  turning.angles = NULL, type = "l", xlim = extendrange(x$x),
+  ylim = extendrange(x$y), xlab = "x", ylab = "y", asp = 1, ...)
 }
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}
 
-\item{draw.start.pt}{if TRUE, draws a dot at the start point of the trajectory.}
+\item{draw.start.pt}{if TRUE, draws a dot at the start point of the
+trajectory.}
 
 \item{add}{If TRUE, the trajectory is added to the current plot.}
 
-\item{type, xlim, ylim, asp}{plotting parameters with useful defaults.}
+\item{turning.angles}{If \code{random} or \code{directed}, draws step turning
+angles. \code{directed} assumes errors are relative to the first recorded
+step angle. \code{random} assumes errors are relative to the previous step.}
+
+\item{type, xlim, ylim, xlab, ylab, asp}{plotting parameters with useful defaults.}
 
 \item{...}{Additional arguments are passed to \code{\link{plot}}.}
 }
