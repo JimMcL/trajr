@@ -1,82 +1,4 @@
-# Trajectory plotting and basic query functions
-
-
-# ---- Trajectory plotting ----
-
-#' Plot method for trajectories
-#'
-#' The plot method for Trajectory objects.
-#'
-#' @param x An object of class "Trajectory", the trajectory to be plotted.
-#' @param draw.start.pt if TRUE, draws a dot at the start point of the
-#'   trajectory.
-#' @param add If TRUE, the trajectory is added to the current plot.
-#' @param turning.angles If \code{random} or \code{directed}, draws step turning
-#'   angles. \code{directed} assumes errors are relative to the first recorded
-#'   step angle. \code{random} assumes errors are relative to the previous step.
-#' @param type,xlim,ylim,xlab,ylab,asp plotting parameters with useful defaults.
-#' @param ... Additional arguments are passed to \code{\link{plot}}.
-#'
-#' @seealso \code{\link{TrajFromCoords}}
-#' @examples
-#' set.seed(42)
-#' trj <- TrajGenerate(angularErrorSd = 1.3)
-#' plot(trj)
-#'
-#' @export
-plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles = NULL,
-                            type = 'l',
-                            xlim = extendrange(x$x), ylim = extendrange(x$y),
-                            xlab = "x", ylab = "y",
-                            asp = 1, ...) {
-  if (!add) {
-    graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp, ...)
-  }
-  graphics::lines(y ~ x, data = x, type = type, ...)
-  if (draw.start.pt)
-    graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
-
-  if (!is.null(turning.angles)) {
-    # There are n steps, but n+1 coordinates
-    n <- nrow(x) - 1
-    steps <- x[1:n,]
-    angles <- x[2:(n+1),]
-    meanStepLength <- TrajMeanStepLength(x)
-    textDisplacement <- 0.3 * meanStepLength
-    labels <- parse(text= paste("Delta[", 1:n, "]", sep=""))
-
-    if (tolower(turning.angles) == "directed") {
-      # Plot angles which represent angular errors, which reset at each step
-      segments(steps$x, steps$y, steps$x + .8 * meanStepLength, steps$y, col = "darkgrey", lty = 2)
-
-      textAngle <- Arg(angles$displacement) +
-        ifelse(Arg(x$displacement[1]) < Arg(angles$displacement), pi / 4, -pi / 6)
-      text(steps$x + textDisplacement * cos(textAngle), steps$y + textDisplacement * sin(textAngle),
-           labels = labels)
-
-      plotrix::draw.arc(steps$x, steps$y,
-                        angle1 = Arg(x$displacement[1]), angle2 = Arg(angles$displacement),
-                        radius = 0.4 * meanStepLength)
-
-    } else if (tolower(turning.angles) == "random") {
-      # Plot angles which represent angular errors, which accumulate
-      segments(steps$x, steps$y, steps$x + .8 * meanStepLength * cos(Arg(steps$displacement)),
-               steps$y + 1.7 * sin(Arg(steps$displacement)), col = "darkgrey", lty = 2)
-
-      textAngle <- Arg(angles$displacement) +
-        ifelse(Arg(steps$displacement) < Arg(angles$displacement), pi / 4, -pi / 6)
-      text(steps$x + textDisplacement * cos(textAngle), steps$y + textDisplacement * sin(textAngle),
-           labels = labels)
-
-      plotrix::draw.arc(steps$x, steps$y,
-                        angle1 = Arg(steps$displacement), angle2 = Arg(angles$displacement),
-                        radius = 0.4 * meanStepLength)
-
-    } else {
-      stop(sprintf("Invalid turning.angles (%s), must be one of 'random' or 'directed'", turning.angles))
-    }
-  }
-}
+# Trajectory basic query functions
 
 # ---- Trajectory query ----
 
@@ -103,6 +25,10 @@ TrajGetNFrames <- function(trj) { attr(trj, .TRAJ_NFRAMES) }
 #' Mean trajectory step length
 #'
 #' Returns the mean segment length of a trajectory
+#'
+#' @param trj Trajectory to query
+#'
+#' @export
 TrajMeanStepLength <- function(trj) mean(Mod(trj$displacement))
 
 #' Turning angles of a Trajectory
@@ -169,10 +95,12 @@ TrajDerivatives <- function(trj) {
 #' and/or faster than specified values.
 #'
 #' @param trj Trajectory to be analysed.
-#' @param fasterThan If not NULL, intervals will cover time periods where speed
-#'   exceeds this value.
-#' @param slowerThan If not NULL, intervals will cover time periods where speed
-#'   is lower than this value.
+#' @param fasterThan If not \code{NULL}, intervals will cover time periods where
+#'   speed exceeds this value.
+#' @param slowerThan If not \code{NULL}, intervals will cover time periods where
+#'   speed is lower than this value.
+#' @param interpolateTimes If \code{TRUE}, times will be linearly interpolated
+#'   between frames.
 #'
 #' @return data.frame, each row is an interval, with columns:
 #'   \item{startFrame}{Indices of frames at the start of each interval.}
@@ -184,29 +112,30 @@ TrajDerivatives <- function(trj) {
 #'   acceleration.
 #'
 #' @examples
-#' plotIntervals <- function(smoothed, intervals, slowerThan = NULL, fasterThan = NULL) {
+#' plotIntervals <- function(smoothed, slowerThan = NULL, fasterThan = NULL) {
 #'   derivs <- TrajDerivatives(smoothed)
 #'   speed <- derivs$speed
 #'   plot(x = derivs$speedTimes, y = speed, type = 'l',
 #'        xlab = 'Time (sec)', ylab = "Speed")
 #'   abline(h = slowerThan, col = "red")
 #'   abline(h = fasterThan, col = "green")
+#'   intervals <- TrajSpeedIntervals(smoothed, fasterThan = fasterThan, slowerThan = slowerThan)
 #'   rect(intervals$startTime, min(speed), intervals$stopTime, max(speed),
 #'        col = "#0000FF1E", border = NA)
+#'   intervals
 #' }
 #'
 #' # Plot speed, highlighting intervals where speed drops below 50 units/sec
 #' set.seed(4)
 #' trj <- TrajGenerate(200, random = TRUE)
 #' smoothed <- TrajSmoothSG(trj, 3, 101)
-#' intervals <- TrajSpeedIntervals(smoothed, slowerThan = 50)
-#' plotIntervals(smoothed, intervals, 50, NULL)
+#' intervals <- plotIntervals(smoothed, 50, NULL)
 #'
 #' # Report the duration of the maximum period of low speed
 #' cat(sprintf("Duration of the longest low-speed interval was %g secs\n", max(intervals$duration)))
 #'
 #' @export
-TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL) {
+TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interpolateTimes = TRUE) {
   if (is.null(fasterThan) && is.null(slowerThan)) {
     stop("Parameters fasterThan and slowerThan are both NULL, one must be specified")
   }
@@ -240,7 +169,30 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL) {
   }
 
   stopTimes <- times[stopFrames]
-  startTimes <- derivs$speedTimes[startFrames]
+  startTimes <- times[startFrames]
+
+  # Maybe linearly interpolate times
+  if (interpolateTimes && length(startFrames) > 0) {
+
+    .interp <- function(f) {
+      if (f < length(speed)) {
+        proportion <- (slowerThan - speed[f]) / (speed[f + 1] - speed[f])
+        if (length(proportion) == 0 || proportion < 0 || proportion > 1)
+          proportion <- (fasterThan - speed[f]) / (speed[f + 1] - speed[f])
+        if (proportion >= 0 && proportion <= 1)
+          return(times[f] + proportion * (times[f + 1] - times[f] ))
+      }
+      times[f]
+    }
+
+    for (i in 1:length(startFrames)) {
+      startTimes[i] <- .interp(startFrames[i])
+    }
+    for (i in 1:length(stopFrames)) {
+      stopTimes[i] <- .interp(stopFrames[i])
+    }
+  }
+
   durations <- stopTimes - startTimes
 
   data.frame(startFrame = startFrames, startTime = startTimes, stopFrame = stopFrames, stopTime = stopTimes, duration = durations)
