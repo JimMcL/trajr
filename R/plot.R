@@ -6,6 +6,7 @@
   steps <- x[1:n,]
   angles <- x[2:(n+1),]
   meanStepLength <- TrajMeanStepLength(x)
+  segLen <- 0.8 * meanStepLength
   textDisplacement <- 0.3 * meanStepLength
   labels <- parse(text= paste("Delta[", 1:n, "]", sep=""))
 
@@ -24,8 +25,10 @@
 
   } else if (tolower(turning.angles) == "random") {
     # Plot angles which represent angular errors, which accumulate
-    graphics::segments(steps$x, steps$y, steps$x + .8 * meanStepLength * cos(Arg(steps$displacement)),
-                       steps$y + 1.7 * sin(Arg(steps$displacement)), col = "darkgrey", lty = 2)
+    graphics::segments(steps$x, steps$y,
+                       steps$x + segLen * cos(Arg(steps$displacement)),
+                       steps$y + segLen * sin(Arg(steps$displacement)),
+                       col = "darkgrey", lty = 2)
 
     textAngle <- Arg(angles$displacement) +
       ifelse(Arg(steps$displacement) < Arg(angles$displacement), pi / 4, -pi / 6)
