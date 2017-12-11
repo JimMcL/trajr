@@ -29,7 +29,7 @@ TrajGetNFrames <- function(trj) { attr(trj, .TRAJ_NFRAMES) }
 #' @param trj Trajectory to query
 #'
 #' @export
-TrajMeanStepLength <- function(trj) mean(Mod(trj$displacement))
+TrajMeanStepLength <- function(trj) mean(Mod(trj$displacement[2:nrow(trj)]))
 
 #' Turning angles of a Trajectory
 #'
@@ -47,7 +47,7 @@ TrajMeanStepLength <- function(trj) mean(Mod(trj$displacement))
 #' @export
 TrajAngles <- function(trj, lag = 1, compass.direction = NULL) {
   if (is.null(compass.direction)) {
-    angles <- diff(Arg(trj$displacement), lag)
+    angles <- diff(Arg(trj$displacement[2:nrow(trj)]), lag)
   } else {
     angles <- Arg(trj$displacement[2:nrow(trj)]) - compass.direction
   }
@@ -87,6 +87,45 @@ TrajDerivatives <- function(trj) {
   at <- vt[2:length(vt)]
 
   list(speed = v, speedTimes = vt, acceleration = a, accelerationTimes = at)
+}
+
+# Linear interpolation of interval times for TrajSpeedIntervals
+.linearInterpTimes <- function(slowerThan, fasterThan, speed, times, startFrames, startTimes, stopFrames, stopTimes) {
+
+  if(is.null(slowerThan))
+    slowerThan <- NA
+  if(is.null(fasterThan))
+    fasterThan <- NA
+
+  .interp <- function(f) {
+    if (f < length(speed)) {
+      proportion <- (slowerThan - speed[f]) / (speed[f + 1] - speed[f])
+      if (is.na(proportion) || proportion < 0 || proportion > 1)
+        proportion <- (fasterThan - speed[f]) / (speed[f + 1] - speed[f])
+      if (!is.na(proportion) && proportion >= 0 && proportion <= 1)
+        return(times[f] + proportion * (times[f + 1] - times[f]))
+    }
+    times[f]
+  }
+
+  .frameIsInInterval <- function(f) {
+    (!is.na(fasterThan) && speed[f] > fasterThan) ||
+      (!is.na(slowerThan) && speed[f] < slowerThan)
+  }
+
+  for (i in 1:length(startFrames)) {
+    # Special case if starting point was added as the start of an interval, leave it unchanged
+    if (!(startFrames[i] == 1 && .frameIsInInterval(1)))
+      startTimes[i] <- .interp(startFrames[i])
+  }
+  for (i in 1:length(stopFrames)) {
+    # Special case if stopping point was added as the end of an interval, leave it unchanged
+    lastStop <- length(stopFrames)
+    numFrames <- length(speed)
+    if (!(stopFrames[i] == numFrames && .frameIsInInterval(numFrames)))
+      stopTimes[i] <- .interp(stopFrames[i])
+  }
+  list(startTimes, stopTimes)
 }
 
 #' Calculate speed time intervals
@@ -173,24 +212,9 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interp
 
   # Maybe linearly interpolate times
   if (interpolateTimes && length(startFrames) > 0) {
-
-    .interp <- function(f) {
-      if (f < length(speed)) {
-        proportion <- (slowerThan - speed[f]) / (speed[f + 1] - speed[f])
-        if (length(proportion) == 0 || proportion < 0 || proportion > 1)
-          proportion <- (fasterThan - speed[f]) / (speed[f + 1] - speed[f])
-        if (proportion >= 0 && proportion <= 1)
-          return(times[f] + proportion * (times[f + 1] - times[f] ))
-      }
-      times[f]
-    }
-
-    for (i in 1:length(startFrames)) {
-      startTimes[i] <- .interp(startFrames[i])
-    }
-    for (i in 1:length(stopFrames)) {
-      stopTimes[i] <- .interp(stopFrames[i])
-    }
+    r <- .linearInterpTimes(slowerThan, fasterThan, speed, times, startFrames, startTimes, stopFrames, stopTimes)
+    startTimes <- r[[1]]
+    stopTimes <- r[[2]]
   }
 
   durations <- stopTimes - startTimes

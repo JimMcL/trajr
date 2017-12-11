@@ -2,6 +2,11 @@ library(trajr)
 
 context("trajectory creation")
 
+trjFromAnglesAndLengths <- function(angles, lengths) {
+  coords <- c(0, cumsum(complex(modulus = lengths, argument = angles)))
+  TrajFromCoords(data.frame(Re(coords), Im(coords)))
+}
+
 test_that("Trajectory creation", {
   csvFile <- "../testdata/096xypts.csv"
   expect_true(file.exists(csvFile))
@@ -145,6 +150,20 @@ test_that("Speed intervals", {
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
   #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 0)
+
+  set.seed(1)
+  trj <- TrajGenerate(10, random = TRUE)
+  slowerThan = NULL
+  fasterThan = 110
+  intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
+  plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  expect_true(nrow(intervals) == 2)
+
+  slowerThan = 107
+  fasterThan = NULL
+  intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
+  plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  expect_true(nrow(intervals) == 3)
 })
 
 test_that("Emax", {
@@ -157,4 +176,38 @@ test_that("Emax", {
 
   TrajEmax(trj1)
   TrajEmax(trj2)
+})
+
+test_that("Directional change", {
+
+  # Test that directional change as implemented gives the same results as the equation in the book
+  L <- c(1, 1, 1, 1)
+  A <- c(pi / 4, 0, -pi / 8, pi / 6)
+  trj <- trjFromAnglesAndLengths(A, L)
+  #plot(trj, turning.angles = "random")
+
+  .bookCalc <- function(trj) {
+    # Lengths between consecutive points
+    lengths1 <- Mod(diff(trj$polar))
+    # Lengths between points 2 apart
+    lengths2 <- Mod(trj$polar[3:nrow(trj)] - trj$polar[1:(nrow(trj) - 2)])
+    # Times between points 2 apart
+    times2 <- trj$displacementTime[3:nrow(trj)] - trj$displacementTime[1:(nrow(trj) - 2)]
+
+    sapply(1:(nrow(trj) - 2), function(i) {
+      a <- lengths1[i]
+      b <- lengths1[i+1]
+      c <- lengths2[i]
+      t <- times2[i]
+      (180 - (180 / pi * acos((a ^ 2 + b ^ 2 - c ^ 2) / (2 * a * b)))) / t
+    })
+  }
+  expect_equal(TrajDirectionalChange(trj), .bookCalc(trj))
+
+  set.seed(1)
+  trj <- TrajGenerate()
+  expect_equal(TrajDirectionalChange(trj), .bookCalc(trj))
+
+  #microbenchmark(TrajDirectionalChange(trj), .bookCalc(trj), times = 1000)
+
 })
