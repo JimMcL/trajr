@@ -162,3 +162,18 @@ xy <- sapply(1:n, function(i) {
 xy <- xy[, which(xy[1,] > 0)]
 plot(log(xy[1,]), xy[2,], pch = '.', xlab = expression(log(E[max])), ylab = "Sinuosity")
 ```
+
+## Fractal dimension
+
+```{r fractal, fig.cap="Fractal dimension", fig.width=6, fig.height=4}
+set.seed(1)
+n <- 100
+angularErrorSd <- runif(n, 0, 2)
+
+dim <- sapply(1:n, function(i) { 
+  trj <- TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])
+  TrajFractalDimension(trj, TrajFractalStepSizes(trj))
+})
+plot(angularErrorSd, dim, xlab = expression(sigma["angular error"]), ylab = expression("E"["max"]))
+
+```
