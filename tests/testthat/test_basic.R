@@ -57,9 +57,6 @@ test_that("Trajectory creation", {
   # points(mx["deltaS"], mx["C"], pch = 16, col = "green", lwd = 2)
   # points(mx["deltaS"], mx["C"], col = "black", lwd = 2)
 
-  sinuosity <- TrajSinuosity(rd)
-
-  emax <- TrajEmax(smoothed)
 })
 
 test_that("Speed intervals", {
@@ -170,12 +167,22 @@ test_that("Emax", {
   set.seed(1)
   trj1 <- TrajGenerate(1000, angularErrorSd = .5)
   trj2 <- TrajGenerate(1000, angularErrorSd = .2)
-  # trj2 (black) should be straighter than trj1 (red)
-  plot(trj2, asp = NULL, xlim = range(c(trj1$x, trj2$x)), ylim = range(c(trj1$y, trj2$y)))
-  plot(trj1, col = "red", add = TRUE)
+  # trj2 (black) should be straighter than trj1 (red), hence Emax(trj1) < Emax(trj2)
+  #plot(trj2, asp = NULL, xlim = range(c(trj1$x, trj2$x)), ylim = range(c(trj1$y, trj2$y)))
+  #plot(trj1, col = "red", add = TRUE)
 
-  TrajEmax(trj1)
-  TrajEmax(trj2)
+  expect_true(TrajEmax(trj1) < TrajEmax(trj2))
+})
+
+test_that("Sinuosity", {
+  set.seed(1)
+  trj1 <- TrajGenerate(1000, angularErrorSd = .5)
+  trj2 <- TrajGenerate(1000, angularErrorSd = .2)
+  # trj2 (black) should be straighter than trj1 (red), hence Sinuosity(trj1) > Sinuosity(trj2)
+  #plot(trj2, asp = NULL, xlim = range(c(trj1$x, trj2$x)), ylim = range(c(trj1$y, trj2$y)))
+  #plot(trj1, col = "red", add = TRUE)
+
+  expect_true(TrajSinuosity(trj1) > TrajSinuosity(trj2))
 })
 
 test_that("Directional change", {
