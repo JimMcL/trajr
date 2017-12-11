@@ -1,6 +1,6 @@
 # ---- Trajectory plotting ----
 
-.drawTurningAngles <- function(x) {
+.drawTurningAngles <- function(x, turning.angles) {
   # There are n steps, but n+1 coordinates
   n <- nrow(x) - 1
   steps <- x[1:n,]
@@ -75,6 +75,6 @@ plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles
     graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
 
   if (!is.null(turning.angles)) {
-    .drawTurningAngles(x)
+    .drawTurningAngles(x, turning.angles)
   }
 }

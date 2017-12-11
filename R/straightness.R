@@ -8,7 +8,9 @@
 #'
 #' Calculates the straightness index of a trajectory, \eqn{D / L}, where
 #' \code{D} is the beeline distance between the first and last points in the
-#' trajectory,and \code{L} is the path length travelled.
+#' trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
+#' Benhamou (2004) considers the straightness index to be a reliable measure of
+#' the efficiency of a directed walk, but inapplicable to random trajectories.
 #'
 #' @param trj Trajectory to calculate straightness of.
 #' @return The straightness index of \code{trj}, which is a value between 0
@@ -17,8 +19,10 @@
 #' @seealso \code{\link{TrajDistance}} for trajectory distance, and
 #'   \code{\link{TrajLength}} for trajectory path length.
 #'
-#' @references Batschelet, E. (1981). Circular statistics in biology. ACADEMIC
-#' PRESS, 111 FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
+#' @references
+#'
+#' Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
+#' FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
 #'
 #' Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
 #' path. Journal of Theoretical Biology, 229(2), 209-220.

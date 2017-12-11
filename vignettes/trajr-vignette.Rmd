@@ -12,7 +12,8 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache=TRUE
 )
 library("plotrix")
 library(trajr)
@@ -42,7 +43,7 @@ plot(trj, main = "Directed walk", turning.angles = "directed")
 
 ## Analysing trajectory speed
 
-```{r speed}
+```{r speed, fig.cap="Speed over time, slow intervals (< 90 units/sec) highlighted", fig.width=6, fig.height=4}
 plotIntervalsByTime <- function(trj, slowerThan, fasterThan) {
     derivs <- TrajDerivatives(trj)
     speed <- derivs$speed
@@ -85,7 +86,7 @@ simulateJourneys(random = TRUE)
 
 Empirical testing of Emax with generated trajectories.
 
-```{r Emax, fig.cap="Emax as a function of angular error", cache=TRUE, fig.height=4, fig.width=6}
+```{r Emax, fig.cap="Emax as a function of angular error (log-log axes)", cache=TRUE, fig.height=4, fig.width=6}
 set.seed(1)
 n <- 5000
 angularErrorSd <- runif(n, 0, 2)
@@ -114,7 +115,7 @@ legend("bottomleft", labels, pch = 16, col = c("red", "blue", "green", "black"),
 
 Empirical testing of Sinuosity with generated trajectories.
 
-```{r Sinuosity, fig.cap="Sinuosity as a function of angular error", cache=TRUE, fig.height=4, fig.width=6}
+```{r Sinuosity, fig.cap="Sinuosity as a function of angular error (linear axes)", cache=TRUE, fig.height=4, fig.width=6}
 set.seed(1)
 n <- 5000
 angularErrorSd <- runif(n, 0, 2)
@@ -146,7 +147,10 @@ plot(rep(angularErrorSd, 4), c(sinur, sinud, sinuSm, sinuBig),
 legend("bottomright", c("Random walk", "Directed walk", "Random walk, step length 1", "Random walk, step length 10"), pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
 ```
 
-```{r}
+
+## Relationship between Emax and Sinuosity
+
+```{r, emax_sinuosity, fig.cap="Relationship betwene Emax and Sinuosity", fig.width=6, fig.height=4}
 set.seed(1)
 n <- 5000
 angularErrorSd <- runif(n, 0, 2)
