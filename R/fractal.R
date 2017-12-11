@@ -49,7 +49,7 @@ TrajFractalDimensionValues <- function(trj, stepSizes) {
   fi
 }
 
-#' Calculate fractal dimension of a trajectory
+#' Fractal dimension of a trajectory
 #'
 #' Calculates the fractal dimension of a trajectory using the 'dividers' method
 #' (Sugihara & May, 1990). This value may be meaningless for animal trajectories

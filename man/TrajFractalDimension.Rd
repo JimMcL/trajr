@@ -2,7 +2,7 @@
 % Please edit documentation in R/fractal.R
 \name{TrajFractalDimension}
 \alias{TrajFractalDimension}
-\title{Calculate fractal dimension of a trajectory}
+\title{Fractal dimension of a trajectory}
 \usage{
 TrajFractalDimension(trj, stepSizes)
 }

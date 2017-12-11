@@ -150,7 +150,7 @@ legend("bottomright", c("Random walk", "Directed walk", "Random walk, step lengt
 
 ## Relationship between Emax and Sinuosity
 
-```{r, emax_sinuosity, fig.cap="Relationship betwene Emax and Sinuosity", fig.width=6, fig.height=4}
+```{r, emax_sinuosity, fig.cap="Relationship between Emax and Sinuosity", fig.width=6, fig.height=4}
 set.seed(1)
 n <- 5000
 angularErrorSd <- runif(n, 0, 2)
@@ -172,8 +172,8 @@ angularErrorSd <- runif(n, 0, 2)
 
 dim <- sapply(1:n, function(i) { 
   trj <- TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])
-  TrajFractalDimension(trj, TrajFractalStepSizes(trj))
+  TrajFractalDimension(trj, TrajFractalStepSizes(trj, largestStepFactor = 0.01))
 })
-plot(angularErrorSd, dim, xlab = expression(sigma["angular error"]), ylab = expression("E"["max"]))
+plot(angularErrorSd, dim, pch = 16, xlab = expression(sigma["angular error"]), ylab = "Fractal dimension")
 
 ```

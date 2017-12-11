@@ -153,13 +153,13 @@ test_that("Speed intervals", {
   slowerThan = NULL
   fasterThan = 110
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 2)
 
   slowerThan = 107
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
   expect_true(nrow(intervals) == 3)
 })
 
