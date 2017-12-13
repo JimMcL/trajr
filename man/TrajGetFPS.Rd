@@ -2,7 +2,7 @@
 % Please edit documentation in R/query.R
 \name{TrajGetFPS}
 \alias{TrajGetFPS}
-\title{Trajectory frmes-per-second}
+\title{Trajectory frames-per-second}
 \usage{
 TrajGetFPS(trj)
 }

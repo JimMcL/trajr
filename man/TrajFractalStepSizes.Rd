@@ -5,7 +5,7 @@
 \title{Fractal dimension step sizes}
 \usage{
 TrajFractalStepSizes(trj, smallestStepFactor = 1e-04,
-  largestStepFactor = 0.1, numSteps = 100)
+  largestStepFactor = 0.1, numSteps = 20)
 }
 \arguments{
 \item{trj}{Trajectory to return step sizes for.}
@@ -30,8 +30,9 @@ render fractal dimension meaningless for animal trajectories.
 }
 \details{
 By default, returns a vector of step sizes ranging from 1/1000th of the path
-length to 1/10th of the path length, with logarithmically increasing intervals.
+length to 1/10th of the path length, with logarithmically increasing
+intervals.
 }
 \seealso{
-\code{\link{TrajFractalDimension}}
+\code{\link{TrajFractalDimension}}, \code{\link{TrajLogSequence}}
 }

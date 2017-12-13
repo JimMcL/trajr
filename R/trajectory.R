@@ -172,6 +172,22 @@ TrajRotate <- function(trj, angle = 0) {
   .fillInTraj(trj)
 }
 
+#' Reverse a trajectory
+#'
+#' Reverses the direction of a trajectory, so that the starting point becomes
+#' the last point and vice versa.
+#'
+#' @param trj The Trajectory to be reversed.
+#' @return A copy of \code{trj} with direction reversed.
+#'
+#' @export
+TrajReverse <- function(trj) {
+  trj$x <- rev(trj$x)
+  trj$y <- rev(trj$y)
+
+  .fillInTraj(trj)
+}
+
 #' Smooth a trajectory using a Savitzky-Golay filter
 #'
 #' Smooths a trajectory using a Savitzky-Golay smoothing filter.

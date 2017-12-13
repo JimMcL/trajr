@@ -4,28 +4,55 @@
 \alias{TrajFractalDimension}
 \title{Fractal dimension of a trajectory}
 \usage{
-TrajFractalDimension(trj, stepSizes)
+TrajFractalDimension(trj, stepSizes, adjustD = TRUE, dMean = TRUE)
 }
 \arguments{
 \item{trj}{Trajectory to calculate fractal dimension for.}
 
-\item{stepSizes}{Vector of step sizes used to calculate path lengths (see \code{\link{TrajFractalStepSizes}}).}
+\item{stepSizes}{Vector of step sizes (aka divider sizes) used to calculate
+path lengths (see \code{\link{TrajFractalStepSizes}}).}
+
+\item{adjustD}{If \code{TRUE}, path length is adjusted for truncation error
+(Nams, 2006).}
+
+\item{dMean}{If \code{TRUE}, the fractal dimension is calculated starting
+from the beginning of the trajectory, the re-calculated starting from the
+end and moving backwards. The value returned is the mean of the two fractal
+dimensions (Nams, 2006).}
 }
 \value{
 The fractal dimension of the trajectory for the given step sizes.
 }
 \description{
-Calculates the fractal dimension of a trajectory using the 'dividers' method
-(Sugihara & May, 1990). This value may be meaningless for animal trajectories
-as they may not be fractal curves - see Benhamou (2004) and Turchin (1996).
+Calculates the fractal dimension (\code{D}) of a trajectory using the
+'dividers' method (Sugihara & May, 1990). By default, overestimation of
+\code{D} is compensated for as recommended by Nams (2006), by walking the
+dividers backwards and forwards, and by estimating the remaining path length
+at the end of the last step.
+}
+\details{
+Fractal dimension may be meaningless for animal trajectories as they may not
+be true fractal curves - see Benhamou (2004) and Turchin (1996), although it
+may be useful for studies involving differences in behaviour at different
+spatial scales (Nams, 2006).
 }
 \references{
-Sugihara, G., & M. May, R. (1990). Applications of fractals in ecology. Trends in Ecology & Evolution, 5(3), 79-86. doi:10.1016/0169-5347(90)90235-6
+Sugihara, G., & M. May, R. (1990). Applications of fractals in
+  ecology. Trends in Ecology & Evolution, 5(3), 79-86.
+  doi:10.1016/0169-5347(90)90235-6
 
-Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. doi:10.1016/j.jtbi.2004.03.016
+  Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
+  path. Journal of Theoretical Biology, 229(2), 209-220.
+  doi:10.1016/j.jtbi.2004.03.016
 
-Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique. Ecology, 77(7), 2086-2090. doi:10.2307/2265702
+  Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique.
+  Ecology, 77(7), 2086-2090. doi:10.2307/2265702
+
+  Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal
+  Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11.
+  doi:10.1007/s10441-006-5954-8
 }
 \seealso{
-\code{\link{TrajFractalStepSizes}}, \code{\link{TrajFractalDimensionValues}}.
+\code{\link{TrajFractalStepSizes}},
+  \code{\link{TrajFractalDimensionValues}}.
 }

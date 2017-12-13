@@ -218,3 +218,14 @@ test_that("Directional change", {
   #microbenchmark(TrajDirectionalChange(trj), .bookCalc(trj), times = 1000)
 
 })
+
+test_that("Reverse", {
+  set.seed(1)
+  trj <- TrajGenerate()
+  rv <- TrajReverse(trj)
+  expect_equal(nrow(rv), nrow(trj))
+  expect_equal(rv$polar[1], trj$polar[nrow(trj)])
+  expect_equal(rv$polar[nrow(rv)], trj$polar[1])
+  expect_equal(TrajLength(rv), TrajLength(trj))
+  expect_equal(TrajEmax(rv), TrajEmax(trj))
+})

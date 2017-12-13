@@ -6,8 +6,10 @@
 \usage{
 \method{plot}{Trajectory}(x, draw.start.pt = TRUE, add = FALSE,
   turning.angles = NULL, type = "l", xlim = grDevices::extendrange(x$x),
-  ylim = grDevices::extendrange(x$y), xlab = "x", ylab = "y", asp = 1,
-  ...)
+  ylim = grDevices::extendrange(x$y),
+  xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)",
+  TrajGetUnits(x))), ylab = ifelse(is.null(TrajGetUnits(x)), "y",
+  sprintf("y (\%s)", TrajGetUnits(x))), asp = 1, ...)
 }
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}
