@@ -2,7 +2,7 @@
 
 # ---- Trajectory query ----
 
-#' Trajectory frmes-per-second
+#' Trajectory frames-per-second
 #'
 #' Returns the frames-per-second recorded for this trajectory.
 #'
@@ -19,6 +19,17 @@ TrajGetFPS <- function(trj) { attr(trj, .TRAJ_FPS) }
 #'
 #' @export
 TrajGetNFrames <- function(trj) { attr(trj, .TRAJ_NFRAMES) }
+
+#' Trajectory spatial units
+#'
+#' Returns the spatial units specified for a scaled trajectory.
+#'
+#' @param trj Trajectory to query
+#'
+#' @seealso \code{\link{TrajScale}}
+#'
+#' @export
+TrajGetUnits <- function(trj) { attr(trj, .TRAJ_UNITS) }
 
 # ---- Trajectory analysis ----
 
