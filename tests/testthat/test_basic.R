@@ -229,3 +229,34 @@ test_that("Reverse", {
   expect_equal(TrajLength(rv), TrajLength(trj))
   expect_equal(TrajEmax(rv), TrajEmax(trj))
 })
+
+test_that("Step lengths", {
+  set.seed(1)
+  nSteps <- 100
+  nTrajs <- 4
+  stepLength <- 1
+  trjs <- lapply(1:nTrajs, TrajGenerate, n = nSteps, stepLength = stepLength)
+  sl <- TrajsStepLengths(trjs)
+  expect_equal(length(sl), nSteps * nTrajs)
+  # Expect mean and median to be roughly equal to the specified step length
+  expect_equal(mean(sl), stepLength, tolerance = 2e-2)
+  expect_equal(median(sl), stepLength, tolerance = 2e-2)
+})
+
+test_that("Generate", {
+
+  unifDist <- function(n) runif(n, -1, 1)
+
+  sd <- 0.5
+  trj <- TrajGenerate(angularErrorSd = sd, linearErrorDist = unifDist)
+  # Should NOT be able to reject the NULL hypothesis that turning angle errors are normally distributed
+  expect_true(shapiro.test(TrajAngles(trj))$p.value > 0.05)
+  expect_equal(sd(TrajAngles(trj)), sd, tolerance = 5e-2)
+  # Should be able to reject the NULL hypothesis that linear errors are normally distributed
+  expect_true(shapiro.test(TrajStepLengths(trj))$p.value <= 0.05)
+  trj <- TrajGenerate(angularErrorDist = unifDist)
+  # Should be able to reject the NULL hypothesis that turning angles are normally distributed
+  expect_true(shapiro.test(TrajAngles(trj))$p.value <= 0.05)
+  # Should NOT be able to reject the NULL hypothesis that linear errors are normally distributed
+  expect_true(shapiro.test(TrajStepLengths(trj))$p.value > 0.05)
+})

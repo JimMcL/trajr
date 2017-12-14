@@ -266,7 +266,7 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #' @return The sinuosity of \code{trj}.
 #'
 #' @seealso \code{\link{TrajAngles}} for the turning angles in a trajectory,
-#'   \code{\link{TrajMeanStepLength}} for the mean step length.
+#'   \code{\link{TrajStepLengths}} for the step lengths.
 #'
 #' @references
 #'
@@ -276,7 +276,7 @@ TrajPlotDirectionAutocorrelations <- function(trj,
 #'
 #' @export
 TrajSinuosity <- function(trj, compass.direction = NULL) {
-  segLen <- TrajMeanStepLength(trj)
+  segLen <- mean(TrajStepLengths(trj))
   1.18 * stats::sd(TrajAngles(trj, compass.direction = compass.direction)) / sqrt(segLen)
 }
 
@@ -306,7 +306,7 @@ TrajEmax <- function(trj, eMaxB = FALSE, compass.direction = NULL) {
   b <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)))
 
   # If it's E max b, multiply by mean step length
-  f <- ifelse(eMaxB, TrajMeanStepLength(trj), 1)
+  f <- ifelse(eMaxB, mean(TrajStepLengths(trj)), 1)
 
   f * b / (1 - b)
 }

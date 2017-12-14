@@ -5,7 +5,7 @@
   n <- nrow(x) - 1
   steps <- x[1:n,]
   angles <- x[2:(n+1),]
-  meanStepLength <- TrajMeanStepLength(x)
+  meanStepLength <- mean(TrajStepLengths(x))
   segLen <- 0.8 * meanStepLength
   textDisplacement <- 0.3 * meanStepLength
   labels <- parse(text= paste("Delta[", 1:n, "]", sep=""))
@@ -46,17 +46,17 @@
 
 #' Plot method for trajectories
 #'
-#' The plot method for Trajectory objects.
+#' The \code{plot} method for Trajectory objects.
 #'
 #' @param x An object of class "Trajectory", the trajectory to be plotted.
-#' @param draw.start.pt if TRUE, draws a dot at the start point of the
+#' @param draw.start.pt If TRUE, draws a dot at the start point of the
 #'   trajectory.
 #' @param add If TRUE, the trajectory is added to the current plot.
 #' @param turning.angles If \code{random} or \code{directed}, draws step turning
 #'   angles. \code{directed} assumes errors are relative to the first recorded
 #'   step angle. \code{random} assumes errors are relative to the previous step.
 #' @param type,xlim,ylim,xlab,ylab,asp plotting parameters with useful defaults.
-#' @param ... Additional arguments are passed to \code{\link{plot}}.
+#' @param ... Additional arguments are passed to \code{\link[graphics]{plot}}.
 #'
 #' @seealso \code{\link{TrajFromCoords}}
 #' @examples
@@ -74,7 +74,24 @@ plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles
   if (!add) {
     graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp, ...)
   }
-  graphics::lines(y ~ x, data = x, type = type, ...)
+  lines(x, draw.start.pt = draw.start.pt, turning.angles = turning.angles, ...)
+}
+
+#' Add Trajectory lines to a plot
+#'
+#' The \code{lines} method for Trajectory objects.
+#'
+#' @param x An object of class "Trajectory", the trajectory to be plotted.
+#' @param draw.start.pt If TRUE, draws a dot at the start point of the
+#'   trajectory.
+#' @param turning.angles If \code{random} or \code{directed}, draws step turning
+#'   angles. \code{directed} assumes errors are relative to the first recorded
+#'   step angle. \code{random} assumes errors are relative to the previous step.
+#' @param ... Additional arguments are passed to \code{\link[graphics]{lines}}.
+#'
+#' @export
+lines.Trajectory <- function(x, draw.start.pt = TRUE, turning.angles = NULL, ...) {
+  graphics::lines(y ~ x, data = x, ...)
   if (draw.start.pt)
     graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
 

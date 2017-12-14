@@ -29,7 +29,7 @@ without discarding data. Optionally adds a new "flag" column which contains
 }
 \examples{
 df <- data.frame(x = c(1, 2, 3), y = c(NA, 5, 6), z = c(NA, NA, 9))
-# Eliminate NAs in y, add flag column, ignore other NAs
+# Eliminate NAs in y, add a flag column, ignore other NAs
 df <- TrajsStatsReplaceNAs(df, "y", flagColumn = "y.was.NA")
 print(df)
 

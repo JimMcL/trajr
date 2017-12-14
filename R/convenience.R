@@ -176,6 +176,27 @@ TrajsMergeStats <- function(trjs, statsFn) {
   result
 }
 
+#' Step lengths of multiple trajectories
+#'
+#' Returns the lengths of all of the steps in a list of trajectories
+#'
+#' @param trjs A list of \code{Trajectory} objects.
+#' @return A numeric vector containing the lengths of every step in every trajectory.
+#'
+#' @examples
+#' \dontrun{
+#' trjs <- TrajsBuild(fileNames, scale = scale, units = "m")
+#' # Print a summary about the step sizes across all trajectories
+#' print(summary(TrajsStepLength(trjs)))
+#' }
+
+#'
+#' @export
+TrajsStepLengths <- function(trjs) {
+  # First displacement is 0, not a real displacement, so don't return it
+  unlist(lapply(trjs, TrajStepLengths))
+}
+
 #' Replace NAs in a data frame
 #'
 #' Replaces NAs in a single column of a data frame with an uninformative numeric
@@ -195,7 +216,7 @@ TrajsMergeStats <- function(trjs, statsFn) {
 #'
 #' @examples
 #' df <- data.frame(x = c(1, 2, 3), y = c(NA, 5, 6), z = c(NA, NA, 9))
-#' # Eliminate NAs in y, add flag column, ignore other NAs
+#' # Eliminate NAs in y, add a flag column, ignore other NAs
 #' df <- TrajsStatsReplaceNAs(df, "y", flagColumn = "y.was.NA")
 #' print(df)
 #'

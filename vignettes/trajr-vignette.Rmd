@@ -19,27 +19,50 @@ library("plotrix")
 library(trajr)
 ```
 
-Trajr is an R toolkit for the statistical analysis of animal trajectories.
+## Introduction
+
+Trajr is an R toolkit for statistical analysis of the trajectories of moving animals. The goal of this vignette is to aid biologists who may not have extensive experience with R to become 
+
+### Installation
+
+To use any R package, it is necessary to install and then load/attach it. To install the latest released version of trajr, simply run:
+```{r, eval=FALSE}
+install_packages("trajr")
+```
+
+To install the lastest development version which is available on [GitHub](https://github.com/JimMcL/trajr), run:
+```{r, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("JimMcL/trajr")
+```
+Once the package has been installed, you must load it, then it's ready for use:
+```{r eval=FALSE}
+library("trajr)
+```
+Packages only need to be installed once, but they must be loaded once in every session before they can be used.
+
+Once the trajr package has been installed and loaded, you have access to the set of R functions it provides. All trajr functions (other than the generic function `plot`) start with the prefix `Traj`. Several of the functions provided by trajr do not provide additional analytic functionality, rather they make it easier to work with multiple trajectories. These convenience functions begin with the prefix `Trajs`.
 
 ## Trajectories
 
-Trajr is used to analyse 2-dimensional trajectories with an additional time component. A trajectory can also be thought of as a series of steps, each with a length and a turning angle.
+Trajr works with trajectories. A trajectory is a simplification of a real path travelled by an animal, and is a set of 2-dimensional spatial coordinates with a third temporal dimension. A trajectory can also be thought of as a series of steps, each comprised of a length (L~i~) and a turning angle ($\Delta$~i~). 
 
-```{r fig.cap="Simple random and directed trajectories", fig.height=8, fig.width=6}
-par(mar=c(4, 4, 3, 1), mfrow = c(2, 1))
-n <- 5
-
-# Generate a random walk trajectory
+```{r fig.cap="Simple random trajectories", fig.height=4, fig.width=6}
+# Generate and plot a short random trajectory
 set.seed(4)
-trj <- TrajGenerate(n, random = TRUE)
-plot(trj, main = "Random walk", turning.angles = "random")
-
-# Generate a random directed walk trajectory
-set.seed(1)
-trj <- TrajGenerate(n, random = FALSE)
-plot(trj, main = "Directed walk", turning.angles = "directed")
-
+trj <- TrajGenerate(5, random = TRUE)
+plot(trj, main = "Random Trajectory", turning.angles = "random")
 ```
+
+```{r fig.cap="Simple random and directed trajectories", fig.height=4, fig.width=6}
+# Generate and plot a short directed trajectory
+set.seed(1)
+trj <- TrajGenerate(5, random = FALSE)
+plot(trj, main = "Directed walk", turning.angles = "directed")
+```
+
+Most trajr functions operate on an R object with class `Trajectory`. The `{TrajFromCoords}` function is used to create a `Trajectory` object from a set of x-y coordinates, with optional times. 
+
 
 ## Analysing trajectory speed
 
@@ -79,116 +102,4 @@ simulateJourneys(random = FALSE)
 
 ```{r randomWalks, fig.cap="Simulated random journeys", fig.height=5, fig.width=6, cache=TRUE}
 simulateJourneys(random = TRUE)
-```
-
-
-## Emax
-
-Empirical testing of Emax with generated trajectories.
-
-```{r Emax, fig.cap="Emax as a function of angular error (log-log axes)", cache=TRUE, fig.height=4, fig.width=6}
-set.seed(1)
-n <- 5000
-angularErrorSd <- runif(n, 0, 2)
-
-# Assess Emax for some different types of trajectories, all with the same angular error sd
-emaxr <- sapply(1:n, function(i) { TrajEmax(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])) })
-emaxd <- sapply(1:n, function(i) { TrajEmax(TrajGenerate(500, random = FALSE, angularErrorSd = angularErrorSd[i]), compass.direction = 0) })
-emaxSm <- sapply(1:n, function(i) { TrajEmax(TrajRediscretize(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i]), R = 1)) })
-emaxBig <- sapply(1:n, function(i) { TrajEmax(TrajRediscretize(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i]), R = 10)) })
-emaxBig[emaxBig < 0] <- NA # can't take log of negative numbers
-
-par(mar = c(4, 4, 1, 1))
-plot(rep(angularErrorSd, 4), c(emaxr, emaxd, emaxSm, emaxBig),
-     log = 'xy', pch = '.', 
-     col = c(rep('red', n), rep('blue', n), rep('green', n), rep('black', n)),
-     xlab = expression(sigma["angular error"]), ylab = expression("E"["max"]))
-       labels <- c("Random walk", 
-                   "Directed walk", 
-                   "Random walk, step length 1", 
-                   "Random walk, step length 10")
-legend("bottomleft", labels, pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
-```
-
-
-## Sinuosity
-
-Empirical testing of Sinuosity with generated trajectories.
-
-```{r Sinuosity, fig.cap="Sinuosity as a function of angular error (linear axes)", cache=TRUE, fig.height=4, fig.width=6}
-set.seed(1)
-n <- 5000
-angularErrorSd <- runif(n, 0, 2)
-
-# Assess sinuosity for some different types of trajectories, all with the same angular error sd
-sinur <- sapply(1:n, function(i) { 
-  TrajSinuosity(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])) 
-})
-sinud <- sapply(1:n, function(i) { 
-  TrajSinuosity(TrajGenerate(500, random = FALSE, angularErrorSd = angularErrorSd[i]),
-                compass.direction = 0) 
-})
-sinuSm <- sapply(1:n, function(i) { 
-  TrajSinuosity(TrajRediscretize(TrajGenerate(500, random = TRUE, 
-                                              angularErrorSd = angularErrorSd[i]), 
-                                 R = 1)) 
-})
-sinuBig <- sapply(1:n, function(i) { 
-  TrajSinuosity(TrajRediscretize(TrajGenerate(500, random = TRUE, 
-                                              angularErrorSd = angularErrorSd[i]), 
-                                 R = 10)) 
-})
-
-par(mar = c(4, 4, 1, 1))
-plot(rep(angularErrorSd, 4), c(sinur, sinud, sinuSm, sinuBig),
-     pch = '.', 
-     col = c(rep('red', n), rep('blue', n), rep('green', n), rep('black', n)),
-     xlab = expression(sigma["angular error"]), ylab = "Sinuosity")
-legend("bottomright", c("Random walk", "Directed walk", "Random walk, step length 1", "Random walk, step length 10"), pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
-```
-
-
-## Relationship between Emax and Sinuosity
-
-```{r, emax_sinuosity, fig.cap="Relationship between Emax and Sinuosity", fig.width=6, fig.height=4}
-set.seed(1)
-n <- 5000
-angularErrorSd <- runif(n, 0, 2)
-
-xy <- sapply(1:n, function(i) {
-  trj <- TrajGenerate(500, angularErrorSd = angularErrorSd[i])
-  c(Emax = TrajEmax(trj), sinuosity = TrajSinuosity(trj))
-})
-xy <- xy[, which(xy[1,] > 0)]
-plot(log(xy[1,]), xy[2,], pch = '.', xlab = expression(log(E[max])), ylab = "Sinuosity")
-```
-
-## Fractal dimension
-
-```{r fractal, fig.cap="Fractal dimension", fig.width=6, fig.height=4}
-set.seed(1)
-n <- 100
-angularErrorSd <- runif(n, 0, 2)
-stepCount <- round(runif(n, 20, 100))
-
-# Use the same step sizes for all trajectories
-#trj <- TrajGenerate((max(stepCount) + min(stepCount)) / 2)
-#stepSizes <- TrajFractalStepSizes(trj, largestStepFactor = 0.01)
-stepSizes <- exp(log(10) * seq(log10(.1), log10(7), length.out = 20))
-
-
-dim <- sapply(1:n, function(i) { 
-  trj <- TrajGenerate(stepCount[i], random = TRUE, angularErrorSd = angularErrorSd[i])
-  c(TrajFractalDimension(trj, stepSizes), 
-    TrajFractalDimension(trj, stepSizes, FALSE, FALSE))
-})
-plot(angularErrorSd, dim[1,], 
-     pch = 16, 
-     col = rgb((stepCount - min(stepCount)) / (max(stepCount) - min(stepCount)), 0.2, 0.1),
-     ylim = range(dim),
-     xlab = expression(sigma["angular error"]), ylab = "Fractal dimension")
-points(angularErrorSd, dim[2,], pch = 3, col = rgb(0.2, (stepCount - min(stepCount)) / (max(stepCount) - min(stepCount)), 0.1),
-     xlab = expression(sigma["angular error"]), ylab = "Fractal dimension")
-
-
 ```

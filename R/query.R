@@ -33,14 +33,14 @@ TrajGetUnits <- function(trj) { attr(trj, .TRAJ_UNITS) }
 
 # ---- Trajectory analysis ----
 
-#' Mean trajectory step length
+#' Trajectory step lengths
 #'
-#' Returns the mean segment length of a trajectory
+#' Returns the lengths of each step in a trajectory.
 #'
 #' @param trj Trajectory to query
 #'
 #' @export
-TrajMeanStepLength <- function(trj) mean(Mod(trj$displacement[2:nrow(trj)]))
+TrajStepLengths <- function(trj) Mod(tail(trj$displacement, -1)) # First displacement is not a step (also usually 0)
 
 #' Turning angles of a Trajectory
 #'

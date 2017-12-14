@@ -29,5 +29,5 @@ using a correlated random walk model. Journal of Theoretical Biology, 131(4),
 }
 \seealso{
 \code{\link{TrajAngles}} for the turning angles in a trajectory,
-  \code{\link{TrajMeanStepLength}} for the mean step length.
+  \code{\link{TrajStepLengths}} for the step lengths.
 }

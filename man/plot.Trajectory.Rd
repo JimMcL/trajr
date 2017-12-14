@@ -14,7 +14,7 @@
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}
 
-\item{draw.start.pt}{if TRUE, draws a dot at the start point of the
+\item{draw.start.pt}{If TRUE, draws a dot at the start point of the
 trajectory.}
 
 \item{add}{If TRUE, the trajectory is added to the current plot.}
@@ -25,10 +25,10 @@ step angle. \code{random} assumes errors are relative to the previous step.}
 
 \item{type, xlim, ylim, xlab, ylab, asp}{plotting parameters with useful defaults.}
 
-\item{...}{Additional arguments are passed to \code{\link{plot}}.}
+\item{...}{Additional arguments are passed to \code{\link[graphics]{plot}}.}
 }
 \description{
-The plot method for Trajectory objects.
+The \code{plot} method for Trajectory objects.
 }
 \examples{
 set.seed(42)

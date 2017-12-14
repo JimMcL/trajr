@@ -5,41 +5,57 @@
 \title{Generate a random trajectory}
 \usage{
 TrajGenerate(n = 1000, random = TRUE, stepLength = 2,
-  angularErrorSd = 0.5, linearErrorSd = 0.2, fps = 50)
+  angularErrorSd = 0.5, angularErrorDist = function(n) stats::rnorm(n, sd =
+  angularErrorSd), linearErrorSd = 0.2, linearErrorDist = function(n)
+  stats::rnorm(n, sd = linearErrorSd), fps = 50)
 }
 \arguments{
 \item{n}{Number of steps in the trajectory.}
 
 \item{random}{If TRUE, a random search trajectory is returned, otherwise a
-directory trajectory is returned.}
+directed trajectory (with direction = 0 radians) is returned.}
 
 \item{stepLength}{Mean length of each step in the trajectory, in arbitrary
 length units.}
 
 \item{angularErrorSd}{Standard deviation of angular errors in radians.}
 
+\item{angularErrorDist}{Function which accepts 1 argument (number of values
+to return) and generates random deviates according to some distribution. if
+the mean of the returned values is not zero, The walk will be If the mean}
+
 \item{linearErrorSd}{Standard deviation of linear step length errors.}
+
+\item{linearErrorDist}{Function which accepts 1 argument (number of values to
+return) and generates random deviates according to some distribution.}
 
 \item{fps}{Simulated frames-per-second - used to generate times for each
 point in the trajectory.}
 }
 \value{
-A new Trajectory with \code{n} segments and \code{n + 1} coordinate pairs.
+A new Trajectory with \code{n} segments and \code{n + 1} coordinate
+  pairs.
 }
 \description{
 Generates a trajectory. If \code{random} is \code{TRUE}, the trajectory will
-be a random walk/idiothetic directed walk, corresponding to an animal
-navigating without a compass. If \code{random} is \code{TRUE}, it will be a
-directed walk/allothetic directed walk/oriented path, corresponding to an
-animal navigating with a compass (Cheung, Zhang, Stricker, & Srinivasan,
-2007, 2008).
+be a correllated random walk/idiothetic directed walk (Kareiva & Shigesada,
+1983), corresponding to an animal navigating without a compass (Cheung,
+Zhang, Stricker, & Srinivasan, 2008). If \code{random} is \code{FALSE}, it
+will be a directed walk/allothetic directed walk/oriented path, corresponding
+to an animal navigating with a compass (Cheung, Zhang, Stricker, &
+Srinivasan, 2007, 2008).
 }
 \details{
-For both random and directed walks, errors are normally distributed,
-unbiased, and independent of each other, so are \emph{simple} walks in the
-terminology of Cheung, Zhang, Stricker, & Srinivasan, (2008).
+By default, for both random and directed walks, errors are normally
+distributed, unbiased, and independent of each other, so are \emph{simple
+directed walks} in the terminology of Cheung, Zhang, Stricker, & Srinivasan,
+(2008). This behaviour may be modified by specifying alternative values for
+the \code{angularErrorDist} and/or \code{linearErrorDist} parameters.
 }
 \references{
+Kareiva, P. M., & Shigesada, N. (1983). Analyzing insect movement as a
+correlated random walk. Oecologia, 56(2), 234-238. doi:10.1007/bf00379695
+
 Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007). Animal
 navigation: the difficulty of moving in a straight line. Biological
 Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0

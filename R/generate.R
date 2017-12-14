@@ -3,29 +3,41 @@
 #' Generate a random trajectory
 #'
 #' Generates a trajectory. If \code{random} is \code{TRUE}, the trajectory will
-#' be a random walk/idiothetic directed walk, corresponding to an animal
-#' navigating without a compass. If \code{random} is \code{TRUE}, it will be a
-#' directed walk/allothetic directed walk/oriented path, corresponding to an
-#' animal navigating with a compass (Cheung, Zhang, Stricker, & Srinivasan,
-#' 2007, 2008).
+#' be a correllated random walk/idiothetic directed walk (Kareiva & Shigesada,
+#' 1983), corresponding to an animal navigating without a compass (Cheung,
+#' Zhang, Stricker, & Srinivasan, 2008). If \code{random} is \code{FALSE}, it
+#' will be a directed walk/allothetic directed walk/oriented path, corresponding
+#' to an animal navigating with a compass (Cheung, Zhang, Stricker, &
+#' Srinivasan, 2007, 2008).
 #'
-#' For both random and directed walks, errors are normally distributed,
-#' unbiased, and independent of each other, so are \emph{simple} walks in the
-#' terminology of Cheung, Zhang, Stricker, & Srinivasan, (2008).
+#' By default, for both random and directed walks, errors are normally
+#' distributed, unbiased, and independent of each other, so are \emph{simple
+#' directed walks} in the terminology of Cheung, Zhang, Stricker, & Srinivasan,
+#' (2008). This behaviour may be modified by specifying alternative values for
+#' the \code{angularErrorDist} and/or \code{linearErrorDist} parameters.
 #'
 #' @param n Number of steps in the trajectory.
 #' @param random If TRUE, a random search trajectory is returned, otherwise a
-#'   directory trajectory is returned.
+#'   directed trajectory (with direction = 0 radians) is returned.
 #' @param stepLength Mean length of each step in the trajectory, in arbitrary
 #'   length units.
 #' @param angularErrorSd Standard deviation of angular errors in radians.
+#' @param angularErrorDist Function which accepts 1 argument (number of values
+#'   to return) and generates random deviates according to some distribution. if
+#'   the mean of the returned values is not zero, The walk will be If the mean
 #' @param linearErrorSd Standard deviation of linear step length errors.
+#' @param linearErrorDist Function which accepts 1 argument (number of values to
+#'   return) and generates random deviates according to some distribution.
 #' @param fps Simulated frames-per-second - used to generate times for each
 #'   point in the trajectory.
 #'
-#' @return A new Trajectory with \code{n} segments and \code{n + 1} coordinate pairs.
+#' @return A new Trajectory with \code{n} segments and \code{n + 1} coordinate
+#'   pairs.
 #'
 #' @references
+#'
+#' Kareiva, P. M., & Shigesada, N. (1983). Analyzing insect movement as a
+#' correlated random walk. Oecologia, 56(2), 234-238. doi:10.1007/bf00379695
 #'
 #' Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007). Animal
 #' navigation: the difficulty of moving in a straight line. Biological
@@ -36,10 +48,18 @@
 #' 99(3), 197-217. doi:10.1007/s00422-008-0251-z
 #'
 #' @export
-TrajGenerate <- function(n = 1000, random = TRUE, stepLength = 2, angularErrorSd = 0.5, linearErrorSd = 0.2, fps = 50) {
-  angularErrors <- stats::rnorm(n, sd = angularErrorSd)
-  linearErrors <- stats::rnorm(n, sd = linearErrorSd)
-  steps <- complex(length.out = n, modulus = stepLength + linearErrors, argument = angularErrors)
+TrajGenerate <- function(n = 1000, random = TRUE, stepLength = 2,
+                         angularErrorSd = 0.5,
+                         angularErrorDist = function(n) stats::rnorm(n, sd = angularErrorSd),
+                         linearErrorSd = 0.2,
+                         linearErrorDist = function(n) stats::rnorm(n, sd = linearErrorSd),
+                         fps = 50) {
+  angularErrors <- angularErrorDist(n)
+  linearErrors <- linearErrorDist(n)
+  stepLengths <- stepLength + linearErrors
+  # Don't allow negative lengths
+  stepLengths[stepLengths < 0] <- 0
+  steps <- complex(length.out = n, modulus = stepLengths, argument = angularErrors)
 
   if (random) {
     # Angular errors accumulate
