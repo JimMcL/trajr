@@ -7,6 +7,8 @@ to easily calculate various measures of speed and straightness or tortuosity.
 `Trajr` does not provide a mechanism to extract trajectories from videos, 
 it requires trajectories to already exist as a sequence of x,y coordinates.
 
+[![Travis-CI Build Status](https://travis-ci.org/JimMcL/trajr.svg?branch=master)](https://travis-ci.org/JimMcL/trajr)
+
 ## Installation
 
     $ install.packages("devtools")
