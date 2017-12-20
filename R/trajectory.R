@@ -58,8 +58,8 @@
 #' suitable for use as \code{x} and \code{y} values, since in general, \code{1°
 #' lat != 1° lon}. To create a trajectory from positions in latitude and
 #' longitude, it is first necessary to transform the positions to a suitable
-#' spatial projection such as UTM (possibly by using
-#' \code{spTransform} from the \code{rgdal} package).
+#' spatial projection such as UTM (possibly by using \code{spTransform} from the
+#' \code{rgdal} package).
 #'
 #' @param track data frame containing cartesian coordinates and optionally times
 #'   for the points in the trajectory.
