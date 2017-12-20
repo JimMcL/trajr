@@ -1,0 +1,140 @@
+---
+title: "Junk"
+author: "Jim McLean"
+date: "December 14, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(trajr)
+library(microbenchmark)
+```
+
+## Preserved for Posterity
+
+Mean vector characterising changes in direction:
+```{r}
+# Using vector arithmetic. This is roughly twice as fast as using calculus
+angularMeanVectorArith <- function(angles) mean(complex(modulus = 1, argument = angles))
+# Using calculus
+angularMeanCalculus <- function(angles) {
+  phi <- atan2(sum(sin(angles)), sum(cos(angles)))
+  r <- sqrt(sum(cos(angles)) ^ 2 + sum(sin(angles)) ^ 2) / length(angles)
+  complex(modulus = r, argument = phi)
+}
+
+angles <- runif(10000, min = -pi, max = pi)
+
+microbenchmark(angularMeanVectorArith(angles), angularMeanCalculus(angles))
+```
+
+## Emax
+
+Empirical testing of Emax with generated trajectories.
+
+```{r Emax, fig.cap="Emax as a function of angular error (log-log axes)", cache=TRUE, fig.height=4, fig.width=6}
+set.seed(1)
+n <- 5
+angularErrorSd <- runif(n, 0, 2)
+
+# Assess Emax for some different types of trajectories, all with the same angular error sd
+emaxr <- sapply(1:n, function(i) { TrajEmax(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])) })
+emaxd <- sapply(1:n, function(i) { TrajEmax(TrajGenerate(500, random = FALSE, angularErrorSd = angularErrorSd[i]), compass.direction = 0) })
+emaxSm <- sapply(1:n, function(i) { TrajEmax(TrajRediscretize(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i]), R = 1)) })
+emaxBig <- sapply(1:n, function(i) { TrajEmax(TrajRediscretize(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i]), R = 10)) })
+emaxBig[emaxBig < 0] <- NA # can't take log of negative numbers
+
+par(mar = c(4, 4, 1, 1))
+plot(rep(angularErrorSd, 4), c(emaxr, emaxd, emaxSm, emaxBig),
+     log = 'xy', pch = '.', 
+     col = c(rep('red', n), rep('blue', n), rep('green', n), rep('black', n)),
+     xlab = expression(sigma["angular error"]), ylab = expression("E"["max"]))
+       labels <- c("Random walk", 
+                   "Directed walk", 
+                   "Random walk, step length 1", 
+                   "Random walk, step length 10")
+legend("bottomleft", labels, pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
+```
+
+
+## Sinuosity
+
+Empirical testing of Sinuosity with generated trajectories.
+
+```{r Sinuosity, fig.cap="Sinuosity as a function of angular error (linear axes)", cache=TRUE, fig.height=4, fig.width=6}
+set.seed(1)
+n <- 5
+angularErrorSd <- runif(n, 0, 2)
+
+# Assess sinuosity for some different types of trajectories, all with the same angular error sd
+sinur <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajGenerate(500, random = TRUE, angularErrorSd = angularErrorSd[i])) 
+})
+sinud <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajGenerate(500, random = FALSE, angularErrorSd = angularErrorSd[i]),
+                compass.direction = 0) 
+})
+sinuSm <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajRediscretize(TrajGenerate(500, random = TRUE, 
+                                              angularErrorSd = angularErrorSd[i]), 
+                                 R = 1)) 
+})
+sinuBig <- sapply(1:n, function(i) { 
+  TrajSinuosity(TrajRediscretize(TrajGenerate(500, random = TRUE, 
+                                              angularErrorSd = angularErrorSd[i]), 
+                                 R = 10)) 
+})
+
+par(mar = c(4, 4, 1, 1))
+plot(rep(angularErrorSd, 4), c(sinur, sinud, sinuSm, sinuBig),
+     pch = '.', 
+     col = c(rep('red', n), rep('blue', n), rep('green', n), rep('black', n)),
+     xlab = expression(sigma["angular error"]), ylab = "Sinuosity")
+legend("bottomright", c("Random walk", "Directed walk", "Random walk, step length 1", "Random walk, step length 10"), pch = 16, col = c("red", "blue", "green", "black"), inset = 0.01)
+```
+
+
+## Relationship between Emax and Sinuosity
+
+```{r, emax_sinuosity, fig.cap="Relationship between Emax and Sinuosity", fig.width=6, fig.height=4}
+set.seed(1)
+n <- 5
+angularErrorSd <- runif(n, 0, 2)
+
+xy <- sapply(1:n, function(i) {
+  trj <- TrajGenerate(500, angularErrorSd = angularErrorSd[i])
+  c(Emax = TrajEmax(trj), sinuosity = TrajSinuosity(trj))
+})
+xy <- xy[, which(xy[1,] > 0)]
+plot(log(xy[1,]), xy[2,], pch = '.', xlab = expression(log(E[max])), ylab = "Sinuosity")
+```
+
+## Fractal dimension
+
+```{r fractal, fig.cap="Fractal dimension", fig.width=6, fig.height=4}
+set.seed(1)
+n <- 2
+angularErrorSd <- runif(n, 0, 2)
+stepCount <- round(runif(n, 20, 100))
+
+# Use the same step sizes for all trajectories
+#trj <- TrajGenerate((max(stepCount) + min(stepCount)) / 2)
+stepSizes <- exp(log(10) * seq(log10(.1), log10(7), length.out = 20))
+
+
+dim <- sapply(1:n, function(i) { 
+  trj <- TrajGenerate(stepCount[i], random = TRUE, angularErrorSd = angularErrorSd[i])
+  c(TrajFractalDimension(trj, stepSizes), 
+    TrajFractalDimension(trj, stepSizes, FALSE, FALSE))
+})
+plot(angularErrorSd, dim[1,], 
+     pch = 16, 
+     col = rgb((stepCount - min(stepCount)) / (max(stepCount) - min(stepCount)), 0.2, 0.1),
+     ylim = range(dim),
+     xlab = expression(sigma["angular error"]), ylab = "Fractal dimension")
+points(angularErrorSd, dim[2,], pch = 3, col = rgb(0.2, (stepCount - min(stepCount)) / (max(stepCount) - min(stepCount)), 0.1),
+     xlab = expression(sigma["angular error"]), ylab = "Fractal dimension")
+
+
+```
