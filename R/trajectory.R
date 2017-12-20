@@ -4,7 +4,9 @@
 # Names of attributes
 .TRAJ_FPS <- 'fps'
 .TRAJ_NFRAMES <- 'numFrames'
+.TRAJ_TIME_UNITS <- 'timeUnits'
 .TRAJ_UNITS <- 'units'
+.TRAJ_CLASS <- "Trajectory"
 
 # ---- Private functions ----
 
@@ -18,8 +20,8 @@
   trj$displacement <- c(0, diff(trj$polar))
 
   # Give it a special class
-  if (class(trj)[1] != "Trajectory")
-    class(trj) <- c("Trajectory", class(trj))
+  if (class(trj)[1] != .TRAJ_CLASS)
+    class(trj) <- c(.TRAJ_CLASS, class(trj))
 
   trj
 }
@@ -47,31 +49,54 @@
 #' \code{TrajFromCoords} creates a new trajectory object from a set of
 #' 2-dimensional cartesian coordinates and some metadata.
 #'
-#' If \code{timeCol} is specified, it is assumed to contain the time (in
-#' seconds) of each data point. Otherwise times are calculated for each point as
-#' \code{(frame - 1) / fps} where \code{frame} is the index of the point.
+#' If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
+#' the time (in seconds) of each data point. Otherwise, times are calculated for
+#' each point as \code{(frame - 1) / fps} where \code{frame} is the index of the
+#' point.
+#'
+#' \code{x} and \code{y} must be square units. Longitude and latitude are not
+#' suitable for use as \code{x} and \code{y} values, since in general, \code{1°
+#' lat != 1° lon}. To create a trajectory from positions in latitude and
+#' longitude, it is first necessary to transform the positions to a suitable
+#' spatial projection such as UTM (possibly by using
+#' \code{\link[rgdal]{spTransform}}).
 #'
 #' @param track data frame containing cartesian coordinates and optionally times
-#'   for the poiints in the trajectory.
+#'   for the points in the trajectory.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
 #' @param yCol Name or index of the \code{y} column in \code{track} (default 2).
 #' @param timeCol optional name or index of the column which contains frame
 #'   times.
 #' @param fps Frames per second - used to calculate relative frame times if
-#'   \code{track} does not contain a \code{time} column.
+#'   \code{track} does not contain a \code{time} column. Time intervals between
+#'   frames are assumed to be constant throught the entire track.
+#' @param spatialUnits Abbreviation for the x and y units.
+#' @param timeUnits Abbreviation for the units that time is recorded in.
 #'
 #' @return An object with class "\code{Trajectory}", which is a data.frame with
 #'   the following components: \item{x}{X coordinates of trajectory points.}
-#'   \item{y}{Y coordinates of trajectory points.} \item{time}{Time (secs) for
-#'   each point. if \code{timeCol} is specified, values are
-#'   \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
+#'   \item{y}{Y coordinates of trajectory points.} \item{time}{Time (in
+#'   \code{timeUnits}) for each point. if \code{timeCol} is specified, values
+#'   are \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
 #'   \item{displacementTime}{Frame times, with frame 1 at time \code{0}.}
-#'   \item{polar}{Coordinates represented as complex number, to simplify working
-#'   with segment angles.} \item{displacement}{Displacements between each pair
-#'   of consecutive points.}
+#'   \item{polar}{Coordinates represented as complex numbers, to simplify
+#'   working with segment angles.} \item{displacement}{Displacements between
+#'   each pair of consecutive points.}
+#'
+#' @examples
+#'
+#' coords <- data.frame(x = c(1, 1.5, 2, 2.5, 3, 4),
+#'                      y = c(0, 0, 1, 1, 2, 1),
+#'                      times = c(0, 1, 2, 3, 4, 5))
+#' trj <- TrajFromCoords(coords)
+#'
+#' par(mar = c(4, 4, 0.5, 0.5) + 0.1)
+#' plot(trj)
 #'
 #' @export
-TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) {
+TrajFromCoords <- function(track, xCol = 1, yCol = 2,
+                           timeCol = NULL, fps = 50,
+                           spatialUnits = "m", timeUnits = "s") {
 
   trj <- track
 
@@ -104,9 +129,12 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) 
 
   # Save number of frames
   attr(trj, .TRAJ_NFRAMES) <- nrow(trj)
-
   # Save frame rate
   attr(trj, .TRAJ_FPS) <- fps
+  # Save spatial units
+  attr(trj, .TRAJ_UNITS) <- spatialUnits
+  # Save time units
+  attr(trj, .TRAJ_TIME_UNITS) <- timeUnits
 
   trj <- .fillInTraj(trj)
 
@@ -120,7 +148,7 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50) 
 #'
 #' @param trj The trajectory to be scaled.
 #' @param scale Scaling factor to be applied to the trajectory coordinates.
-#' @param units Character specifying the new spatial units, e.g. "m" or "metres"
+#' @param units Character specifying the spatial units after scaling, e.g. "m" or "metres"
 #' @param yScale Optional scaling factor to be applied to the y-axis, which may
 #'   be specified if the original coordinates are not square. Defaults to
 #'   \code{scale}.
@@ -196,6 +224,7 @@ TrajReverse <- function(trj) {
 #' @param p polynomial order (passed to \code{\link[signal]{sgolayfilt}}).
 #' @param n Filter length (or window size), must be an odd number.  Passed to
 #'   \code{\link[signal]{sgolayfilt}}.
+#' @param ... Additional arguments are passed to \code{\link[signal]{sgolayfilt}}.
 #' @return A new trajectory which is a smoothed version of the input trajectory.
 #'
 #' @seealso \code{\link[signal]{sgolayfilt}}
@@ -207,9 +236,9 @@ TrajReverse <- function(trj) {
 #' plot(smoothed, col = "red", add = TRUE)
 #'
 #' @export
-TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2) {
-  trj$x <- signal::sgolayfilt(trj$x, p, n)
-  trj$y <- signal::sgolayfilt(trj$y, p, n)
+TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2, ...) {
+  trj$x <- signal::sgolayfilt(trj$x, p, n, ...)
+  trj$y <- signal::sgolayfilt(trj$y, p, n, ...)
   .fillInTraj(trj)
 }
 

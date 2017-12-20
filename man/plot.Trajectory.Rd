@@ -4,8 +4,8 @@
 \alias{plot.Trajectory}
 \title{Plot method for trajectories}
 \usage{
-\method{plot}{Trajectory}(x, draw.start.pt = TRUE, add = FALSE,
-  turning.angles = NULL, type = "l", xlim = grDevices::extendrange(x$x),
+\method{plot}{Trajectory}(x, add = FALSE, draw.start.pt = TRUE,
+  turning.angles = NULL, xlim = grDevices::extendrange(x$x),
   ylim = grDevices::extendrange(x$y),
   xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)",
   TrajGetUnits(x))), ylab = ifelse(is.null(TrajGetUnits(x)), "y",
@@ -14,16 +14,16 @@
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}
 
+\item{add}{If TRUE, the trajectory is added to the current plot.}
+
 \item{draw.start.pt}{If TRUE, draws a dot at the start point of the
 trajectory.}
-
-\item{add}{If TRUE, the trajectory is added to the current plot.}
 
 \item{turning.angles}{If \code{random} or \code{directed}, draws step turning
 angles. \code{directed} assumes errors are relative to the first recorded
 step angle. \code{random} assumes errors are relative to the previous step.}
 
-\item{type, xlim, ylim, xlab, ylab, asp}{plotting parameters with useful defaults.}
+\item{xlim, ylim, xlab, ylab, asp}{plotting parameters with useful defaults.}
 
 \item{...}{Additional arguments are passed to \code{\link[graphics]{plot}}.}
 }

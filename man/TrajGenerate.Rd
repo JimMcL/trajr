@@ -20,14 +20,19 @@ length units.}
 
 \item{angularErrorSd}{Standard deviation of angular errors in radians.}
 
-\item{angularErrorDist}{Function which accepts 1 argument (number of values
-to return) and generates random deviates according to some distribution. if
-the mean of the returned values is not zero, The walk will be If the mean}
+\item{angularErrorDist}{Function which accepts a single argument - the number
+of values to return, and generates random deviates according to some
+distribution. The returned values are added to the previous step angle
+(when \code{random == TRUE}), or to \code{0} (is \code{random == FALSE}) to
+generate the step angle for each step in the trajectory. If the mean of the
+returned values is not zero, the walk will be biased.}
 
 \item{linearErrorSd}{Standard deviation of linear step length errors.}
 
-\item{linearErrorDist}{Function which accepts 1 argument (number of values to
-return) and generates random deviates according to some distribution.}
+\item{linearErrorDist}{Function which accepts a single argument - the number
+of values to return, and generates random deviates according to some
+distribution. The returned values are added to \code{stepLength} to
+generate the lengths of each step.}
 
 \item{fps}{Simulated frames-per-second - used to generate times for each
 point in the trajectory.}
@@ -51,6 +56,27 @@ distributed, unbiased, and independent of each other, so are \emph{simple
 directed walks} in the terminology of Cheung, Zhang, Stricker, & Srinivasan,
 (2008). This behaviour may be modified by specifying alternative values for
 the \code{angularErrorDist} and/or \code{linearErrorDist} parameters.
+
+The initial angle (for a random walk) or the intended direction (for a
+directed walk) is \code{0} radians. The starting position is \code{(0, 0)}.
+}
+\examples{
+# Generate a 1000 step correlated random walk
+trj <- TrajGenerate()
+plot(trj, main = "Correlated walk")
+
+# Generate a 1000 step levy flight - paths lengths follow a cauchy distribution
+trj <- TrajGenerate(linearErrorDist = rcauchy)
+plot(trj, main = "Levy flight")
+
+# Generate a short directed trajectory
+trj <- TrajGenerate(n = 20, random = FALSE)
+plot(trj, main = "Directed walk")
+
+# Generate an uncorrelated random walk
+trj <- TrajGenerate(500, angularErrorDist = function(n) runif(n, -pi, pi))
+plot(trj, main = "Uncorrelated walk")
+
 }
 \references{
 Kareiva, P. M., & Shigesada, N. (1983). Analyzing insect movement as a

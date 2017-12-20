@@ -12,7 +12,7 @@ TrajRediscretize(trj, R)
 \item{R}{rediscretization step length.}
 }
 \value{
-a new trajectory with a constant segment length which follows
+A new trajectory with a constant segment length which follows
   \code{trj}.
 }
 \description{
@@ -21,7 +21,7 @@ step (or segment) length. Timing of frames is lost, so speed and acceleration
 cannot be calculated on a rediscretized trajectory.
 }
 \details{
-Based on the appendix in Bovet and Benhamou, (1988)
+Based on the appendix in Bovet and Benhamou, (1988).
 }
 \references{
 Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9

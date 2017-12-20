@@ -4,11 +4,12 @@
 \alias{TrajFromCoords}
 \title{Create a Trajectory Object}
 \usage{
-TrajFromCoords(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50)
+TrajFromCoords(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50,
+  spatialUnits = "m", timeUnits = "s")
 }
 \arguments{
 \item{track}{data frame containing cartesian coordinates and optionally times
-for the poiints in the trajectory.}
+for the points in the trajectory.}
 
 \item{xCol}{Name or index of the \code{x} column in \code{track} (default 1).}
 
@@ -18,25 +19,49 @@ for the poiints in the trajectory.}
 times.}
 
 \item{fps}{Frames per second - used to calculate relative frame times if
-\code{track} does not contain a \code{time} column.}
+\code{track} does not contain a \code{time} column. Time intervals between
+frames are assumed to be constant throught the entire track.}
+
+\item{spatialUnits}{Abbreviation for the x and y units.}
+
+\item{timeUnits}{Abbreviation for the units that time is recorded in.}
 }
 \value{
 An object with class "\code{Trajectory}", which is a data.frame with
   the following components: \item{x}{X coordinates of trajectory points.}
-  \item{y}{Y coordinates of trajectory points.} \item{time}{Time (secs) for
-  each point. if \code{timeCol} is specified, values are
-  \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
+  \item{y}{Y coordinates of trajectory points.} \item{time}{Time (in
+  \code{timeUnits}) for each point. if \code{timeCol} is specified, values
+  are \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
   \item{displacementTime}{Frame times, with frame 1 at time \code{0}.}
-  \item{polar}{Coordinates represented as complex number, to simplify working
-  with segment angles.} \item{displacement}{Displacements between each pair
-  of consecutive points.}
+  \item{polar}{Coordinates represented as complex numbers, to simplify
+  working with segment angles.} \item{displacement}{Displacements between
+  each pair of consecutive points.}
 }
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
 2-dimensional cartesian coordinates and some metadata.
 }
 \details{
-If \code{timeCol} is specified, it is assumed to contain the time (in
-seconds) of each data point. Otherwise times are calculated for each point as
-\code{(frame - 1) / fps} where \code{frame} is the index of the point.
+If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
+the time (in seconds) of each data point. Otherwise, times are calculated for
+each point as \code{(frame - 1) / fps} where \code{frame} is the index of the
+point.
+
+\code{x} and \code{y} must be square units. Longitude and latitude are not
+suitable for use as \code{x} and \code{y} values, since in general, \code{1°
+lat != 1° lon}. To create a trajectory from positions in latitude and
+longitude, it is first necessary to transform the positions to a suitable
+spatial projection such as UTM (possibly by using
+\code{\link[rgdal]{spTransform}}).
+}
+\examples{
+
+coords <- data.frame(x = c(1, 1.5, 2, 2.5, 3, 4),
+                     y = c(0, 0, 1, 1, 2, 1),
+                     times = c(0, 1, 2, 3, 4, 5))
+trj <- TrajFromCoords(coords)
+
+par(mar = c(4, 4, 0.5, 0.5) + 0.1)
+plot(trj)
+
 }

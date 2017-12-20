@@ -9,18 +9,22 @@ TrajEmax(trj, eMaxB = FALSE, compass.direction = NULL)
 \arguments{
 \item{trj}{Trajectory to be analysed.}
 
-\item{eMaxB}{If TRUE, calculates and returns E-max b, otherwise return E-max.}
+\item{eMaxB}{If TRUE, calculates and returns Emax-b, otherwise returns Emax-a.}
 
 \item{compass.direction}{if not \code{NULL}, turning angles are calculated
 for a directed walk, assuming the specified compass direction (in radians).
 Otherwise, a random walk is assumed.}
 }
 \value{
-E-max for \code{trj}.
+Emax (-a or -b) for \code{trj}.
 }
 \description{
-\eqn{E[max]} is a single-valued measure of straightness defined by (Cheung,
-Zhang, Stricker, & Srinivasan, 2007).
+Emax is a single-valued measure of straightness defined by (Cheung, Zhang,
+Stricker, & Srinivasan, 2007). Emax-a is a dimensionless, scale-independent
+measure of the maximum possible expected displacement. Emax-b is Emax-a *
+mean step length, and gives the maximum possible expected displacement in
+spatial units. Values closer to 0 are more sinuous, while larger values
+(approaching infinity) are straighter.
 }
 \references{
 Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007).

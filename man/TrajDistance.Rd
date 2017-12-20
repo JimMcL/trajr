@@ -5,10 +5,14 @@
 \title{Calculates the distance between the start and end of a trajectory.
 Also called the diffusion distance, net distance, or bee-line from start to finish.}
 \usage{
-TrajDistance(trj)
+TrajDistance(trj, startIndex = 1, endIndex = nrow(trj))
 }
 \arguments{
 \item{trj}{Trajectory whose distance is to be calculated.}
+
+\item{startIndex}{Index of the starting point.}
+
+\item{endIndex}{Index of the ending point.}
 }
 \value{
 Numeric distance from the start to the end of the trajectory.

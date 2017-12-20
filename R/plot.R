@@ -1,6 +1,11 @@
 # ---- Trajectory plotting ----
 
-.drawTurningAngles <- function(x, turning.angles) {
+# ---- Private functions ----
+
+.drawTurningAngles <- function(x, turning.angles, text.displacement.angles = c(pi / 6, -pi / 8)) {
+
+  .textAngle <- function(positive) ifelse(positive, text.displacement.angles[1], text.displacement.angles[2])
+
   # There are n steps, but n+1 coordinates
   n <- nrow(x) - 1
   steps <- x[1:n,]
@@ -15,7 +20,7 @@
     graphics::segments(steps$x, steps$y, steps$x + .8 * meanStepLength, steps$y, col = "darkgrey", lty = 2)
 
     textAngle <- Arg(angles$displacement) +
-      ifelse(Arg(x$displacement[1]) < Arg(angles$displacement), pi / 4, -pi / 6)
+      .textAngle(Arg(x$displacement[1]) < Arg(angles$displacement))
     graphics::text(steps$x + textDisplacement * cos(textAngle), steps$y + textDisplacement * sin(textAngle),
                    labels = labels)
 
@@ -31,7 +36,7 @@
                        col = "darkgrey", lty = 2)
 
     textAngle <- Arg(angles$displacement) +
-      ifelse(Arg(steps$displacement) < Arg(angles$displacement), pi / 4, -pi / 6)
+      .textAngle(Arg(steps$displacement) < Arg(angles$displacement))
     graphics::text(steps$x + textDisplacement * cos(textAngle), steps$y + textDisplacement * sin(textAngle),
                    labels = labels)
 
@@ -44,6 +49,19 @@
   }
 }
 
+# Private
+.drawTrajExtras <- function(x, draw.start.pt = TRUE, turning.angles = NULL, ...) {
+  if (draw.start.pt)
+    graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
+
+  if (!is.null(turning.angles)) {
+    .drawTurningAngles(x, turning.angles)
+  }
+}
+
+
+# ---- Public functions ----
+
 #' Plot method for trajectories
 #'
 #' The \code{plot} method for Trajectory objects.
@@ -55,7 +73,7 @@
 #' @param turning.angles If \code{random} or \code{directed}, draws step turning
 #'   angles. \code{directed} assumes errors are relative to the first recorded
 #'   step angle. \code{random} assumes errors are relative to the previous step.
-#' @param type,xlim,ylim,xlab,ylab,asp plotting parameters with useful defaults.
+#' @param xlim,ylim,xlab,ylab,asp plotting parameters with useful defaults.
 #' @param ... Additional arguments are passed to \code{\link[graphics]{plot}}.
 #'
 #' @seealso \code{\link{TrajFromCoords}}
@@ -65,8 +83,8 @@
 #' plot(trj)
 #'
 #' @export
-plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles = NULL,
-                            type = 'l',
+plot.Trajectory <- function(x, add = FALSE,
+                            draw.start.pt = TRUE, turning.angles = NULL,
                             xlim = grDevices::extendrange(x$x), ylim = grDevices::extendrange(x$y),
                             xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (%s)", TrajGetUnits(x))),
                             ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (%s)", TrajGetUnits(x))),
@@ -74,7 +92,7 @@ plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles
   if (!add) {
     graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp, ...)
   }
-  lines(x, draw.start.pt = draw.start.pt, turning.angles = turning.angles, ...)
+  graphics::lines(x, draw.start.pt = draw.start.pt, turning.angles = turning.angles, ...)
 }
 
 #' Add Trajectory lines to a plot
@@ -92,10 +110,23 @@ plot.Trajectory <- function(x, draw.start.pt = TRUE, add = FALSE, turning.angles
 #' @export
 lines.Trajectory <- function(x, draw.start.pt = TRUE, turning.angles = NULL, ...) {
   graphics::lines(y ~ x, data = x, ...)
-  if (draw.start.pt)
-    graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
+  .drawTrajExtras(x, draw.start.pt, turning.angles, ...)
+}
 
-  if (!is.null(turning.angles)) {
-    .drawTurningAngles(x, turning.angles)
-  }
+#' Add Trajectory points to a plot
+#'
+#' The \code{points} method for Trajectory objects.
+#'
+#' @param x An object of class "Trajectory", the trajectory to be plotted.
+#' @param draw.start.pt If TRUE, draws a dot at the start point of the
+#'   trajectory.
+#' @param turning.angles If \code{random} or \code{directed}, draws step turning
+#'   angles. \code{directed} assumes errors are relative to the first recorded
+#'   step angle. \code{random} assumes errors are relative to the previous step.
+#' @param ... Additional arguments are passed to \code{\link[graphics]{points}}.
+#'
+#' @export
+points.Trajectory <- function(x, draw.start.pt = TRUE, turning.angles = NULL, ...) {
+  graphics::points(y ~ x, data = x, ...)
+  .drawTrajExtras(x, draw.start.pt, turning.angles, ...)
 }

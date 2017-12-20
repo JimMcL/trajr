@@ -4,14 +4,16 @@
 \alias{TrajsBuild}
 \title{Construct multiple trajectories}
 \usage{
-TrajsBuild(fileNames, fps, scale = NULL, units = NULL, csvStruct = list(x
-  = 1, y = 2, time = NULL), smoothP = 3, smoothN = 41, rootDir = NULL,
-  csvReadFn = utils::read.csv)
+TrajsBuild(fileNames, fps = NULL, scale = NULL, spatialUnits = NULL,
+  timeUnits = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
+  smoothP = 3, smoothN = 41, rootDir = NULL,
+  csvReadFn = utils::read.csv, ...)
 }
 \arguments{
 \item{fileNames}{Vector of the names of CSV files containing trajectory
 coordinates. All of the files must have the same columns. All file names
-must be unique.}
+must be unique. If \code{rootDir} is not \code{NULL}, then the file names
+are treated as regular expressions.}
 
 \item{fps}{Vector of frames-per-second values corresponding to the
 trajectories in \code{fileNames}.}
@@ -21,7 +23,9 @@ trajectories in \code{fileNames}.}
 1200") rather than numeric values. If NULL, the trajectories will not be
 scaled.}
 
-\item{units}{Name of spatial coordinate units after scaling, e.g. "m".}
+\item{spatialUnits}{Abbreviated name of spatial coordinate units after scaling, e.g. "m".}
+
+\item{timeUnits}{Abbreviated name of temporal units, e.g. "s".}
 
 \item{csvStruct}{A list which identifies the columns in each CSV file which
 contain x-, y-, and optionally time-values.}
@@ -34,10 +38,12 @@ odd, see \code{\link{TrajSmoothSG}})}
 
 \item{rootDir}{Optional name of a top level directory which contains the CSV
 files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
-within \code{rootDir} or its sub-directories, .}
+within \code{rootDir} or its sub-directories.}
 
 \item{csvReadFn}{Function used to read the CSV files (see
 \code{\link[utils]{read.csv}}, \code{\link[utils]{read.csv2}}).}
+
+\item{...}{Additional arguments passed to \code{csvReadFn}.}
 }
 \value{
 A list of trajectories.
@@ -71,8 +77,7 @@ scale <- c('1/1200', '1/1350', '1/1300')
 csvStruct <- list(x = 2, y = 1)
 # Apply default smoothing, and the files are formatted as conventional CSV,
 # so there's no need to specify csvReadFn
-trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
-                   scale = scale, units = "m",
+trjs <- TrajsBuild(fileNames, fps = 50, scale = scale, units = "m",
                    csvStruct = csvStruct, rootDir = rootDir)
 }
 

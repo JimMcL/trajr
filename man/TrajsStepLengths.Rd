@@ -19,7 +19,7 @@ Returns the lengths of all of the steps in a list of trajectories
 \dontrun{
 trjs <- TrajsBuild(fileNames, scale = scale, units = "m")
 # Print a summary about the step sizes across all trajectories
-print(summary(TrajsStepLength(trjs)))
+print(summary(TrajsStepLengths(trjs)))
 }
 
 }

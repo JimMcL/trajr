@@ -4,15 +4,19 @@
 \alias{TrajLength}
 \title{Path length}
 \usage{
-TrajLength(trj)
+TrajLength(trj, startIndex = 1, endIndex = nrow(trj))
 }
 \arguments{
 \item{trj}{Trajectory whose length is to be calculated.}
+
+\item{startIndex}{Index of the starting point.}
+
+\item{endIndex}{Index of the ending point.}
 }
 \value{
 Path Numeric length of the trajectory.
 }
 \description{
-Calculates the cumulative length of a track, which is the total distance
-travelled along the trajectory.
+Calculates the cumulative length of a track (or a portion of a track), which
+is the total distance travelled along the trajectory.
 }

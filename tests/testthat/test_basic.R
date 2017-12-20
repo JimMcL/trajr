@@ -60,25 +60,6 @@ test_that("Trajectory creation", {
 })
 
 test_that("Speed intervals", {
-  plotIntervalsByTime <- function(smoothed, slowerThan, fasterThan, intervals) {
-    derivs <- TrajDerivatives(smoothed)
-    speed <- derivs$speed
-    plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = 'Time (sec)', ylab = "Speed")
-    abline(h = slowerThan, col = "red")
-    abline(h = fasterThan, col = "green")
-    if (nrow(intervals) > 0)
-      rect(intervals$startTime, min(speed), intervals$stopTime, max(speed), col = "#0000FF1E", border = NA)
-  }
-
-  plotIntervalsByFrame <- function(smoothed, slowerThan, fasterThan, intervals) {
-    derivs <- TrajDerivatives(smoothed)
-    speed <- derivs$speed
-    plot(speed, type = 'l', xlab = 'Frame number', ylab = "Speed")
-    abline(h = slowerThan, col = "red")
-    abline(h = fasterThan, col = "green")
-    if (nrow(intervals) > 0)
-      rect(intervals$startFrame, min(speed), intervals$stopFrame, max(speed), col = "#0000FF1E", border = NA)
-  }
 
   # 1 Interval with no start and 1 stop
   set.seed(1)
@@ -87,7 +68,7 @@ test_that("Speed intervals", {
   fasterThan = 120
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 1)
 
   # 1 Interval with 1 start and no stop
@@ -97,7 +78,7 @@ test_that("Speed intervals", {
   fasterThan = 120
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 1)
 
   # 0 intervals
@@ -107,7 +88,7 @@ test_that("Speed intervals", {
   fasterThan = 200
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 0)
 
   # 3 intervals
@@ -117,7 +98,7 @@ test_that("Speed intervals", {
   fasterThan = 90
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 3)
 
   # 3 intervals
@@ -127,7 +108,7 @@ test_that("Speed intervals", {
   fasterThan = NULL
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(smoothed, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 3)
 
   # 2 intervals
@@ -136,7 +117,7 @@ test_that("Speed intervals", {
   slowerThan = 92
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 2)
 
   # Interval wholly contained within a segment
@@ -145,7 +126,7 @@ test_that("Speed intervals", {
   slowerThan = 110
   fasterThan = 107
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 0)
 
   set.seed(1)
@@ -153,13 +134,13 @@ test_that("Speed intervals", {
   slowerThan = NULL
   fasterThan = 110
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 2)
 
   slowerThan = 107
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plotIntervalsByTime(trj, slowerThan, fasterThan, intervals)
+  #plot(intervals)
   expect_true(nrow(intervals) == 3)
 })
 
@@ -247,6 +228,7 @@ test_that("Generate", {
 
   unifDist <- function(n) runif(n, -1, 1)
 
+  set.seed(1)
   sd <- 0.5
   trj <- TrajGenerate(angularErrorSd = sd, linearErrorDist = unifDist)
   # Should NOT be able to reject the NULL hypothesis that turning angle errors are normally distributed
@@ -259,4 +241,76 @@ test_that("Generate", {
   expect_true(shapiro.test(TrajAngles(trj))$p.value <= 0.05)
   # Should NOT be able to reject the NULL hypothesis that linear errors are normally distributed
   expect_true(shapiro.test(TrajStepLengths(trj))$p.value > 0.05)
+})
+
+test_that("Smoothing", {
+  set.seed(1)
+  sd <- 0.5
+  trj <- TrajGenerate(angularErrorSd = sd)
+  smoothed <- TrajSmoothSG(trj, 3, 41)
+  expect_true(TrajEmax(trj) < TrajEmax(smoothed))
+})
+
+test_that("Convenience", {
+  # Reads a set of points from a file. The points come from multiple tracks
+  # due to noise in the video conversion process.
+  # The longest track is the one we are interested in
+  #
+  # Value - data frame with values x & y, and an attribute "numFrames" which records the number of frames in the source video
+  .MreadPoints <- function(file, ...) {
+    points <- read.csv(file, comment.char = '#')
+
+    # Save the number of frames in the file in case the track doesn't extend until the end
+    maxFrame <- max(points$Frame)
+
+    # Save number of frames
+    attr(points, 'numFrames') <- maxFrame
+
+    points
+  }
+
+
+  tracks <- rbind(
+    data.frame(file = "3527.csv", species = "Zodariid2 sp1", category = "spider"),
+    data.frame(file = "3530.csv", species = "Daerlac nigricans", category = "mimic bug"),
+    data.frame(file = "3534.csv", species = "Daerlac nigricans", category = "mimic bug"),
+    data.frame(file = "3537.csv", species = "Myrmarachne erythrocephala", category = "mimic spider"),
+    data.frame(file = "3542.csv", species = "Polyrhachis sp1", category = "ant"),
+    data.frame(file = "3543.csv", species = "Polyrhachis sp1", category = "ant"),
+    data.frame(file = "3548.csv", species = "Crematogaster sp1", category = "ant")
+  )
+  csvStruct <- list(x = "x", y = "y", time = "Time")
+  trjs <- TrajsBuild(tracks$file, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
+
+  expect_equal(TrajGetUnits(trjs[[2]]), "m")
+  expect_equal(TrajGetTimeUnits(trjs[[2]]), "s")
+
+  # Define a function which calculates some statistics
+  # of interest for a single trajectory
+  characteriseTrajectory <- function(trj) {
+    # Measures of speed
+    derivs <- TrajDerivatives(trj)
+    mean_speed <- mean(derivs$speed)
+    sd_speed <- sd(derivs$speed)
+
+    # Measures of straightness
+    sinuosity <- TrajSinuosity(trj)
+    resampled <- TrajRediscretize(trj, .001)
+    Emax <- TrajEmax(resampled)
+
+    # Periodicity
+    corr <- TrajDirectionAutocorrelations(resampled, round(nrow(resampled) / 4))
+    first_min <- TrajDAFindFirstMinimum(corr)
+
+    # Return a list with all of the statistics for this trajectory
+    list(mean_speed = mean_speed,
+         sd_speed = sd_speed,
+         sinuosity = sinuosity,
+         Emax = Emax,
+         first_min_deltaS = first_min[1],
+         first_min_C = first_min[2])
+  }
+
+  stats <- TrajsMergeStats(trjs, characteriseTrajectory)
+
 })

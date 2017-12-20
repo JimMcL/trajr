@@ -9,8 +9,7 @@ TrajFractalDimensionValues(trj, stepSizes, adjustD = TRUE)
 \arguments{
 \item{trj}{Trajectory to calculate fractal dimension for.}
 
-\item{stepSizes}{Vector of step sizes used to calculate path lengths (see
-\code{\link{TrajFractalStepSizes}}).}
+\item{stepSizes}{Vector of step sizes used to calculate path lengths.}
 
 \item{adjustD}{If TRUE, path length is adjusted to reduce truncation error
 (Nams, 2006).}
@@ -21,22 +20,25 @@ Data frame with columns \code{stepsize} (\eqn{\delta}) and
 }
 \description{
 Calculates path length (\eqn{L(\delta)}) for a range of step sizes
-(\eqn{\delta}). For a fractal curve, \eqn{log(L(\delta))} grows linearly as
-\eqn{log(\delta)} grows smaller.
+(\eqn{\delta}). For a fractal (i.e. scale independent) curve,
+\eqn{log(L(\delta))} grows linearly as \eqn{log(\delta)} grows smaller. In
+other words, if the points returned by this function lie on a straight line
+in a log-log plot, \code{trj} is a fractal curve.
 }
 \examples{
 set.seed(42)
 trj <- TrajGenerate()
-plot(TrajFractalDimensionValues(trj, TrajFractalStepSizes(trj)), log = "xy", pch = 16, cex = .5)
+muL <- mean(TrajStepLengths(trj))
+stepSizes <- TrajLogSequence(0.5 * muL, 5 * muL, 20)
+plot(TrajFractalDimensionValues(trj, stepSizes), log = "xy", pch = 16, cex = .5)
 
 }
 \references{
 Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal
-  Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11.
-  doi:10.1007/s10441-006-5954-8
+Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11.
+doi:10.1007/s10441-006-5954-8
 }
 \seealso{
-\code{\link{TrajFractalStepSizes}} for a possible calculation of
-  \code{stepSizes}. \code{\link{TrajFractalDimension}} for fractal dimension
+\code{\link{TrajFractalDimension}} for fractal dimension
   calculation.
 }

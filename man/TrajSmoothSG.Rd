@@ -4,7 +4,7 @@
 \alias{TrajSmoothSG}
 \title{Smooth a trajectory using a Savitzky-Golay filter}
 \usage{
-TrajSmoothSG(trj, p = 3, n = p + 3 - p\%\%2)
+TrajSmoothSG(trj, p = 3, n = p + 3 - p\%\%2, ...)
 }
 \arguments{
 \item{trj}{The trajectory to be smoothed.}
@@ -13,6 +13,8 @@ TrajSmoothSG(trj, p = 3, n = p + 3 - p\%\%2)
 
 \item{n}{Filter length (or window size), must be an odd number.  Passed to
 \code{\link[signal]{sgolayfilt}}.}
+
+\item{...}{Additional arguments are passed to \code{\link[signal]{sgolayfilt}}.}
 }
 \value{
 A new trajectory which is a smoothed version of the input trajectory.

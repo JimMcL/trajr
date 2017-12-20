@@ -4,7 +4,7 @@
 
 .locateFiles <- function(fileNames, rootDir) {
   sapply(fileNames, function(fn) {
-    file <- list.files(rootDir, fn, full.names=TRUE, recursive=TRUE)
+    file <- list.files(rootDir, pattern = as.character(fn), full.names=TRUE, recursive=TRUE)
     if (length(file) == 0) {
       stop(sprintf("Unable to locate trajectory file %s (within folder %s)", fn, rootDir))
     }
@@ -45,14 +45,16 @@
 #'
 #' @param fileNames Vector of the names of CSV files containing trajectory
 #'   coordinates. All of the files must have the same columns. All file names
-#'   must be unique.
+#'   must be unique. If \code{rootDir} is not \code{NULL}, then the file names
+#'   are treated as regular expressions.
 #' @param fps Vector of frames-per-second values corresponding to the
 #'   trajectories in \code{fileNames}.
 #' @param scale Vector of scale values corresponding to the trajectories in
 #'   \code{fileNames}. May be specified as character expressions (e.g. "1 /
 #'   1200") rather than numeric values. If NULL, the trajectories will not be
 #'   scaled.
-#' @param units Name of spatial coordinate units after scaling, e.g. "m".
+#' @param spatialUnits Abbreviated name of spatial coordinate units after scaling, e.g. "m".
+#' @param timeUnits Abbreviated name of temporal units, e.g. "s".
 #' @param csvStruct A list which identifies the columns in each CSV file which
 #'   contain x-, y-, and optionally time-values.
 #' @param smoothP Filter order to be used for Savitzky-Golay smoothing (see
@@ -61,9 +63,10 @@
 #'   odd, see \code{\link{TrajSmoothSG}})
 #' @param rootDir Optional name of a top level directory which contains the CSV
 #'   files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
-#'   within \code{rootDir} or its sub-directories, .
+#'   within \code{rootDir} or its sub-directories.
 #' @param csvReadFn Function used to read the CSV files (see
 #'   \code{\link[utils]{read.csv}}, \code{\link[utils]{read.csv2}}).
+#' @param ... Additional arguments passed to \code{csvReadFn}.
 #'
 #' @return A list of trajectories.
 #'
@@ -82,16 +85,17 @@
 #' csvStruct <- list(x = 2, y = 1)
 #' # Apply default smoothing, and the files are formatted as conventional CSV,
 #' # so there's no need to specify csvReadFn
-#' trjs <- TrajsBuild(fileNames, fps = rep(50, length(fileNames)),
-#'                    scale = scale, units = "m",
+#' trjs <- TrajsBuild(fileNames, fps = 50, scale = scale, units = "m",
 #'                    csvStruct = csvStruct, rootDir = rootDir)
 #' }
 #'
 #' @export
-TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
+TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
+                       spatialUnits = NULL, timeUnits = NULL,
+                       csvStruct = list(x = 1, y = 2, time = NULL),
                        smoothP = 3, smoothN = 41,
                        rootDir = NULL,
-                       csvReadFn = utils::read.csv) {
+                       csvReadFn = utils::read.csv, ...) {
   # Check that file names are unique
   if (any(table(fileNames) > 1)) {
     stop(sprintf("List of file names contains duplicates: %s\n", paste(names(which(table(fileNames) > 1)), collapse = ", ")))
@@ -100,6 +104,12 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
   if (!is.null(rootDir)) {
     fileNames <- .locateFiles(fileNames, rootDir)
   }
+
+  # Extend fps and scale if required
+  if (!is.null(fps) && length(fps) == 1)
+    fps <- rep(fps, length(fileNames))
+  if (!is.null(scale) && length(scale) == 1)
+    scale <- rep(scale, length(fileNames))
 
   result <- list(length(fileNames))
 
@@ -110,10 +120,12 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
   # For each file...
   for (i in 1:length(fileNames)) {
     # Read the trajectory coordinates from the file
-    coords <- .readAndCheckCoords(fileNames[i], csvReadFn)
+    coords <- .readAndCheckCoords(fileNames[i], csvReadFn, ...)
     # Convert to a trajectory
     trj <- tryCatch(
-      TrajFromCoords(coords, fps = fps[i], xCol = csvStruct$x, yCol = csvStruct$y, timeCol = csvStruct$time),
+      TrajFromCoords(coords, fps = fps[i],
+                     xCol = csvStruct$x, yCol = csvStruct$y, timeCol = csvStruct$time,
+                     spatialUnits = spatialUnits, timeUnits = timeUnits),
       error = function (e) {
         errors <<- c(errors, sprintf("Trajectory file %s (index %d): %s", fileNames[i], i, conditionMessage(e)))
         NULL
@@ -122,10 +134,10 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
 
     if (!is.null(trj)) {
       # Scale
-      if (!is.null(scale[i])) {
+      if (is.character(scale[i]) || is.numeric(scale[i])) {
         # Allow scale to be specified as a character expression such as "1 / 250"
         sc <- ifelse(is.character(scale[i]), eval(parse(text=scale[i])), scale[i])
-        trj <- TrajScale(trj, sc, units)
+        trj <- TrajScale(trj, sc, spatialUnits)
       }
 
       # Smooth
@@ -153,14 +165,48 @@ TrajsBuild <- function(fileNames, fps, scale = NULL, units = NULL, csvStruct = l
 #'
 #' @param trjs List of trajectories to be characterised.
 #' @param statsFn Function to calculate statistics of interest for a single trajectory.
+#' @param ... Additional arguments passed to \code{statsFn}.
+#'
+#' @examples
+#' \dontrun{
+#'
+#' # Define a function which calculates some statistics
+#' # of interest for a single trajectory
+#' characteriseTrajectory <- function(trj) {
+#'   # Measures of speed
+#'   derivs <- TrajDerivatives(trj)
+#'   mean_speed <- mean(derivs$speed)
+#'   sd_speed <- sd(derivs$speed)
+#'
+#'   # Measures of straightness
+#'   sinuosity <- TrajSinuosity(trj)
+#'   Emax <- TrajEmax(resampled)
+#'
+#'   # Periodicity
+#'   resampled <- TrajRediscretize(trj, .001)
+#'   corr <- TrajDirectionAutocorrelations(resampled, round(nrow(resampled) / 4))
+#'   first_min <- TrajDAFindFirstMinimum(corr)
+#'
+#'   # Return a list with all of the statistics for this trajectory
+#'   list(mean_speed = mean_speed,
+#'        sd_speed = sd_speed,
+#'        sinuosity = sinuosity,
+#'        Emax = Emax,
+#'        first_min_deltaS = first_min[1],
+#'        first_min_C = first_min[2])
+#' }
+#'
+#' trjs <- TrajsBuild(filenames)
+#' stats <- TrajsMergeStats(trjs, characteriseTrajectory)
+#' }
 #'
 #' @export
-TrajsMergeStats <- function(trjs, statsFn) {
+TrajsMergeStats <- function(trjs, statsFn, ...) {
   result <- data.frame()
   nc <- NA
   rowNum <- 1
   for (trj in trjs) {
-    row <- statsFn(trj)
+    row <- statsFn(trj, ...)
     # Replace NULL with NA because NULL values are removed by rbind, resulting
     # in: invalid list argument: all variables should have the same length
     row[sapply(row, is.null)] <- NA
@@ -187,9 +233,8 @@ TrajsMergeStats <- function(trjs, statsFn) {
 #' \dontrun{
 #' trjs <- TrajsBuild(fileNames, scale = scale, units = "m")
 #' # Print a summary about the step sizes across all trajectories
-#' print(summary(TrajsStepLength(trjs)))
+#' print(summary(TrajsStepLengths(trjs)))
 #' }
-
 #'
 #' @export
 TrajsStepLengths <- function(trjs) {

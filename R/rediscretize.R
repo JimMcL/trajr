@@ -76,11 +76,11 @@
 #' step (or segment) length. Timing of frames is lost, so speed and acceleration
 #' cannot be calculated on a rediscretized trajectory.
 #'
-#' Based on the appendix in Bovet and Benhamou, (1988)
+#' Based on the appendix in Bovet and Benhamou, (1988).
 #'
 #' @param trj The trajectory to be resampled.
 #' @param R rediscretization step length.
-#' @return a new trajectory with a constant segment length which follows
+#' @return A new trajectory with a constant segment length which follows
 #'   \code{trj}.
 #'
 #' @references Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9

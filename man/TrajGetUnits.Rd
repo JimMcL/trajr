@@ -13,5 +13,5 @@ TrajGetUnits(trj)
 Returns the spatial units specified for a scaled trajectory.
 }
 \seealso{
-\code{\link{TrajScale}}
+\code{\link{TrajScale}}, \code{\link{TrajGetTimeUnits}}.
 }

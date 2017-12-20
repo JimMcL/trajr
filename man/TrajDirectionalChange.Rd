@@ -13,9 +13,9 @@ TrajDirectionalChange(trj, nFrames = 1)
 every 2nd frame is processed, and so on. Default is 1.}
 }
 \value{
-The directional change (DC) between every pair of consecutive points
-  in the trajectory, i.e. the returned vector will have length
-  \code{(nrow(trj) - 1)}.
+The directional change (DC) in degrees between every pair of
+  consecutive points in the trajectory, i.e. the returned vector will have
+  length \code{(nrow(trj) - 1)}.
 }
 \description{
 Calculates the time variation of directional change (DC) of a trajectory

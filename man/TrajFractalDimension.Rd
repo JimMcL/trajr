@@ -10,7 +10,7 @@ TrajFractalDimension(trj, stepSizes, adjustD = TRUE, dMean = TRUE)
 \item{trj}{Trajectory to calculate fractal dimension for.}
 
 \item{stepSizes}{Vector of step sizes (aka divider sizes) used to calculate
-path lengths (see \code{\link{TrajFractalStepSizes}}).}
+path lengths.}
 
 \item{adjustD}{If \code{TRUE}, path length is adjusted for truncation error
 (Nams, 2006).}
@@ -37,22 +37,22 @@ may be useful for studies involving differences in behaviour at different
 spatial scales (Nams, 2006).
 }
 \references{
-Sugihara, G., & M. May, R. (1990). Applications of fractals in
-  ecology. Trends in Ecology & Evolution, 5(3), 79-86.
-  doi:10.1016/0169-5347(90)90235-6
+Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
+path. Journal of Theoretical Biology, 229(2), 209-220.
+doi:10.1016/j.jtbi.2004.03.016
 
-  Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
-  path. Journal of Theoretical Biology, 229(2), 209-220.
-  doi:10.1016/j.jtbi.2004.03.016
+Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal
+Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11.
+doi:10.1007/s10441-006-5954-8
 
-  Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique.
-  Ecology, 77(7), 2086-2090. doi:10.2307/2265702
+Sugihara, G., & M. May, R. (1990). Applications of fractals in ecology.
+Trends in Ecology & Evolution, 5(3), 79-86. doi:10.1016/0169-5347(90)90235-6
 
-  Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal
-  Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11.
-  doi:10.1007/s10441-006-5954-8
+Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique. Ecology,
+77(7), 2086-2090. doi:10.2307/2265702
 }
 \seealso{
-\code{\link{TrajFractalStepSizes}},
-  \code{\link{TrajFractalDimensionValues}}.
+\code{\link{TrajLogSequence}} to create a logarithmically spaced
+  sequence, \code{\link{TrajFractalDimensionValues}} for the function used
+  internally to calculate a range of path lengths for different step sizes.
 }

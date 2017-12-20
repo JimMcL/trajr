@@ -4,12 +4,14 @@
 \alias{TrajsMergeStats}
 \title{Merge trajectory characteristics}
 \usage{
-TrajsMergeStats(trjs, statsFn)
+TrajsMergeStats(trjs, statsFn, ...)
 }
 \arguments{
 \item{trjs}{List of trajectories to be characterised.}
 
 \item{statsFn}{Function to calculate statistics of interest for a single trajectory.}
+
+\item{...}{Additional arguments passed to \code{statsFn}.}
 }
 \description{
 Builds a data frame by combining rows of statistical values for multiple trajectories.
@@ -19,3 +21,37 @@ Builds a data frame by combining rows of statistical values for multiple traject
 Any NULL valued statistics are converted to NAs.
 }
 
+\examples{
+\dontrun{
+
+# Define a function which calculates some statistics
+# of interest for a single trajectory
+characteriseTrajectory <- function(trj) {
+  # Measures of speed
+  derivs <- TrajDerivatives(trj)
+  mean_speed <- mean(derivs$speed)
+  sd_speed <- sd(derivs$speed)
+
+  # Measures of straightness
+  sinuosity <- TrajSinuosity(trj)
+  Emax <- TrajEmax(resampled)
+
+  # Periodicity
+  resampled <- TrajRediscretize(trj, .001)
+  corr <- TrajDirectionAutocorrelations(resampled, round(nrow(resampled) / 4))
+  first_min <- TrajDAFindFirstMinimum(corr)
+
+  # Return a list with all of the statistics for this trajectory
+  list(mean_speed = mean_speed,
+       sd_speed = sd_speed,
+       sinuosity = sinuosity,
+       Emax = Emax,
+       first_min_deltaS = first_min[1],
+       first_min_C = first_min[2])
+}
+
+trjs <- TrajsBuild(filenames)
+stats <- TrajsMergeStats(trjs, characteriseTrajectory)
+}
+
+}
