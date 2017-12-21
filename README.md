@@ -12,15 +12,19 @@ it requires trajectories to already exist as a sequence of x,y coordinates.
 
 
 ## Installation
+    $ install.packages("trajr")
+
+Or to install the latest development version directly from Github:
 
     $ install.packages("devtools")
     $ devtools::install_github("JimMcL/trajr")
     
-or else 
+Or else, to install from Github **and** get the user documentation (vignette):
 
+    $ install.packages("devtools")
     $ devtools::install_github("JimMcL/trajr", build_vignettes = TRUE)
     
-to install trajr from github with vignettes (which are user guides). Unfortunately, installing vignettes can be time-consuming.
+Unfortunately, installing vignettes can be time-consuming.
 
 ## Using trajr
 
