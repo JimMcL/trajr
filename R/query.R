@@ -57,6 +57,8 @@ TrajStepLengths <- function(trj) {
   Mod(utils::tail(trj$displacement, -1)) # First displacement is not a step (also usually 0)
 }
 
+#' Trajectory distance
+#'
 #' Calculates the distance between the start and end of a trajectory.
 #' Also called the diffusion distance, net distance, or bee-line from start to finish.
 #'
@@ -70,7 +72,7 @@ TrajDistance <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
   Mod(diff(trj$polar[c(startIndex, endIndex)]))
 }
 
-#' Path length
+#' Trajectory length
 #'
 #' Calculates the cumulative length of a track (or a portion of a track), which
 #' is the total distance travelled along the trajectory.

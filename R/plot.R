@@ -82,6 +82,8 @@
 #' trj <- TrajGenerate(angularErrorSd = 1.3)
 #' plot(trj)
 #'
+#' @importFrom grDevices extendrange
+#'
 #' @export
 plot.Trajectory <- function(x, add = FALSE,
                             draw.start.pt = TRUE, turning.angles = NULL,

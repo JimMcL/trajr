@@ -66,13 +66,12 @@ TrajDerivatives <- function(trj) {
   }
 
   for (i in 1:length(startFrames)) {
-    # Special case if starting point was added as the start of an interval, leave it unchanged
+    # Special case if starting point was added as the start of an interval, leave its time unchanged
     if (!(startFrames[i] == 1 && .frameIsInInterval(1)))
       startTimes[i] <- .interp(startFrames[i])
   }
   for (i in 1:length(stopFrames)) {
-    # Special case if stopping point was added as the end of an interval, leave it unchanged
-    lastStop <- length(stopFrames)
+    # Special case if stopping point was added as the end of an interval, leave its time unchanged
     numFrames <- length(speed)
     if (!(stopFrames[i] == numFrames && .frameIsInInterval(numFrames)))
       stopTimes[i] <- .interp(stopFrames[i])

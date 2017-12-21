@@ -18,7 +18,7 @@ The sinuosity of \code{trj}.
 }
 \description{
 Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
-(1988), which is: \eqn{S = 1.18\sigma / \sqrtq} where \eqn{\sigma} is the
+(1988), which is: \eqn{S = 1.18\sigma / \sqrt q} where \eqn{\sigma} is the
 standard deviation of the step turning angles and \eqn{q} is the mean step
 length.
 }

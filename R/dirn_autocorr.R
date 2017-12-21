@@ -98,7 +98,7 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 #'   mimimum/maximum.
 #' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
 #'   NULL if there is no local minimum/maximum.
-#' @name DAMinMax
+#' @name TrajDAMinMax
 #'
 #' @seealso \code{\link{TrajDirectionAutocorrelations}}
 #'
@@ -122,7 +122,7 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 #'
 NULL
 
-#' @rdname DAMinMax
+#' @rdname TrajDAMinMax
 #'
 #' @export
 TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
@@ -134,7 +134,7 @@ TrajDAFindFirstMinimum <- function(corr, windowSize = 10) {
   }
 }
 
-#' @rdname DAMinMax
+#' @rdname TrajDAMinMax
 #'
 #' @export
 TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {

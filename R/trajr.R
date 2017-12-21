@@ -4,14 +4,51 @@
 #'
 #' A toolkit for the statistical analysis of 2-dimensional animal trajectories.
 #'
-#' Trajr operates on trajectories which are arrays of x and y coordinates. It
-#' can be used to calculate characteristics such as velocity and acceleration,
-#' as well as various measures of straightness or tortuosity.
+#' \code{Trajr} operates on trajectories which are arrays of x and y
+#' coordinates. It can be used to calculate characteristics such as velocity and
+#' acceleration, as well as various measures of straightness or tortuosity. it
+#' also provides various convenience functions to assist with operating on
+#' multiple trajectories.
 #'
 #' Trajr does not perform object tracking from videos, it operates on existing
 #' arrays of coordinates.
 #'
-#' @section Foo functions: The foo functions ...
+#' @section Trajectory creation:
+#'
+#'   Most \code{trajr} functions operate on a \code{Trajectory} object.
+#'   \code{Trajectory}s are created by calling \code{\link{TrajFromCoords}}. The
+#'   function \code{\link{TrajsBuild}} allows you to create multiple
+#'   \code{Trajectory}s by reading their coordinates from files.
+#'
+#'   Typically, trajectories require smoothing to remove high frequency noise;
+#'   see \code{\link{TrajSmoothSG}}. Some methods require trajectories which
+#'   have been resampled to a constant step length (\emph{rediscretized}); see
+#'   \code{\link{TrajRediscretize}}.
+#'
+#'   You can create a random trajectory by calling \code{\link{TrajGenerate}}.
+#'
+#' @section Trajectory analysis:
+#'
+#'   \code{\link{TrajDerivatives}} calculates the speed and acceleration of a
+#'   trajectory (see also \code{\link{TrajSpeedIntervals}}).
+#'
+#'   Multiple algorithms for assessing straightness or tortuosity are available,
+#'   see \code{\link{TrajDirectionalChange}},
+#'   \code{\link{TrajDirectionAutocorrelations}}, \code{\link{TrajEmax}},
+#'   \code{\link{TrajFractalDimension}}, \code{\link{TrajSinuosity}}, and
+#'   \code{\link{TrajStraightness}}.
+#'
+#' @section Other functions:
+#'
+#'   Other functions provide information about trajectories, such as
+#'   \code{\link{TrajStepLengths}}, \code{\link{TrajGetNCoords}},
+#'   \code{\link{TrajGetUnits}}, \code{\link{TrajGetTimeUnits}},
+#'   \code{\link{TrajGetFPS}}, or allow some manipulations of trajectories, such
+#'   as \code{\link{TrajScale}}, \code{\link{TrajReverse}}, and
+#'   \code{\link{TrajRotate}}.
+#'
+#'   \code{Trajr} also provides the capability of plotting a \code{Trajectory}
+#'   and the results of some analyses.
 #'
 #' @docType package
 #' @name trajr

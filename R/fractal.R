@@ -115,11 +115,12 @@ TrajFractalDimensionValues <- function(trj, stepSizes, adjustD = TRUE) {
 #'
 #' @export
 TrajFractalDimension <- function(trj, stepSizes, adjustD = TRUE, dMean = TRUE) {
+
   .calcD <- function(trj) {
     # Calculate path length for a range of step sizes
-    fi <- TrajFractalDimensionValues(trj, stepSizes, adjustD = adjustD)
+    vals <- TrajFractalDimensionValues(trj, stepSizes, adjustD = adjustD)
     # Calculate slope of points on log/log axes
-    l <- stats::lm(log(fi$pathlength) ~ log(fi$stepsize))
+    l <- stats::lm(log(pathlength) ~ log(stepsize), data = vals)
     slope <- l$coefficients[2]
     # Fractal dimension
     unname(1 - slope)

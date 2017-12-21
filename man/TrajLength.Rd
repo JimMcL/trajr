@@ -2,7 +2,7 @@
 % Please edit documentation in R/query.R
 \name{TrajLength}
 \alias{TrajLength}
-\title{Path length}
+\title{Trajectory length}
 \usage{
 TrajLength(trj, startIndex = 1, endIndex = nrow(trj))
 }

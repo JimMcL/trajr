@@ -16,15 +16,15 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = FALSE,
   comment = "#>",
-  cache=TRUE,
-  dev="svg",
+  dev="png",
   global.par = TRUE
 )
 library("knitr")
 library("plotrix")
-library(trajr)
+library("trajr")
 
-dbg <- TRUE
+# If fastPlots is TRUE, small sample datasets are plotted to save time
+fastPlots <- TRUE
 ```
 
 ## Introduction
@@ -240,11 +240,11 @@ Within this section, most of the figures show the statistic plotted for multiple
 
 The sinuosity index devised by Bovet & Benhamou (1988) may be an appropriate measure of the tortuosity of a random search path (Benhamou 2004). Sinuosity is a function of the standard deviation of the turning angles in the trajectory. The function `TrajSinuosity` calculates the sinuosity, and should be applied to a [rediscretized](#resampling-trajectories) trajectory.
 
-```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error (linear axes), plotted for several different step sizes_", cache=TRUE, fig.height=4, fig.width=6, echo=c(-1,-2,-4)}
+```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=c(-1,-2,-4)}
 set.seed(1)
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 n <- 5000
-n <- ifelse(dbg, 100, n) # If debugging, small value for faster knitting. This line is hidden
+n <- ifelse(fastPlots, 100, n) # If debugging, small value for faster knitting. This line is hidden
 # Random magnitude of angular errors
 angularErrorSd <- runif(n, 0, 2)
 
@@ -261,7 +261,7 @@ sins <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajSinuosity(trjs[[
 
 # Plot sinuosity vs angular error
 plot(rep(angularErrorSd, 3), sins,
-     pch = '.', 
+     pch = 16, cex = .2, 
      col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)),
      xlab = expression(sigma["angular error"]), ylab = "Sinuosity")
 
@@ -273,7 +273,7 @@ legend("bottomright", c("Step length 1", "Step length 2", "Step length 10"),
 
 $E^{a}_{max}$ is a dimensionless estimate of the maximum expected displacement of a trajectory: the greater the value (approaching infinity), the straighter the path (Cheung, Zhang, Stricker, & Srinivasan, 2007). $E^{b}_{max}$ is $E^{a}_{max}$ multiplied by the mean step length, so gives the maximum possible displacement in spatial units. `TrajEmax` returns the value of $E^{a}_{max}$ for a trajectory, or $E^{b}_{max}$ if the argument `eMaxB` is `TRUE`. `TrajEmax` differentiates between random and directed walks; see `?TrajEmax` for details.
 
-```{r emax, fig.cap="_E~max~ as a function of angular error (logarithmic axes)_", cache=TRUE, fig.height=4, fig.width=6, echo=-1}
+```{r emax, fig.cap="_E~max~ as a function of angular error (logarithmic axes)_", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 1.5, 0.5) + 0.1)
 # Calculate Emax for all of the rediscretized trajectories (from the previous example)
 emaxs <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajEmax(trjs[[i]])))
@@ -282,7 +282,7 @@ emaxs[emaxs < 0] <- NA # Avoid warnings when plotting on log axes
 # Plot Emax vs angular error on log axes
 plot(rep(angularErrorSd, 3), emaxs,
      log = 'xy',
-     pch = '.', 
+     pch = 16, cex = .2, 
      col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)),
      xlab = expression(sigma["angular error"]), ylab = expression(E[max]))
 
@@ -321,7 +321,7 @@ legend("topleft", c("Step length 1", "Step length 2", "Step length 10"),
 
 Directional change is defined as the change in direction over time, and has been used to assess locomotor mimicry in butterflies (Kitamura & Imafuku, 2015). Directional change is defined for each pair of steps, so a trajectory (or a portion thereof) may be characterised by the mean (`DC`) and standard deviation (`SDDC`) of all directional changes. `DC` may be used as an index of nonlinearity, and `SDDC` as a measure of irregularity. The directional changes for a trajectory are calculated by the function `TrajDirectionalChange`, so `SD` may be calculated as `mean(TrajDirectionalChange(trj))`, and `SDDC` as `sd(TrajDirectionalChange(trj))`. Note that directional change cannot be calculated on rediscretized trajectories, as rediscretizing loses time information.
 
-```{r DC, fig.cap="_DC and SDDC as a function of angular error_", cache=TRUE, fig.height=4, fig.width=6, echo=-1}
+```{r DC, fig.cap="_DC and SDDC as a function of angular error_", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 # Calculate DC and SDDC for all of the original trajectories (from above)
 dcs <- sapply(1:n, function(i) mean(TrajDirectionalChange(trjs[[i]])))
@@ -329,9 +329,9 @@ sddcs <- sapply(1:n, function(i) sd(TrajDirectionalChange(trjs[[i]])))
 
 # Plot DC vs angular error
 plot(angularErrorSd, dcs,
-     pch = '.', col = "blue",
+     pch = 16, cex = .2, col = "blue",
      xlab = expression(sigma["angular error"]), ylab = "DC")
-points(angularErrorSd, sddcs, pch = '.', col = 'red')
+points(angularErrorSd, sddcs, pch = 16, cex = .2, col = 'red')
 legend("bottomright", c("DC", "SDDC"), 
        pch = 16, col = c("blue", "red"), inset = 0.01)
 ```
@@ -494,11 +494,11 @@ mtext("d)", 3, -1.3, adj = .05)
 
 Following is an implementation of a simulation study from (Cheung at el., 2007). It plots the expected endpoints of multiple random trajectories after different numbers of steps, illustrating the difference in expected distance travelled between directed and random walks. It demonstrates that, for travel without a compass (i.e. an external means to determine direction), the distance travelled along an intended direction does not increase in proportion to the number of steps, which implies an upper limit to the distance that can be travelled without a compass.
 
-```{r directWalks, fig.cap="_Computer simulation of the results of compass-based navigation._", fig.height=4.5, fig.width=6, cache=TRUE, echo=c(-1,-2,-4)}
+```{r directWalks, fig.cap="_Computer simulation of the results of compass-based navigation._", fig.height=4.5, fig.width=6, echo=c(-1,-2)}
 set.seed(1)
 par(mfrow = c(2, 3), mar = c(4, 4, 3, 1))
-ntraj <- 20000
-ntraj <- ifelse(dbg, 50, ntraj) # DBG For fast knitting during development. This line is hidden
+ntraj <- 1000 # Cheung at el. used 20000, but it's slow
+
 # Define a function to simulate journeys of different lengths
 simulateJourneys <- function(random, nTrajectories = ntraj) {
 
@@ -509,6 +509,7 @@ simulateJourneys <- function(random, nTrajectories = ntraj) {
   }
   
   trjs <- lapply(1:nTrajectories, generate)
+  
   # Use same plot axes as in the original article
   if (random) {
     xlims <- list(c(-20, 20), c(-20, 20), c(-20, 20), c(-40, 40), c(-170, 170), c(-400, 400))
@@ -518,13 +519,15 @@ simulateJourneys <- function(random, nTrajectories = ntraj) {
     ylims <- list(c(-20, 20), c(-20, 20), c(-20, 20), c(-20, 20), c(-30, 30), c(-70, 70))
   }
   
+  # 6 plots in 2 rows
+  par(mfrow = c(2, 3))
   steps <- c(1, 2, 5, 20, 100, 500)
   for(i in 1:length(steps)) {
     step <- steps[i]
     title <- sprintf("%d %s", step, ifelse(step == 1, "step", "steps"))
     # Plot the end-points of each journey after "step" steps
     endPoints <- t(sapply(trjs, function(t) t[step + 1, c('x', 'y')]))
-    plot(endPoints, pch  = '.', asp = 1, main = title, xlim = xlims[[i]], ylim = ylims[[i]])
+    plot(endPoints, pch = '.', asp = 1, main = title, xlim = xlims[[i]], ylim = ylims[[i]])
   }
 }
 
@@ -532,7 +535,7 @@ simulateJourneys <- function(random, nTrajectories = ntraj) {
 simulateJourneys(random = FALSE)
 ```
 
-```{r randomWalks, fig.cap="_Computer simulation of the results of navigation without a compass._", fig.height=4.5, fig.width=6, cache=TRUE, echo=-1:-2}
+```{r randomWalks, fig.cap="_Computer simulation of the results of navigation without a compass._", fig.height=4.5, fig.width=6, echo=-1:-2}
 set.seed(1)
 par(mfrow = c(2, 3), mar = c(4, 4, 3, 1))
 simulateJourneys(random = TRUE)
@@ -583,18 +586,18 @@ cat(sprintf("Backward pattern analysis misclassified %g%% of random walks, and %
 
 ## References
 
-Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. doi:10.1016/j.jtbi.2004.03.016
+Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. \doi{10.1016/j.jtbi.2004.03.016}
 
-Benhamou, S. (2006). Detecting an orientation component in animal paths when the preferred direction is individual-dependent. Ecology, 87(2), 518-528. doi:10.1890/05-0495
+Benhamou, S. (2006). Detecting an orientation component in animal paths when the preferred direction is individual-dependent. Ecology, 87(2), 518-528. \doi{10.1890/05-0495}
 
-Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
+Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. \doi{10.1016/S0022-5193(88)80038-9}
 
-Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007). Animal navigation: the difficulty of moving in a straight line. Biological Cybernetics, 97(1), 47-61. doi:10.1007/s00422-007-0158-0
+Cheung, A., Zhang, S., Stricker, C., & Srinivasan, M. V. (2007). Animal navigation: the difficulty of moving in a straight line. Biological Cybernetics, 97(1), 47-61. \doi{10.1007/s00422-007-0158-0}
 
-Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). doi:10.1098/rspb.2015.0483
+Kitamura, T., & Imafuku, M. (2015). Behavioural mimicry in flight path of Batesian intraspecific polymorphic butterfly Papilio polytes. Proceedings of the Royal Society B: Biological Sciences, 282(1809). \doi{10.1098/rspb.2015.0483}
 
-Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11. doi:10.1007/s10441-006-5954-8
+Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal Dimension of Animal movement paths. Acta Biotheoretica, 54(1), 1-11. \doi{10.1007/s10441-006-5954-8}
 
-Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). doi:10.1098/rspb.2017.0308
+Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). \doi{10.1098/rspb.2017.0308}
 
-Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique. Ecology, 77(7), 2086-2090. doi:10.2307/2265702
+Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique. Ecology, 77(7), 2086-2090. \doi{10.2307/2265702}

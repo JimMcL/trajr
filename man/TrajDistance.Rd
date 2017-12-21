@@ -2,8 +2,7 @@
 % Please edit documentation in R/query.R
 \name{TrajDistance}
 \alias{TrajDistance}
-\title{Calculates the distance between the start and end of a trajectory.
-Also called the diffusion distance, net distance, or bee-line from start to finish.}
+\title{Trajectory distance}
 \usage{
 TrajDistance(trj, startIndex = 1, endIndex = nrow(trj))
 }
