@@ -50,7 +50,9 @@ TrajGetTimeUnits <- function(trj) {
 #'
 #' Returns the lengths of each step in a trajectory.
 #'
-#' @param trj Trajectory to query
+#' @param trj Trajectory to query.
+#'
+#' @seealso \code{\link{TrajLength}}
 #'
 #' @export
 TrajStepLengths <- function(trj) {
@@ -82,6 +84,8 @@ TrajDistance <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' @param endIndex Index of the ending point.
 #' @return Path Numeric length of the trajectory.
 #'
+#' @seealso \code{\link{TrajStepLengths}}
+#'
 #' @export
 TrajLength <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
   sum(Mod(diff(trj$polar[startIndex:endIndex])))
@@ -93,12 +97,14 @@ TrajLength <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' the previous segment or relative to the specified compass direction.
 #'
 #' @param trj the trajectory whose whose angles are to be calculated.
-#' @param lag Angles between every lag'th segment is calculated.
+#' @param lag Angles between every lag'th segment are calculated.
 #' @param compass.direction If not \code{NULL}, step angles are calculated
 #'   relative to this angle (in radians), otherwise they are calculated relative
 #'   to the previous step angle.
 #'
 #' @return Step angles in radians, normalised so that \code{-pi < angle <= pi}.
+#'
+#' @seealso \code{\link{TrajStepLengths}}
 #'
 #' @export
 TrajAngles <- function(trj, lag = 1, compass.direction = NULL) {

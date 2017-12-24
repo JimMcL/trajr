@@ -28,5 +28,4 @@ Unfortunately, installing vignettes can be time-consuming.
 
 ## Using trajr
 
-The best way to start is to read the package vignette. 
-
+The best way to start is to read the package vignette. After installation from CRAN (or from github including vignettes), run `browseVignettes(package = "trajr")`.

@@ -50,8 +50,8 @@
 #' 2-dimensional cartesian coordinates and some metadata.
 #'
 #' If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
-#' the time (in seconds) of each data point. Otherwise, times are calculated for
-#' each point as \code{(frame - 1) / fps} where \code{frame} is the index of the
+#' the time (in seconds) of each coordinate. Otherwise, times are calculated for
+#' each point as \code{(coord - 1) / fps} where \code{coord} is the index of the
 #' point.
 #'
 #' \code{x} and \code{y} must be square units. Longitude and latitude are not
@@ -65,11 +65,11 @@
 #'   for the points in the trajectory.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
 #' @param yCol Name or index of the \code{y} column in \code{track} (default 2).
-#' @param timeCol optional name or index of the column which contains frame
+#' @param timeCol optional name or index of the column which contains coordinate
 #'   times.
-#' @param fps Frames per second - used to calculate relative frame times if
+#' @param fps Frames per second - used to calculate relative coordinate times if
 #'   \code{track} does not contain a \code{time} column. Time intervals between
-#'   frames are assumed to be constant throught the entire track.
+#'   coordinate are assumed to be constant throught the entire track.
 #' @param spatialUnits Abbreviation for the x and y units.
 #' @param timeUnits Abbreviation for the units that time is recorded in.
 #'
