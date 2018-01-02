@@ -124,8 +124,8 @@ TrajAngles <- function(trj, lag = 1, compass.direction = NULL) {
 
 #' Trajectory expected square displacement
 #'
-#' Calculates the expected square displacement for a trajectory, using the
-#' formula in Kareiva & Shigesada, (1983).
+#' Calculates the expected square displacement for a trajectory assuming it is a
+#' correlated random walk, using the formula in Kareiva & Shigesada, (1983).
 #'
 #' Note that Cheung, Zhang, Stricker, and Srinivasan (2007) define an
 #' alternative formulation for expected maximum displacement, Emax (see
