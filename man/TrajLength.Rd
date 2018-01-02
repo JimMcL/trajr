@@ -17,6 +17,9 @@ TrajLength(trj, startIndex = 1, endIndex = nrow(trj))
 Path Numeric length of the trajectory.
 }
 \description{
-Calculates the cumulative length of a track (or a portion of a track), which
-is the total distance travelled along the trajectory.
+Calculates the cumulative length of a trajectory (or a portion of a
+trajectory), which is the total distance travelled along the trajectory.
+}
+\seealso{
+\code{\link{TrajStepLengths}}
 }

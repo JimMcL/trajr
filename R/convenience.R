@@ -3,25 +3,36 @@
 # Private functions ####
 
 .locateFiles <- function(fileNames, rootDir) {
-  sapply(fileNames, function(fn) {
-    file <- list.files(rootDir, pattern = as.character(fn), full.names=TRUE, recursive=TRUE)
-    if (length(file) == 0) {
-      stop(sprintf("Unable to locate trajectory file %s (within folder %s)", fn, rootDir))
-    }
-    if (length(file) > 1) {
-      stop(sprintf("There are %d files named %s within folder %s, file names must be unique", length(file), fn, rootDir))
+  sapply(as.character(fileNames), function(fn) {
+    file <- ""
+    # Ignore empty/NULL file names
+    if (is.character(fn) && !grepl("^\\s*$", fn)) {
+      file <- list.files(rootDir, pattern = fn, full.names=TRUE, recursive=TRUE)
+      if (length(file) == 0) {
+        stop(sprintf("Unable to locate trajectory file %s (within folder %s)", fn, rootDir))
+      }
+      if (length(file) > 1) {
+        stop(sprintf("There are %d files named '%s' within folder %s, file names must be unique", length(file), fn, rootDir))
+      }
     }
     file
   })
 }
 
+# Reads a file and returns a list of trajectory coordinates
 .readAndCheckCoords <- function(fileName, csvReadFn) {
-  coords <- csvReadFn(fileName, stringsAsFactors = FALSE)
-  # Check that there are at least 2 columns
-  if (ncol(coords) < 2) {
-    stop(sprintf("Invalid trajectory CSV file %s, contains %d column but requires at least 2", fileName, ncol(coords)))
+  coordList <- csvReadFn(fileName, stringsAsFactors = FALSE)
+  # Note a data.frame is a type of list, so we can't use is.list() here
+  if (!inherits(coordList, "list"))
+    coordList <- list(coordList)
+  for (i in seq(1, length.out = length(coordList))) {
+    coords <- coordList[[i]]
+    # Check that there are at least 2 columns
+    if (ncol(coords) < 2) {
+      stop(sprintf("Invalid trajectory CSV file %s, contains %d column but requires at least 2", fileName, ncol(coords)))
+    }
   }
-  coords
+  coordList
 }
 
 # Public functions ####
@@ -30,7 +41,8 @@
 #'
 #' Reads multiple trajectories from files, performs some basic sanity checks on
 #' them, and optionally smooths and scales them. Attempts to collect and report
-#' errors for multiple trajectories in a single call.
+#' errors for multiple trajectories in a single call. Any blank or \code{NULL}
+#' file names are quietly ignored.
 #'
 #' For each file name in \code{fileNames}, searches through the folder
 #' \code{rootDir} (unless it's \code{NULL}) to find the file, then reads the
@@ -48,12 +60,14 @@
 #'   must be unique. If \code{rootDir} is not \code{NULL}, then the file names
 #'   are treated as regular expressions.
 #' @param fps Vector of frames-per-second values corresponding to the
-#'   trajectories in \code{fileNames}.
+#'   trajectories in \code{fileNames}. If length is 1, it is repeated to
+#'   length(fileNames).
 #' @param scale Vector of scale values corresponding to the trajectories in
 #'   \code{fileNames}. May be specified as character expressions (e.g. "1 /
 #'   1200") rather than numeric values. If NULL, the trajectories will not be
-#'   scaled.
-#' @param spatialUnits Abbreviated name of spatial coordinate units after scaling, e.g. "m".
+#'   scaled. If length is 1, it is repeated to length(fileNames).
+#' @param spatialUnits Abbreviated name of spatial coordinate units after
+#'   scaling, e.g. "m".
 #' @param timeUnits Abbreviated name of temporal units, e.g. "s".
 #' @param csvStruct A list which identifies the columns in each CSV file which
 #'   contain x-, y-, and optionally time-values.
@@ -64,8 +78,10 @@
 #' @param rootDir Optional name of a top level directory which contains the CSV
 #'   files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
 #'   within \code{rootDir} or its sub-directories.
-#' @param csvReadFn Function used to read the CSV files (see
-#'   \code{\link[utils]{read.csv}}, \code{\link[utils]{read.csv2}}).
+#' @param csvReadFn Function used to read the CSV files. Required to accept
+#'   arguments \code{filename, ...}, and return a data frame of coordinates, or
+#'   a list of multiple data frames (see \code{\link[utils]{read.csv}},
+#'   \code{\link[utils]{read.csv2}}).
 #' @param ... Additional arguments passed to \code{csvReadFn}.
 #'
 #' @return A list of trajectories.
@@ -111,7 +127,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
   if (!is.null(scale) && length(scale) == 1)
     scale <- rep(scale, length(fileNames))
 
-  result <- list(length(fileNames))
+  result <- list()
 
   # Build up a list of errors so they can all be reported at once,
   # rather than annoying report one, fix one, report next one...
@@ -119,34 +135,43 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 
   # For each file...
   for (i in 1:length(fileNames)) {
-    # Read the trajectory coordinates from the file
-    coords <- .readAndCheckCoords(fileNames[i], csvReadFn, ...)
-    # Convert to a trajectory
-    trj <- tryCatch(
-      TrajFromCoords(coords, fps = fps[i],
-                     xCol = csvStruct$x, yCol = csvStruct$y, timeCol = csvStruct$time,
-                     spatialUnits = spatialUnits, timeUnits = timeUnits),
-      error = function (e) {
-        errors <<- c(errors, sprintf("Trajectory file %s (index %d): %s", fileNames[i], i, conditionMessage(e)))
-        NULL
-      }
-    )
 
-    if (!is.null(trj)) {
-      # Scale
-      if (is.character(scale[i]) || is.numeric(scale[i])) {
-        # Allow scale to be specified as a character expression such as "1 / 250"
-        sc <- ifelse(is.character(scale[i]), eval(parse(text=scale[i])), scale[i])
-        trj <- TrajScale(trj, sc, spatialUnits)
-      }
-
-      # Smooth
-      if (is.numeric(smoothP) && is.numeric(smoothN)) {
-        trj <- TrajSmoothSG(trj, 3, 101)
-      }
+    # Ignore empty file names
+    fn <- as.character(fileNames[i])
+    if (!is.character(fn) || grepl("^\\s*$", fn)) {
+      next
     }
 
-    result[[i]] <- trj
+    # Read the trajectory coordinates from the file
+    coordList <- .readAndCheckCoords(fn, csvReadFn, ...)
+    for (j in seq(1, length.out = length(coordList))) {
+      # Convert to a trajectory
+      trj <- tryCatch(
+        TrajFromCoords(coordList[[j]], fps = fps[i],
+                       xCol = csvStruct$x, yCol = csvStruct$y, timeCol = csvStruct$time,
+                       spatialUnits = spatialUnits, timeUnits = timeUnits),
+        error = function (e) {
+          errors <<- c(errors, sprintf("Trajectory file %s (index %d): %s", fn, i, conditionMessage(e)))
+          NULL
+        }
+      )
+
+      if (!is.null(trj)) {
+        # Scale
+        if (is.character(scale[i]) || is.numeric(scale[i])) {
+          # Allow scale to be specified as a character expression such as "1 / 250"
+          sc <- ifelse(is.character(scale[i]), eval(parse(text=scale[i])), scale[i])
+          trj <- TrajScale(trj, sc, spatialUnits)
+        }
+
+        # Smooth
+        if (is.numeric(smoothP) && is.numeric(smoothN)) {
+          trj <- TrajSmoothSG(trj, smoothP, smoothN)
+        }
+      }
+
+      result[[length(result) + 1]] <- trj
+    }
   }
 
   # Check for errors

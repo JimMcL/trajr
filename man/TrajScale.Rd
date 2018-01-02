@@ -11,7 +11,8 @@ TrajScale(trj, scale, units, yScale = scale)
 
 \item{scale}{Scaling factor to be applied to the trajectory coordinates.}
 
-\item{units}{Character specifying the spatial units after scaling, e.g. "m" or "metres"}
+\item{units}{Character specifying the spatial units after scaling, e.g. "m"
+or "metres"}
 
 \item{yScale}{Optional scaling factor to be applied to the y-axis, which may
 be specified if the original coordinates are not square. Defaults to
@@ -29,8 +30,8 @@ set.seed(42)
 trj <- TrajGenerate()
 # original trajectory units are pixels, measured as having
 # 47 pixels in 10 mm, so to convert to metres, scale the
-# trajectory by the approriate factor
-scale <- 10 / 47 * 1000
+# trajectory by the approriate factor, i.e. (size in metres) / (size in pixels).
+scale <- .01 / 47
 scaled <- TrajScale(trj, scale, "m")
 
 }

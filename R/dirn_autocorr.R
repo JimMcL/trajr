@@ -45,15 +45,20 @@
 #' to \code{deltaSMax}, based on Shamble et al. (2017). \code{trj} must have a
 #' constant step length (see \code{\link{TrajRediscretize}}) i.e. all segments
 #' in the trajectory must be the same length. deltaS is specified in number of
-#' segments.
+#' segments. Call \code{\link{TrajDAFindFirstMinimum}} to locate the first local
+#' minimum which may be used to characterise directional periodicity in a
+#' trajectory (note that the first local minimum may not exist).
 #'
 #' @param trj The trajectory to calculate the directional autocorrelations for.
 #' @param deltaSMax Maximum delta s to calculate, default is \eqn{1/4} the
 #'   number of segments in the trajectory.
 #' @return a data frame with class \code{TrajDirectionAutocorrelations} and 2
-#'   columns, \code{deltaS} and \code{C}.
+#'   columns, \code{deltaS} and \code{C}. Plotting this object displays a graph
+#'   of the direction autocorrelation function, optionally with the locatino of
+#'   the first local minimum marked
 #'
-#' @seealso TrajDAFindFirstMinimum, TrajPlotDirectionAutocorrelations
+#' @seealso \code{\link{TrajDAFindFirstMinimum}},
+#'   \code{\link{plot.TrajDirectionAutocorrelations}}
 #'
 #' @references Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017).
 #'   Walking like an ant: a quantitative and experimental approach to
@@ -90,7 +95,8 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 #' the direction autocorrelation function of a trajectory as returned by
 #' \code{\link{TrajDirectionAutocorrelations}}. The end point is excluded from
 #' consideration as a minimum, similarly the start point will not be returned as
-#' a maximum.
+#' a maximum. if the trajectory does not osciallate in direction, there will not
+#' be a local minimum/maximum, and \code{NULL} is returned.
 #'
 #' @param corr a \code{TrajDirectionAutocorrelations} object, i.e. the direction
 #'   autocorrelation of a trajectory.

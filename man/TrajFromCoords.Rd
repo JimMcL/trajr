@@ -15,12 +15,12 @@ for the points in the trajectory.}
 
 \item{yCol}{Name or index of the \code{y} column in \code{track} (default 2).}
 
-\item{timeCol}{optional name or index of the column which contains frame
+\item{timeCol}{optional name or index of the column which contains coordinate
 times.}
 
-\item{fps}{Frames per second - used to calculate relative frame times if
+\item{fps}{Frames per second - used to calculate relative coordinate times if
 \code{track} does not contain a \code{time} column. Time intervals between
-frames are assumed to be constant throught the entire track.}
+coordinate are assumed to be constant throught the entire track.}
 
 \item{spatialUnits}{Abbreviation for the x and y units.}
 
@@ -39,12 +39,13 @@ An object with class "\code{Trajectory}", which is a data.frame with
 }
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
-2-dimensional cartesian coordinates and some metadata.
+2-dimensional cartesian coordinates, times and some metadata. The coordinates
+are sometimes referred to as "relocations".
 }
 \details{
 If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
-the time (in seconds) of each data point. Otherwise, times are calculated for
-each point as \code{(frame - 1) / fps} where \code{frame} is the index of the
+the time (in seconds) of each coordinate. Otherwise, times are calculated for
+each point as \code{(coord - 1) / fps} where \code{coord} is the index of the
 point.
 
 \code{x} and \code{y} must be square units. Longitude and latitude are not

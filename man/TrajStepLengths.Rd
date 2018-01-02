@@ -7,8 +7,11 @@
 TrajStepLengths(trj)
 }
 \arguments{
-\item{trj}{Trajectory to query}
+\item{trj}{Trajectory to query.}
 }
 \description{
 Returns the lengths of each step in a trajectory.
+}
+\seealso{
+\code{\link{TrajLength}}
 }

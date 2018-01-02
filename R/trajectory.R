@@ -47,7 +47,8 @@
 #' Create a Trajectory Object
 #'
 #' \code{TrajFromCoords} creates a new trajectory object from a set of
-#' 2-dimensional cartesian coordinates and some metadata.
+#' 2-dimensional cartesian coordinates, times and some metadata. The coordinates
+#' are sometimes referred to as "relocations".
 #'
 #' If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
 #' the time (in seconds) of each coordinate. Otherwise, times are calculated for
@@ -116,6 +117,8 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
 
   # Allocate times if they aren't already known
   if (!('time' %in% names(trj))) {
+    if (is.null(fps))
+      stop("Cannot create a trajectory without times: one of fps or a time column must be specified")
     # Assign times to each frame, starting at 0
     trj$time <- 0:(nrow(trj) - 1) / fps
   }
@@ -148,7 +151,8 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
 #'
 #' @param trj The trajectory to be scaled.
 #' @param scale Scaling factor to be applied to the trajectory coordinates.
-#' @param units Character specifying the spatial units after scaling, e.g. "m" or "metres"
+#' @param units Character specifying the spatial units after scaling, e.g. "m"
+#'   or "metres"
 #' @param yScale Optional scaling factor to be applied to the y-axis, which may
 #'   be specified if the original coordinates are not square. Defaults to
 #'   \code{scale}.
@@ -159,8 +163,8 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
 #' trj <- TrajGenerate()
 #' # original trajectory units are pixels, measured as having
 #' # 47 pixels in 10 mm, so to convert to metres, scale the
-#' # trajectory by the approriate factor
-#' scale <- 10 / 47 * 1000
+#' # trajectory by the approriate factor, i.e. (size in metres) / (size in pixels).
+#' scale <- .01 / 47
 #' scaled <- TrajScale(trj, scale, "m")
 #'
 #' @export

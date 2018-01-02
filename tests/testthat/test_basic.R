@@ -249,6 +249,8 @@ test_that("Smoothing", {
   trj <- TrajGenerate(angularErrorSd = sd)
   smoothed <- TrajSmoothSG(trj, 3, 41)
   expect_true(TrajEmax(trj) < TrajEmax(smoothed))
+  smoothed2 <- TrajSmoothSG(trj, 3, 101)
+  expect_true(TrajEmax(smoothed) < TrajEmax(smoothed2))
 })
 
 test_that("Convenience", {
@@ -269,12 +271,12 @@ test_that("Convenience", {
     points
   }
 
-
   tracks <- rbind(
     data.frame(file = "3527.csv", species = "Zodariid2 sp1", category = "spider"),
     data.frame(file = "3530.csv", species = "Daerlac nigricans", category = "mimic bug"),
     data.frame(file = "3534.csv", species = "Daerlac nigricans", category = "mimic bug"),
     data.frame(file = "3537.csv", species = "Myrmarachne erythrocephala", category = "mimic spider"),
+    data.frame(file = "", species = "", category = ""),
     data.frame(file = "3542.csv", species = "Polyrhachis sp1", category = "ant"),
     data.frame(file = "3543.csv", species = "Polyrhachis sp1", category = "ant"),
     data.frame(file = "3548.csv", species = "Crematogaster sp1", category = "ant")
@@ -282,6 +284,7 @@ test_that("Convenience", {
   csvStruct <- list(x = "x", y = "y", time = "Time")
   trjs <- TrajsBuild(tracks$file, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
 
+  expect_equal(length(trjs), nrow(tracks) - 1)
   expect_equal(TrajGetUnits(trjs[[2]]), "m")
   expect_equal(TrajGetTimeUnits(trjs[[2]]), "s")
 
@@ -313,4 +316,28 @@ test_that("Convenience", {
 
   stats <- TrajsMergeStats(trjs, characteriseTrajectory)
 
+})
+
+test_that("Convenience-multi", {
+
+  # Test building multiple trajectories from each "file"
+  readFn <- function(filename, ...) {
+    # Return 2 very different trajectories
+    t1 <- TrajGenerate(50)
+    t2 <- TrajGenerate(20, random = FALSE)
+    list(t1 = t1[, c('x', 'y', 'time')], t2 = t2[, c('x', 'y', 'time')])
+  }
+
+  trjs <- TrajsBuild(c("one", "two"), csvReadFn = readFn, smoothN = 11)
+
+  expect_equal(length(trjs), 4)
+})
+
+test_that("Sinuosity", {
+  set.seed(1)
+  for(aa in seq(0, 2, by = .1)) {
+    trj <- TrajGenerate(angularErrorSd = aa)
+    # Don't expect equal, just close
+    expect_equal(TrajSinuosity(trj), TrajSinuosity2(trj), tolerance = 0.2)
+  }
 })

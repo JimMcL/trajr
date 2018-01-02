@@ -4,6 +4,34 @@
 .deg2rad <- function(deg) { deg * pi / 180}
 
 
+#' Mean vector of turning angles
+#'
+#' Returns the mean vector of the turning angles, as defined by Batschelet,
+#' (1981). A unit vector is created for each turning angle in the trajectory,
+#' and the centre-of-mass/mean vector is returned.
+#'
+#' @param trj Trajectory object.
+#' @param compass.direction If not \code{NULL}, step angles are calculated
+#'   relative to this angle (in radians), otherwise they are calculated relative
+#'   to the previous step angle.
+
+#' @return complex number \code{r} which represents the mean vector, Mod(r) is
+#'   the length of the mean vector, Arg(r) is the angle.
+#'
+#' @export
+TrajMeanVectorOfTurningAngles <- function(trj, compass.direction = NULL) {
+
+  angles <- TrajAngles(trj, compass.direction = compass.direction)
+
+  # The value as defined in Batschelet, value is identical but this calculation
+  # is about twice as slow:
+  # phi <- atan2(sum(sin(angles)), sum(cos(angles)))
+  # r <- sqrt(sum(cos(angles)) ^ 2 + sum(sin(angles)) ^ 2) / length(angles)
+  # complex(modulus = r, argument = phi)
+
+  mean(complex(modulus = 1, argument = angles))
+}
+
 #' Straightness of a Trajectory
 #'
 #' Calculates the straightness index of a trajectory, \eqn{D / L}, where
@@ -11,13 +39,18 @@
 #' trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
 #' Benhamou (2004) considers the straightness index to be a reliable measure of
 #' the efficiency of a directed walk, but inapplicable to random trajectories.
+#' The straightness index of a random walk tends towards zero as the number of
+#' steps increases, hence should only be used to compare the tortuosity of
+#' random walks consisting of a similar number of steps.
+#'
+#' Straightness index is also known as the net-to-gross displacement ratio.
 #'
 #' @param trj Trajectory to calculate straightness of.
 #' @return The straightness index of \code{trj}, which is a value between 0
 #'   (infinitely tortuous) to 1 (a straight line).
 #'
-#' @seealso \code{\link{TrajDistance}} for trajectory distance, and
-#'   \code{\link{TrajLength}} for trajectory path length.
+#' @seealso \code{\link{TrajDistance}} for trajectory distance (or
+#'   displacement), and \code{\link{TrajLength}} for trajectory path length.
 #'
 #' @references
 #'
@@ -78,7 +111,9 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #' Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
 #' (1988), which is: \eqn{S = 1.18\sigma / \sqrt q} where \eqn{\sigma} is the
 #' standard deviation of the step turning angles and \eqn{q} is the mean step
-#' length.
+#' length. A corrected sinuosity index is available as the function
+#' \code{\link{TrajSinuosity2}} which handles a wider range of variations in
+#' step angles.
 #'
 #' @param trj Trajectory to calculate sinuosity of.
 #' @param compass.direction if not \code{NULL}, turning angles are calculated
@@ -87,7 +122,8 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #' @return The sinuosity of \code{trj}.
 #'
 #' @seealso \code{\link{TrajAngles}} for the turning angles in a trajectory,
-#'   \code{\link{TrajStepLengths}} for the step lengths.
+#'   \code{\link{TrajStepLengths}} for the step lengths,
+#'   \code{\link{TrajSinuosity2}} for a corrected version of sinuosity.
 #'
 #' @references
 #'
@@ -99,6 +135,37 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 TrajSinuosity <- function(trj, compass.direction = NULL) {
   segLen <- mean(TrajStepLengths(trj))
   1.18 * stats::sd(TrajAngles(trj, compass.direction = compass.direction)) / sqrt(segLen)
+}
+
+#' Sinuosity of a trajectory
+#'
+#' Calculates the sinuosity of a trajectory as defined by Benhamou (2004),
+#' equation 8. This is a corrected version of the sinuosity index defined in
+#' Bovet & Benhamou (1988), which is suitable for a wider range of turning angle
+#' distributions.
+#'
+#' This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
+#' b^2)]^-0.5} where \eqn{c} is the mean cosine of turning angles, and \eqn{b}
+#' is the coefficient of variation of the step length.
+#'
+#' @param trj A Trajectory object.
+#' @param compass.direction if not \code{NULL}, turning angles are calculated
+#'   for a directed walk, assuming the specified compass direction (in radians).
+#'   Otherwise, a random walk is assumed.
+#'
+#' @seealso \code{\link{TrajSinuosity}} for the uncorrected sinuosity index.
+#' @export
+TrajSinuosity2 <- function(trj, compass.direction = NULL) {
+  stepLengths <- TrajStepLengths(trj)
+  p <- mean(stepLengths)
+  # Coefficient of variation of step length
+  b <- stats::sd(stepLengths) / p
+  # Mean cosine of turning angles = length of mean vector of angles
+  c <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)))
+  # Same calculation but a bit slower
+  #c <- Mod(TrajMeanVectorOfTurningAngles(trj, compass.direction = compass.direction))
+
+  2 / sqrt(p * (((1 + c) / (1 - c)) + b^2))
 }
 
 

@@ -16,14 +16,16 @@ must be unique. If \code{rootDir} is not \code{NULL}, then the file names
 are treated as regular expressions.}
 
 \item{fps}{Vector of frames-per-second values corresponding to the
-trajectories in \code{fileNames}.}
+trajectories in \code{fileNames}. If length is 1, it is repeated to
+length(fileNames).}
 
 \item{scale}{Vector of scale values corresponding to the trajectories in
 \code{fileNames}. May be specified as character expressions (e.g. "1 /
 1200") rather than numeric values. If NULL, the trajectories will not be
-scaled.}
+scaled. If length is 1, it is repeated to length(fileNames).}
 
-\item{spatialUnits}{Abbreviated name of spatial coordinate units after scaling, e.g. "m".}
+\item{spatialUnits}{Abbreviated name of spatial coordinate units after
+scaling, e.g. "m".}
 
 \item{timeUnits}{Abbreviated name of temporal units, e.g. "s".}
 
@@ -40,8 +42,10 @@ odd, see \code{\link{TrajSmoothSG}})}
 files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
 within \code{rootDir} or its sub-directories.}
 
-\item{csvReadFn}{Function used to read the CSV files (see
-\code{\link[utils]{read.csv}}, \code{\link[utils]{read.csv2}}).}
+\item{csvReadFn}{Function used to read the CSV files. Required to accept
+arguments \code{filename, ...}, and return a data frame of coordinates, or
+a list of multiple data frames (see \code{\link[utils]{read.csv}},
+\code{\link[utils]{read.csv2}}).}
 
 \item{...}{Additional arguments passed to \code{csvReadFn}.}
 }
@@ -51,7 +55,8 @@ A list of trajectories.
 \description{
 Reads multiple trajectories from files, performs some basic sanity checks on
 them, and optionally smooths and scales them. Attempts to collect and report
-errors for multiple trajectories in a single call.
+errors for multiple trajectories in a single call. Any blank or \code{NULL}
+file names are quietly ignored.
 }
 \details{
 For each file name in \code{fileNames}, searches through the folder

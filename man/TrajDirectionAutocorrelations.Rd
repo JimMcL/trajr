@@ -14,14 +14,18 @@ number of segments in the trajectory.}
 }
 \value{
 a data frame with class \code{TrajDirectionAutocorrelations} and 2
-  columns, \code{deltaS} and \code{C}.
+  columns, \code{deltaS} and \code{C}. Plotting this object displays a graph
+  of the direction autocorrelation function, optionally with the locatino of
+  the first local minimum marked
 }
 \description{
 Calculates the autocorrelation of the track for \eqn{\Delta}s ranging from 1
 to \code{deltaSMax}, based on Shamble et al. (2017). \code{trj} must have a
 constant step length (see \code{\link{TrajRediscretize}}) i.e. all segments
 in the trajectory must be the same length. deltaS is specified in number of
-segments.
+segments. Call \code{\link{TrajDAFindFirstMinimum}} to locate the first local
+minimum which may be used to characterise directional periodicity in a
+trajectory (note that the first local minimum may not exist).
 }
 \references{
 Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017).
@@ -31,5 +35,6 @@ Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017).
   284(1858). doi:10.1098/rspb.2017.0308
 }
 \seealso{
-TrajDAFindFirstMinimum, TrajPlotDirectionAutocorrelations
+\code{\link{TrajDAFindFirstMinimum}},
+  \code{\link{plot.TrajDirectionAutocorrelations}}
 }

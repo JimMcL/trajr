@@ -9,7 +9,7 @@ TrajAngles(trj, lag = 1, compass.direction = NULL)
 \arguments{
 \item{trj}{the trajectory whose whose angles are to be calculated.}
 
-\item{lag}{Angles between every lag'th segment is calculated.}
+\item{lag}{Angles between every lag'th segment are calculated.}
 
 \item{compass.direction}{If not \code{NULL}, step angles are calculated
 relative to this angle (in radians), otherwise they are calculated relative
@@ -21,4 +21,7 @@ Step angles in radians, normalised so that \code{-pi < angle <= pi}.
 \description{
 Calculates the step angles (in radians) of each segment, either relative to
 the previous segment or relative to the specified compass direction.
+}
+\seealso{
+\code{\link{TrajStepLengths}}
 }

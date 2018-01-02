@@ -20,7 +20,9 @@ The sinuosity of \code{trj}.
 Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
 (1988), which is: \eqn{S = 1.18\sigma / \sqrt q} where \eqn{\sigma} is the
 standard deviation of the step turning angles and \eqn{q} is the mean step
-length.
+length. A corrected sinuosity index is available as the function
+\code{\link{TrajSinuosity2}} which handles a wider range of variations in
+step angles.
 }
 \references{
 Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements
@@ -29,5 +31,6 @@ using a correlated random walk model. Journal of Theoretical Biology, 131(4),
 }
 \seealso{
 \code{\link{TrajAngles}} for the turning angles in a trajectory,
-  \code{\link{TrajStepLengths}} for the step lengths.
+  \code{\link{TrajStepLengths}} for the step lengths,
+  \code{\link{TrajSinuosity2}} for a corrected version of sinuosity.
 }

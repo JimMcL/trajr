@@ -19,6 +19,12 @@ Calculates the straightness index of a trajectory, \eqn{D / L}, where
 trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
 Benhamou (2004) considers the straightness index to be a reliable measure of
 the efficiency of a directed walk, but inapplicable to random trajectories.
+The straightness index of a random walk tends towards zero as the number of
+steps increases, hence should only be used to compare the tortuosity of
+random walks consisting of a similar number of steps.
+}
+\details{
+Straightness index is also known as the net-to-gross displacement ratio.
 }
 \references{
 Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
@@ -29,6 +35,6 @@ path. Journal of Theoretical Biology, 229(2), 209-220.
 doi:10.1016/j.jtbi.2004.03.016
 }
 \seealso{
-\code{\link{TrajDistance}} for trajectory distance, and
-  \code{\link{TrajLength}} for trajectory path length.
+\code{\link{TrajDistance}} for trajectory distance (or
+  displacement), and \code{\link{TrajLength}} for trajectory path length.
 }

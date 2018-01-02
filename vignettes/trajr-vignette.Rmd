@@ -29,7 +29,7 @@ fastPlots <- TRUE
 
 ## Introduction
 
-The `trajr` R package is a toolkit for statistical analysis of the trajectories of moving animals. Trajectory analysis is applicable in fields as diverse as optimal foraging theory, studies of migration, and mimicry theory. A _trajectory_ is simply a record of the path followed by a moving animal. `Trajr` operates on trajectories in the form of a series of locations with times. Trajectories may be obtained by any method which provides this information, including manual tracking, radio telemetry, GPS tracking, and motion tracking from videos. 
+The `trajr` R package is a toolkit for calculating parameters and statistical analysis of the trajectories of moving animals. Trajectory analysis is applicable in fields as diverse as optimal foraging theory, studies of migration, and behavioural mimicry (verifying similarity in locomotion). A _trajectory_ is simply a record of the path followed by a moving animal. `Trajr` operates on trajectories in the form of a series of locations with times (i.e. x, y coordinates in time). Trajectories may be obtained by any method which provides this information, including manual tracking, radio telemetry, GPS tracking, and motion tracking from videos. 
 
 The goal of this package (and this document) is to aid biological researchers, who may not have extensive experience with R, to analyse trajectories without being handicapped by a limited knowledge of R or programming. However, a basic understanding of R is required. 
 
@@ -57,7 +57,7 @@ Once the `trajr` package has been installed and loaded, you have access to the s
 
 ## Trajectories in `trajr`
 
-`Trajr` works with trajectories, where a trajectory is a simplification of a real path travelled by an animal, and is a set of 2-dimensional spatial coordinates with a third temporal dimension. A trajectory can also be thought of as a series of steps, each comprised of a length (L~i~), a turning angle ($\Delta$~i~), and a time. Trajectories are sometimes separated into two distinct types: correlated random walks, in which the angle of each step is the angle of the previous step ± some error; and directed walks, or compass-based navigation, in which the angular errors at each step are added to the "ideal" or compass direction. `Trajr` generally assumes random walks, but provides some support for directed walks.
+`Trajr` works with trajectories, where a trajectory is a simplification of a real path travelled by an animal, and is a set of 2-dimensional spatial coordinates with a third temporal dimension. A trajectory can also be thought of as a series of steps, each comprised of a length (L~i~), a turning angle ($\Delta$~i~), and a time. Trajectories have been modelled in various ways; `trajr` works with two models: _correlated random walks_ in which the angle of each step is the angle of the previous step ± some error; and _directed walks_, or compass-based navigation, in which the angular errors at each step are added to the "ideal" or compass    direction. `Trajr` generally assumes random walks, but provides some support for directed walks.
 
 ```{r randomWalk, echo=FALSE, fig.height=4, fig.width=6, fig.cap="_A random walk with 5 steps_"}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
@@ -93,7 +93,7 @@ plot(trj)
 
 ### Creating Trajectories
 
-In practice, trajectory coordinates are typically read from a data file such as a CSV file, and then passed in to the `TrajFromCoords` function. Run `?TrajFromCoords` to access help for the `TrajFromCoords` function, which provides detailed information about creating trajectories from coordinates. In addition, many functions (including `TrajFromCoords`) contain code examples as part of their help information. While examples are part of the help page, you can display and execute an example by calling the `example` function, for example, `example("TrajFromCoords")` will display and run the examples for the `TrajFromCoords` function. 
+In practice, trajectory coordinates are typically read from a data file such as a CSV file, and then passed in to the `TrajFromCoords` function. Run `?TrajFromCoords` to access help for the `TrajFromCoords` function, which provides detailed information about creating trajectories from coordinates. In addition, many functions (including `TrajFromCoords`) contain code examples as part of their help information. While examples are part of the help page, you can display them by calling the `example` function: `example("TrajFromCoords")` will display and run the examples for the `TrajFromCoords` function. 
 ```{r, eval=FALSE}
 coords <- read.csv("mycoords.csv")
 trj <- TrajFromCoords(coords)
@@ -103,12 +103,18 @@ trj <- TrajFromCoords(coords)
 
 ### Scaling Trajectories
 
-Trajectories may need to be scaled before analysis. For instance, when a trajectory is extracted from video, the spatial units will be pixels, and require conversion to more meaningful units such as metres. Trajectories are scaled by calling `TrajScale` and specifying the scale factor and the abbreviation of the transformed units. In the case of a trajectory digitised from a video, you can calculate scale as $width^{m}_{o}/width^{p}_{o}$, where $width^{m}_{o}$ is the width of an object in metres, and $width^{p}_{o}$ is the width of the same object in pixels, as measured from the video.
+Trajectories may need to be scaled before analysis. For instance, when a trajectory is extracted from video, the spatial units will be pixels, and require conversion to more meaningful units such as metres. Trajectories are scaled by calling `TrajScale`, specifying the scale factor and the abbreviation of the transformed units. In the case of a trajectory digitised from a video, you can calculate scale as $width^{m}/width^{p}$, where $width^{m}$ is the width of an object in metres, and $width^{p}$ is the width of the same object in pixels, as measured from the video.
 ```{r, eval=FALSE}
-coords <- read.csv("mycoords.csv")
+# Example 1
+coords <- read.csv("H.pahangensis_096xypts.csv")
 trj <- TrajFromCoords(coords, spatialUnits = "pixels")
-# A 10 mm object had length 47 pixels in the video, scale to metres
-trj <- TrajScale(trj, 10 * 1000 / 47, "m")
+# A 10 mm (= .01 m) object had length 47 pixels in the video, scale to metres
+trj <- TrajScale(trj, .01 / 47, "m")
+
+# Example 2
+coords <- read.csv("A.argentifasciata_C0139xypts.csv")
+# In this video, a 20 cm (= .2 m) object had length 1800 pixels, scale to metres
+trj <- TrajScale(trj, .2 / 1800, "m")
 ```
 
 ### Smoothing trajectories
@@ -122,8 +128,8 @@ trj <- TrajGenerate(200, random = TRUE, angularErrorSd = .25)
 # Plot original trajectory
 plot(trj, lwd = 2)
 
-# Create a smoothed trajectory
-smoothed <- TrajSmoothSG(trj, 3, 31)
+# Create a smoothed trajectory, filter order 3, length 31
+smoothed <- TrajSmoothSG(trj, p = 3, n = 31)
 # Plot it in slightly transparent red
 lines(smoothed, col = "#FF0000A0", lwd = 2)
 
@@ -162,7 +168,8 @@ This table lists trajectory operations not otherwise addressed by this document.
 kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                 "`TrajGetFPS`", "`TrajGetNCoords`", "`TrajGetUnits`",
                                 "`TrajGetTimeUnits`", "`TrajStepLengths`", "`TrajLength`",
-                                "`TrajDistance`", "`TrajAngles`"), 
+                                "`TrajDistance`", "`TrajAngles`",
+                                "`TrajMeanVectorOfTurningAngles`"), 
                  Description = c("Rotates a trajectory",
                                  "Reverses a trajectory",
                                  "Returns the frames-per-second of a trajectory",
@@ -172,7 +179,8 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                  "Returns the lengths of each step within the trajectory",
                                  "Returns the total length of the trajectory",
                                  "Returns the straight-line distance from the start to the end of the trajectory",
-                                 "Returns the turning angles (radians) of a trajectory")),
+                                 "Returns the turning angles (radians) of a trajectory",
+                                 "Returns the mean vector of the turning angles")),
       caption = "_Miscellaneous `trajr` functions._")
 
 ```
@@ -209,7 +217,7 @@ mtext('Speed (m/s)', side = 4, line = 3)
 abline(h = 0, col = 'lightGrey')
 ```
 
-Once the trajectory speed and acceleration have been obtained, it is simple to calculate values such as mean, maximum, minimum or standard deviation of speed (or acceleration): `mean(derivs$speed)`, `max(derivs$speed)`, `min(derivs$speed)`, or `sd(derivs$speed)`. Similarly, calculations excluding periods when speed drops below (or above) some value are also straightforward, for example: `mean(derivs$speed[deriv$speed > STOPPED_SPEED])`. In addition, the function `TrajSpeedIntervals` allows you to determine the time intervals within the trajectory that satisfy a speed constraint, either slower than some speed, faster than a speed, or both. This may be useful, for example, when testing how often, or for how long, a flying insect hovers, i.e. when its speed drops below some threshold. The object returned by a call to `TrajSpeedIntervals` can be plotted.
+Once the trajectory speed and acceleration have been obtained, it is simple to calculate values such as mean, maximum, minimum or standard deviation of speed (or acceleration): `mean(derivs$speed)`, `max(derivs$speed)`, `min(derivs$speed)`, or `sd(derivs$speed)`. Similarly, calculations excluding periods when speed drops below (or above) some value are also straightforward, for example: `mean(derivs$speed[deriv$speed > STOPPED_SPEED])`. In addition, the function `TrajSpeedIntervals` allows you to determine the time intervals within the trajectory that satisfy a speed constraint, either slower than some speed, faster than a speed, or both. This may be useful, for example, when testing how often, or for how long, a flying insect hovers, or a running insect stops, i.e. when its speed drops below some threshold. The object returned by a call to `TrajSpeedIntervals` can be plotted.
 
 
 ```{r speedIntervals, fig.cap="_Speed over time, hovering intervals (speed < 2 m/s) highlighted_", fig.width=6, fig.height=4, echo=-1:-2}
@@ -232,13 +240,13 @@ plot(intervals)
 
 #### Straightness index
 
-Various methods to measure the straightness, or conversely, tortuosity, of trajectories are available within `trajr`. The simplest is simply $D/L$, where $D$ is the distance from the start to the end of the trajectory, and $L$ is the length of the trajectory. This straightness index is calculated by the function `TrajStraightness`, and is a number ranging from 0 to 1, where 1 indicates a straight line. Benhamou (2004) considers the straightness index to be a reliable measure of the efficiency of a directed walk, but inapplicable to random trajectories.
+Various methods to measure the straightness, or conversely, tortuosity, of trajectories are available within `trajr`. The simplest is $D/L$, where $D$ is the distance from the start to the end of the trajectory, and $L$ is the length of the trajectory. This straightness index is calculated by the function `TrajStraightness`, and is a number ranging from 0 to 1, where 1 indicates a straight line. Benhamou (2004) considers the straightness index to be a reliable measure of the efficiency of a directed walk, but inapplicable to random trajectories.
 
 Within this section, most of the figures show the statistic plotted for multiple trajectories which vary in their sinuosity. Sinuosity is varied by generating random trajectories with different standard deviations of angular errors.
 
 #### Sinuosity
 
-The sinuosity index devised by Bovet & Benhamou (1988) may be an appropriate measure of the tortuosity of a random search path (Benhamou 2004). Sinuosity is a function of the standard deviation of the turning angles in the trajectory. The function `TrajSinuosity` calculates the sinuosity, and should be applied to a [rediscretized](#resampling-trajectories) trajectory.
+The sinuosity index defined by Benhamou (2004) may be an appropriate measure of the tortuosity of a random search path. Sinuosity is a function of the mean cosine of turning angles, and is a corrected form of the original sinuosity index defined by Bovet & Benhamou (1988). The function `TrajSinuosity2` calculates the corrected form while `TrajSinuosity` calculates the original index. Sinuosity should be calculated for a trajectory with a constant step length, so trajectories may first require [rediscretization](#resampling-trajectories). In the absence of a biologically meaningful step size, rediscretizing to the mean step length of the trajectory will produce a trajectory with approximately the same shape and number of steps as the original. 
 
 ```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=c(-1,-2,-4)}
 set.seed(1)
@@ -257,15 +265,15 @@ stepSizes <- c(1, 2, 10)
 reds <- lapply(stepSizes, function(ss) lapply(1:n, function(i) TrajRediscretize(trjs[[i]], ss)))
 
 # Calculate sinuosity for all of the rediscretized trajectories
-sins <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajSinuosity(trjs[[i]])))
+sins <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajSinuosity2(trjs[[i]])))
 
 # Plot sinuosity vs angular error
 plot(rep(angularErrorSd, 3), sins,
-     pch = 16, cex = .2, 
+     pch = 16, cex = .2,
      col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)),
      xlab = expression(sigma["angular error"]), ylab = "Sinuosity")
 
-legend("bottomright", c("Step length 1", "Step length 2", "Step length 10"), 
+legend("bottomright", paste("Step length", stepSizes), 
        pch = 16, col = c("red", "blue", "darkgreen"), inset = 0.01)
 ```
 
@@ -299,13 +307,16 @@ par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 # Use the same step sizes for all trajectories
 stepSizes <- TrajLogSequence(.1, 7, 20)
 
-# Fractal dimension is a slow calculation, so just plot a subset of trajectories from the previous example
-fn <- n / 10
+# Fractal dimension is a slow calculation, so just plot a subset 
+# of trajectories from the previous example
+fn <- n / 5
 use <- sample.int(fn, n = length(angularErrorSd))
 fangularErrorSd <- angularErrorSd[use]
 
 # Calculate fractal dimension for all of the rediscretized trajectories
-d <- sapply(reds, function(trjs) sapply(use, function(i) TrajFractalDimension(trjs[[i]], stepSizes)))
+d <- sapply(reds, function(trjs) sapply(use, function(i) {
+  TrajFractalDimension(trjs[[i]], stepSizes)
+}))
 
 # Plot fractal dimension vs angular error
 plot(rep(fangularErrorSd, 3), d,
@@ -319,7 +330,7 @@ legend("topleft", c("Step length 1", "Step length 2", "Step length 10"),
 
 #### Directional change (DC and SDDC)
 
-Directional change is defined as the change in direction over time, and has been used to assess locomotor mimicry in butterflies (Kitamura & Imafuku, 2015). Directional change is defined for each pair of steps, so a trajectory (or a portion thereof) may be characterised by the mean (`DC`) and standard deviation (`SDDC`) of all directional changes. `DC` may be used as an index of nonlinearity, and `SDDC` as a measure of irregularity. The directional changes for a trajectory are calculated by the function `TrajDirectionalChange`, so `SD` may be calculated as `mean(TrajDirectionalChange(trj))`, and `SDDC` as `sd(TrajDirectionalChange(trj))`. Note that directional change cannot be calculated on rediscretized trajectories, as rediscretizing loses time information.
+Directional change is defined as the change in direction over time, and has been used to assess locomotor mimicry in butterflies (Kitamura & Imafuku, 2015). Directional change is defined for each pair of steps, so a trajectory (or a portion thereof) may be characterised by the mean (`DC`) and standard deviation (`SDDC`) of all directional changes. `DC` may be used as an index of nonlinearity, and `SDDC` as a measure of irregularity. The directional changes for a trajectory are calculated by the function `TrajDirectionalChange`, so `SD` may be calculated as `mean(TrajDirectionalChange(trj))`, and `SDDC` as `sd(TrajDirectionalChange(trj))`. Note that directional change cannot be calculated on rediscretized trajectories, as rediscretizing discards time information.
 
 ```{r DC, fig.cap="_DC and SDDC as a function of angular error_", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
@@ -374,9 +385,9 @@ trjs <- TrajsBuild(tracks$filename, scale = .220 / 720,
                    csvStruct = csvStruct, rootDir = "..")
 ```
 
-### Calculating statistics for multiple trajectories
+### Characterising multiple trajectories
 
-`TrajsMergeStats` simplifies the construction of a data frame of statistics, with one row per trajectory. To use it, you need a list of trajectories (which you will probably obtain from a call to `TrajsBuild`), and a function which calculates statistics for a single trajectory. The following example demonstrates how you might write and use such a function.
+`TrajsMergeStats` simplifies the construction of a data frame of values, with one row per trajectory. To use it, you need a list of trajectories (which you will probably obtain from a call to `TrajsBuild`), and a function which calculates statistics for a single trajectory. The following example demonstrates how you might write and use such a function.
 
 ```{r multstats}
 # Define a function which calculates some statistics
@@ -463,7 +474,7 @@ summary(TrajsStepLengths(trjs))
 ## Random trajectory generation
 
 `Trajr` allows you to generate random trajectories with the `TrajGenerate` function. Random trajectories may be used in simulation studies, or simply for experimenting with trajectory analysis, and it has been used to generate the majority of trajectories in this document. By default, `TrajGenerate` returns a random correlated walk, however, by specifying different arguments, a variety of trajectory types can be created.
-```{r generate, fig.width=6, fig.height=4, fig.cap="_Some generated trajectories. a) correlated walk, b) directed walk, c) brownian motion, d) Levy flight._", echo=-1:-2}
+```{r generate, fig.width=6, fig.height=4, fig.cap="_Some generated trajectories. a) correlated walk, b) directed walk, c) brownian motion, d) Levy walk._", echo=-1:-2}
 set.seed(1)
 par(mfrow = c(2, 2), mar = c(4, 4, 0.5, 0.5) + 0.1)
 # Random correlated walk
@@ -482,103 +493,12 @@ trj <- TrajGenerate(n = 500, angularErrorDist = function(n) stats::runif(n, -pi,
 plot(trj)
 mtext("c)", 3, -1.3, adj = .05)
 
-# Levy flight - path lengths follow a cauchy distribution
+# Levy walk - path lengths follow a cauchy distribution
 trj <- TrajGenerate(linearErrorDist = stats::rcauchy)
 plot(trj)
 mtext("d)", 3, -1.3, adj = .05)
 ```
 
-### Some examples
-
-#### Expect travel distance
-
-Following is an implementation of a simulation study from (Cheung at el., 2007). It plots the expected endpoints of multiple random trajectories after different numbers of steps, illustrating the difference in expected distance travelled between directed and random walks. It demonstrates that, for travel without a compass (i.e. an external means to determine direction), the distance travelled along an intended direction does not increase in proportion to the number of steps, which implies an upper limit to the distance that can be travelled without a compass.
-
-```{r directWalks, fig.cap="_Computer simulation of the results of compass-based navigation._", fig.height=4.5, fig.width=6, echo=c(-1,-2)}
-set.seed(1)
-par(mfrow = c(2, 3), mar = c(4, 4, 3, 1))
-ntraj <- 1000 # Cheung at el. used 20000, but it's slow
-
-# Define a function to simulate journeys of different lengths
-simulateJourneys <- function(random, nTrajectories = ntraj) {
-
-  generate <- function(i) {
-    # These parameters replicate the simulations in (Cheung et al., 2007)
-    TrajGenerate(n = 500, random = random, stepLength = 2, 
-                 linearErrorSd = 0.2, angularErrorSd = 0.5)
-  }
-  
-  trjs <- lapply(1:nTrajectories, generate)
-  
-  # Use same plot axes as in the original article
-  if (random) {
-    xlims <- list(c(-20, 20), c(-20, 20), c(-20, 20), c(-40, 40), c(-170, 170), c(-400, 400))
-    ylims <- xlims
-  } else {
-    xlims <- list(c(-20, 20), c(-20, 20), c(-20, 20), c(20, 50), c(140, 200), c(810, 950))
-    ylims <- list(c(-20, 20), c(-20, 20), c(-20, 20), c(-20, 20), c(-30, 30), c(-70, 70))
-  }
-  
-  # 6 plots in 2 rows
-  par(mfrow = c(2, 3))
-  steps <- c(1, 2, 5, 20, 100, 500)
-  for(i in 1:length(steps)) {
-    step <- steps[i]
-    title <- sprintf("%d %s", step, ifelse(step == 1, "step", "steps"))
-    # Plot the end-points of each journey after "step" steps
-    endPoints <- t(sapply(trjs, function(t) t[step + 1, c('x', 'y')]))
-    plot(endPoints, pch = '.', asp = 1, main = title, xlim = xlims[[i]], ylim = ylims[[i]])
-  }
-}
-
-# Call the function
-simulateJourneys(random = FALSE)
-```
-
-```{r randomWalks, fig.cap="_Computer simulation of the results of navigation without a compass._", fig.height=4.5, fig.width=6, echo=-1:-2}
-set.seed(1)
-par(mfrow = c(2, 3), mar = c(4, 4, 3, 1))
-simulateJourneys(random = TRUE)
-```
-
-#### Random or directed?
-
-Benhamou (2006) defines a method, called backward pattern analysis, to determine whether a trajectory is a random or directed walk. Here we test it on a number of randomly generated trajectories, and report the failure rate.
-
-
-```{r bPA}
-
-# Returns TRUE if trj is a random trajectory according to backward pattern analysis (Benhamou, 2006)
-isRandom <- function(trj) {
-  # For each pair of points along the trajectory,
-  # calculate distance between the points
-  D <- sapply(1:(nrow(trj) - 1), function(j) TrajDistance(trj, j, nrow(trj)))
-  # calculate path length between points
-  L <- sapply(1:(nrow(trj) - 1), function(j) TrajLength(trj, j, nrow(trj)))
-  # Calculate linear regression with 0 intercept: D vs L
-  dir <- lm(D ~ L - 1)
-  # D vs sqrt(L)
-  sL <- sqrt(L)
-  rnd <- lm(D ~ sL - 1)
-
-  # Pick the linear regression with the smallest sum of squared residuals
-  sum(rnd$residuals ^ 2) < sum(dir$residuals ^ 2)
-}
-
-# Generate some random trajectories, randomly choosing 
-# between random search path and directed walks
-set.seed(1)
-search <- sample(c(TRUE,FALSE), 1000, TRUE) # search/directed flag
-results <- sapply(1:length(search), function(i) {
-  c(search[i], isRandom(TrajGenerate(100, random = search[i]))) 
-  })
-# Flags whether the algorithm correctly identified the trajectory type
-correct <- results[1,] == results[2,]
-t <- table(data.frame(correct, results[1,]))
-
-cat(sprintf("Backward pattern analysis misclassified %g%% of random walks, and %g%% of directed walks\n", 
-            100 * t[1,2] / sum(t), 100 * t[1,1] / sum(t)))
-```
 
 ## And finally...
 
