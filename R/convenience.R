@@ -2,11 +2,13 @@
 
 # Private functions ####
 
+.isBlank <- function(str) is.null(str) || is.na(str) || !is.character(str) || grepl("^\\s*$", str)
+
 .locateFiles <- function(fileNames, rootDir) {
-  sapply(as.character(fileNames), function(fn) {
+  sapply(fileNames, function(fn) {
     file <- ""
     # Ignore empty/NULL file names
-    if (is.character(fn) && !grepl("^\\s*$", fn)) {
+    if (!.isBlank(fn)) {
       file <- list.files(rootDir, pattern = fn, full.names=TRUE, recursive=TRUE)
       if (length(file) == 0) {
         stop(sprintf("Unable to locate trajectory file %s (within folder %s)", fn, rootDir))
@@ -41,8 +43,7 @@
 #'
 #' Reads multiple trajectories from files, performs some basic sanity checks on
 #' them, and optionally smooths and scales them. Attempts to collect and report
-#' errors for multiple trajectories in a single call. Any blank or \code{NULL}
-#' file names are quietly ignored.
+#' errors for multiple trajectories in a single call.
 #'
 #' For each file name in \code{fileNames}, searches through the folder
 #' \code{rootDir} (unless it's \code{NULL}) to find the file, then reads the
@@ -112,10 +113,20 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
                        smoothP = 3, smoothN = 41,
                        rootDir = NULL,
                        csvReadFn = utils::read.csv, ...) {
+  # I hate factors!
+  fileNames <- as.character(fileNames)
   # Check that file names are unique
   if (any(table(fileNames) > 1)) {
-    stop(sprintf("List of file names contains duplicates: %s\n", paste(names(which(table(fileNames) > 1)), collapse = ", ")))
+    stop(sprintf("List of file names contains duplicates: %s\n",
+                 paste(sprintf("'%s'", names(which(table(fileNames) > 1))), collapse = ", ")))
   }
+
+  # Fail with a (hopefully) helpful message on empty file name
+  blanks <- which(sapply(fileNames, .isBlank))
+  if (length(blanks) > 0) {
+    stop(sprintf("Trajectory input file name is blank or NULL (index %s)", paste(blanks, collapse = ", ")))
+  }
+
   # Maybe locate files within rootDir
   if (!is.null(rootDir)) {
     fileNames <- .locateFiles(fileNames, rootDir)
@@ -136,11 +147,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
   # For each file...
   for (i in 1:length(fileNames)) {
 
-    # Ignore empty file names
     fn <- as.character(fileNames[i])
-    if (!is.character(fn) || grepl("^\\s*$", fn)) {
-      next
-    }
 
     # Read the trajectory coordinates from the file
     coordList <- .readAndCheckCoords(fn, csvReadFn, ...)

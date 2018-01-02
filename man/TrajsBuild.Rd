@@ -55,8 +55,7 @@ A list of trajectories.
 \description{
 Reads multiple trajectories from files, performs some basic sanity checks on
 them, and optionally smooths and scales them. Attempts to collect and report
-errors for multiple trajectories in a single call. Any blank or \code{NULL}
-file names are quietly ignored.
+errors for multiple trajectories in a single call.
 }
 \details{
 For each file name in \code{fileNames}, searches through the folder

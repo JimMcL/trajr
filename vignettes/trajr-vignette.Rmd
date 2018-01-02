@@ -351,7 +351,7 @@ legend("bottomright", c("DC", "SDDC"),
 
 The direction autocorrelation function was devised to detect and quantify regularities within trajectories, in the context of locomotor mimicry of ant-mimics (Shamble, Hoy, Cohen, & Beatus, 2017). It detects wave-like periodicities, and provides an indication of their wavelength and amplitude, so can be used to detect, for example, the winding movements of trail-following ants. The function $C(\Delta s)$ is applied to a rediscretized trajectory, and calculates the differences in step angles at all steps separated by $\Delta$, for a range of $\Delta s$. The position of the first local minimum in $C(\Delta s)$ (i.e. the 2-dimensional position $(\Delta s, c(\Delta s))$) may be used to characterise the periodicity within a trajectory.
 
-The function is calculated by `TrajDirectionAutocorrelations`, and the result may be plotted. The position of the first local minimum (or maximum) is calculated by `TrajDAFindFirstMinimum` (or `TrajDAFindFirstMaximum`).
+The function is calculated by `TrajDirectionAutocorrelations`, and the result may be plotted. The position of the first local minimum (or maximum) is calculated by `TrajDAFindFirstMinimum` (or `TrajDAFindFirstMaximum`). Some trajectories will not have a first local minimum (or maximum), which indicates that they do not contain regular changes in direction.
 
 ```{r dirnAuto, fig.cap="_Direction autocorrelation of a random trajectory with first local minimum_", fig.width=6, fig.height=4, echo=-1:-2}
 set.seed(1)
@@ -378,6 +378,9 @@ tracks <- as.data.frame(rbind(
   c("3548.csv", "Crematogaster sp1", "ant",          "black")
 ), stringsAsFactors = FALSE)
 colnames(tracks) <- c("filename", "species", "category", "col")
+# If your list is read from a CSV file which contains empty lines, 
+# remove them like this:
+tracks <- na.omit(tracks)
 # Order of columns in the CSV files is unknown so identify them by name
 csvStruct <- list(x = "x", y = "y", time = "Time")
 trjs <- TrajsBuild(tracks$filename, scale = .220 / 720, 

@@ -276,15 +276,22 @@ test_that("Convenience", {
     data.frame(file = "3530.csv", species = "Daerlac nigricans", category = "mimic bug"),
     data.frame(file = "3534.csv", species = "Daerlac nigricans", category = "mimic bug"),
     data.frame(file = "3537.csv", species = "Myrmarachne erythrocephala", category = "mimic spider"),
-    data.frame(file = "", species = "", category = ""),
+    data.frame(file = NA, species = "", category = ""),
     data.frame(file = "3542.csv", species = "Polyrhachis sp1", category = "ant"),
     data.frame(file = "3543.csv", species = "Polyrhachis sp1", category = "ant"),
-    data.frame(file = "3548.csv", species = "Crematogaster sp1", category = "ant")
+    data.frame(file = "3548.csv", species = "Crematogaster sp1", category = "ant"),
+    data.frame(file = NA, species = "", category = ""),
+    stringsAsFactors = FALSE
   )
   csvStruct <- list(x = "x", y = "y", time = "Time")
+
+  # Expect to fail with a message when there are blank
+  expect_error(TrajsBuild(tracks$file, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints),
+               "Trajectory input file name is blank or NULL.*")
+  tracks <- na.omit(tracks)
   trjs <- TrajsBuild(tracks$file, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
 
-  expect_equal(length(trjs), nrow(tracks) - 1)
+  expect_equal(length(trjs), nrow(tracks))
   expect_equal(TrajGetUnits(trjs[[2]]), "m")
   expect_equal(TrajGetTimeUnits(trjs[[2]]), "s")
 
