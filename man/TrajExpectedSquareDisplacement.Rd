@@ -21,8 +21,8 @@ relative to this angle (in radians), otherwise they are calculated relative
 to the previous step angle.}
 }
 \description{
-Calculates the expected square displacement for a trajectory, using the
-formula in Kareiva & Shigesada, (1983).
+Calculates the expected square displacement for a trajectory assuming it is a
+correlated random walk, using the formula in Kareiva & Shigesada, (1983).
 }
 \details{
 Note that Cheung, Zhang, Stricker, and Srinivasan (2007) define an

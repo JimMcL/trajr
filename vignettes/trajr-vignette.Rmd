@@ -29,7 +29,7 @@ fastPlots <- TRUE
 
 ## Introduction
 
-The `trajr` R package is a toolkit for calculating parameters and statistical analysis of the trajectories of moving animals. Trajectory analysis is applicable in fields as diverse as optimal foraging theory, studies of migration, and behavioural mimicry (verifying similarity in locomotion). A _trajectory_ is simply a record of the path followed by a moving animal. `Trajr` operates on trajectories in the form of a series of locations with times (i.e. x, y coordinates in time). Trajectories may be obtained by any method which provides this information, including manual tracking, radio telemetry, GPS tracking, and motion tracking from videos. 
+The `trajr` R package is a toolkit for calculating parameters and statistical analysis of the trajectories of moving animals. Trajectory analysis is applicable in fields as diverse as optimal foraging theory, studies of migration, and behavioural mimicry (verifying similarity in locomotion). A _trajectory_ is simply a record of the path followed by a moving animal. `Trajr` operates on trajectories in the form of a series of locations (as x, y coordinates) with times. Trajectories may be obtained by any method which provides this information, including manual tracking, radio telemetry, GPS tracking, and motion tracking from videos. 
 
 The goal of this package (and this document) is to aid biological researchers, who may not have extensive experience with R, to analyse trajectories without being handicapped by a limited knowledge of R or programming. However, a basic understanding of R is required. 
 
@@ -138,7 +138,7 @@ legend("topright", c("Original", "Smoothed"), lwd = 2, col = c("black", "red"), 
 
 ### Resampling trajectories
 
-Some functions require a `Trajectory` with a fixed step length. The process of resampling a trajectory to a fixed step length is called _rediscretization_. The function `TrajRediscretize` implements trajectory resampling using the algorithm described by Bovet & Benhamou (1988).
+Some functions require a `Trajectory` with a fixed step length. The process of resampling a trajectory to a fixed step length is called _rediscretization_. The function `TrajRediscretize` implements trajectory resampling using the algorithm described by Bovet & Benhamou (1988). There are no clear guidelines for choosing a suitable step length for rediscretization: too small a step length leads to oversampling, leading to high autocorrelation between steps and high variability; too large a step length results in undersampling and loss of information. See Turchin (1998) section 5.2.2 for a discussion.
 ```{r rediscretize, fig.width=6, fig.height=4, fig.cap="_Rediscretization of trajectory with $\\mu_{L} = 2$ to step length $1$_", echo=-1:-2}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 set.seed(2)
@@ -524,3 +524,5 @@ Nams, V. O. (2006). Improving Accuracy and Precision in Estimating Fractal Dimen
 Shamble, P. S., Hoy, R. R., Cohen, I., & Beatus, T. (2017). Walking like an ant: a quantitative and experimental approach to understanding locomotor mimicry in the jumping spider Myrmarachne formicaria. Proceedings of the Royal Society B: Biological Sciences, 284(1858). \doi{10.1098/rspb.2017.0308}
 
 Turchin, P. (1996). Fractal Analyses of Animal Movement: A Critique. Ecology, 77(7), 2086-2090. \doi{10.2307/2265702}
+
+Turchin, P. (1998). Quantitative analysis of movement. Sunderland (Mass.): Sinauer assoc.
