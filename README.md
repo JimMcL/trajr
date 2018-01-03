@@ -31,7 +31,7 @@ Unfortunately, installing vignettes can be time-consuming.
 The best way to start is to read the package vignette. After installation from CRAN (or from github including vignettes), run `browseVignettes(package = "trajr")`.
 
 ## Environment
-
+```
 Session info ----------------------------------------------------------------------------
  setting  value                       
  version  R version 3.4.2 (2017-09-28)
@@ -59,3 +59,4 @@ Packages -----------------------------------------------------------------------
  utils     * 3.4.2   2017-09-28 local         
  withr       2.1.0   2017-11-01 CRAN (R 3.4.2)
  yaml        2.1.14  2016-11-12 CRAN (R 3.4.2)
+```
