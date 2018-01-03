@@ -10,13 +10,23 @@
 #' (1981). A unit vector is created for each turning angle in the trajectory,
 #' and the centre-of-mass/mean vector is returned.
 #'
+#' According to Batschelet (1981), \code{r} may serve as a straightness index
+#' ranging from 0 to 1, where \code{r} is the length of the mean vector of
+#' turning angles of a trajectory with constant step length. Values of \code{r}
+#' near 1 indicating straighter paths. Hence, \code{r =
+#' Mod(TrajMeanVectorOfTurningAngles(trj))}, assuming that \code{trj} has a
+#' constant step length.
+#'
 #' @param trj Trajectory object.
 #' @param compass.direction If not \code{NULL}, step angles are calculated
 #'   relative to this angle (in radians), otherwise they are calculated relative
 #'   to the previous step angle.
 
-#' @return complex number \code{r} which represents the mean vector, Mod(r) is
-#'   the length of the mean vector, Arg(r) is the angle.
+#' @return A complex number \code{r} which represents the mean vector,
+#'   \code{Mod(r)} is the length of the mean vector which varies between 0 and
+#'   1, \code{Arg(r)} is the angle.
+#'
+#' @seealso \code{\link{TrajStraightness}}
 #'
 #' @export
 TrajMeanVectorOfTurningAngles <- function(trj, compass.direction = NULL) {
@@ -43,7 +53,13 @@ TrajMeanVectorOfTurningAngles <- function(trj, compass.direction = NULL) {
 #' steps increases, hence should only be used to compare the tortuosity of
 #' random walks consisting of a similar number of steps.
 #'
-#' Straightness index is also known as the net-to-gross displacement ratio.
+#' The straightness index is also known as the net-to-gross displacement ratio.
+#' According to Batschelet (1981), this value (termed \emph{d}) is an
+#' approximation of \emph{r}, which is the length of the mean vector of turning
+#' angles of a constant step-length trajectory (see
+#' \code{\link{TrajMeanVectorOfTurningAngles}} and
+#' \code{\link{TrajRediscretize}} for creating a constant step-length
+#' trajectory).
 #'
 #' @param trj Trajectory to calculate straightness of.
 #' @return The straightness index of \code{trj}, which is a value between 0
@@ -154,6 +170,13 @@ TrajSinuosity <- function(trj, compass.direction = NULL) {
 #'   Otherwise, a random walk is assumed.
 #'
 #' @seealso \code{\link{TrajSinuosity}} for the uncorrected sinuosity index.
+#'
+#' @references
+#'
+#' Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
+#' path. Journal of Theoretical Biology, 229(2), 209-220.
+#' doi:10.1016/j.jtbi.2004.03.016
+#'
 #' @export
 TrajSinuosity2 <- function(trj, compass.direction = NULL) {
   stepLengths <- TrajStepLengths(trj)

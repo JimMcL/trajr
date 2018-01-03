@@ -70,7 +70,7 @@
   result
 }
 
-#' Resample a trajectory to a constant path length
+#' Resample a trajectory to a constant step length
 #'
 #' Constructs a new trajectory by resampling the input trajectory to a fixed
 #' step (or segment) length. Timing of frames is lost, so speed and acceleration

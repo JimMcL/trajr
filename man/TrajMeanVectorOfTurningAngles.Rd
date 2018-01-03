@@ -14,11 +14,23 @@ relative to this angle (in radians), otherwise they are calculated relative
 to the previous step angle.}
 }
 \value{
-complex number \code{r} which represents the mean vector, Mod(r) is
-  the length of the mean vector, Arg(r) is the angle.
+A complex number \code{r} which represents the mean vector,
+  \code{Mod(r)} is the length of the mean vector which varies between 0 and
+  1, \code{Arg(r)} is the angle.
 }
 \description{
 Returns the mean vector of the turning angles, as defined by Batschelet,
 (1981). A unit vector is created for each turning angle in the trajectory,
 and the centre-of-mass/mean vector is returned.
+}
+\details{
+According to Batschelet (1981), \code{r} may serve as a straightness index
+ranging from 0 to 1, where \code{r} is the length of the mean vector of
+turning angles of a trajectory with constant step length. Values of \code{r}
+near 1 indicating straighter paths. Hence, \code{r =
+Mod(TrajMeanVectorOfTurningAngles(trj))}, assuming that \code{trj} has a
+constant step length.
+}
+\seealso{
+\code{\link{TrajStraightness}}
 }

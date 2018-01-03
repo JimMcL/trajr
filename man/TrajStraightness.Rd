@@ -24,7 +24,13 @@ steps increases, hence should only be used to compare the tortuosity of
 random walks consisting of a similar number of steps.
 }
 \details{
-Straightness index is also known as the net-to-gross displacement ratio.
+The straightness index is also known as the net-to-gross displacement ratio.
+According to Batschelet (1981), this value (termed \emph{d}) is an
+approximation of \emph{r}, which is the length of the mean vector of turning
+angles of a constant step-length trajectory (see
+\code{\link{TrajMeanVectorOfTurningAngles}} and
+\code{\link{TrajRediscretize}} for creating a constant step-length
+trajectory).
 }
 \references{
 Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111

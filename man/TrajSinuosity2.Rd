@@ -24,6 +24,11 @@ This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
 b^2)]^-0.5} where \eqn{c} is the mean cosine of turning angles, and \eqn{b}
 is the coefficient of variation of the step length.
 }
+\references{
+Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
+path. Journal of Theoretical Biology, 229(2), 209-220.
+doi:10.1016/j.jtbi.2004.03.016
+}
 \seealso{
 \code{\link{TrajSinuosity}} for the uncorrected sinuosity index.
 }

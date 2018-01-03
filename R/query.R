@@ -142,8 +142,10 @@ TrajAngles <- function(trj, lag = 1, compass.direction = NULL) {
 #'
 #' @examples
 #' set.seed(1)
+#' # A random walk
 #' trj <- TrajGenerate(200)
 #' smoothed <- TrajSmoothSG(trj)
+#'
 #' # Calculate actual squared displacement at all points along the trajectory
 #' sd2 <- sapply(2:nrow(smoothed), function(n) TrajDistance(smoothed, 1, n) ^ 2)
 #' # Calculate expected squared displacement
@@ -187,8 +189,8 @@ TrajExpectedSquareDisplacement <- function(trj, n = nrow(trj), eqn1 = TRUE, comp
   s <- mean(sin(ta))
   s2 <- s^2
 
-  # Eqn 1
   if (eqn1) {
+    # Eqn 1
     alpha <- atan2(s, c)
     gamma <- ((1 - c)^2 - s2) * cos((n + 1) * alpha) - 2 * s * (1 - c) * sin((n + 1) * alpha)
     n * l2 + 2 * l^2 * ((c - c^2 - s2) * n  - c) / ((1 - c)^2 + s2) +

@@ -240,17 +240,13 @@ plot(intervals)
 
 #### Straightness index
 
-Various methods to measure the straightness, or conversely, tortuosity, of trajectories are available within `trajr`. The simplest is $D/L$, where $D$ is the distance from the start to the end of the trajectory, and $L$ is the length of the trajectory. This straightness index is calculated by the function `TrajStraightness`, and is a number ranging from 0 to 1, where 1 indicates a straight line. Benhamou (2004) considers the straightness index to be a reliable measure of the efficiency of a directed walk, but inapplicable to random trajectories.
+Various methods to measure the straightness, or conversely, tortuosity, of trajectories are available within `trajr`. The simplest is $D/L$, where $D$ is the distance from the start to the end of the trajectory, and $L$ is the length of the trajectory. This straightness index is calculated by the function `TrajStraightness`, and is a number ranging from 0 to 1, where 1 indicates a straight line. Benhamou (2004) considers the straightness index to be a reliable measure of the efficiency of a directed walk, but inapplicable to random trajectories. Batschelet (1981) considers this straightness index to be an approximation of _r_, which is the length of the mean vector of turning angles after rediscretizing to a constant step length. _r_ can be calculated by calling `Mod(TrajMeanVectorOfTurningAngles(trj))`, assuming `trj` is a Trajectory with constant step length.
 
-Within this section, most of the figures show the statistic plotted for multiple trajectories which vary in their sinuosity. Sinuosity is varied by generating random trajectories with different standard deviations of angular errors.
+Within this section, most of the figures show the appropriate statistic plotted for multiple randomly generated correlated random walks which vary in the standard deviations of angular errors.
 
-#### Sinuosity
-
-The sinuosity index defined by Benhamou (2004) may be an appropriate measure of the tortuosity of a random search path. Sinuosity is a function of the mean cosine of turning angles, and is a corrected form of the original sinuosity index defined by Bovet & Benhamou (1988). The function `TrajSinuosity2` calculates the corrected form while `TrajSinuosity` calculates the original index. Sinuosity should be calculated for a trajectory with a constant step length, so trajectories may first require [rediscretization](#resampling-trajectories). In the absence of a biologically meaningful step size, rediscretizing to the mean step length of the trajectory will produce a trajectory with approximately the same shape and number of steps as the original. 
-
-```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=c(-1,-2,-4)}
+```{r traj_prep, echo=c(-1,-4)}
 set.seed(1)
-par(mar = c(4, 4, 0.5, 0.5) + 0.1)
+#Generate some trajectories for use in examples
 n <- 5000
 n <- ifelse(fastPlots, 100, n) # If debugging, small value for faster knitting. This line is hidden
 # Random magnitude of angular errors
@@ -263,6 +259,36 @@ trjs <- lapply(1:n, function(i) TrajGenerate(500, stepLength = 2,
 # Rediscretize each trajectory to a range of step sizes
 stepSizes <- c(1, 2, 10)
 reds <- lapply(stepSizes, function(ss) lapply(1:n, function(i) TrajRediscretize(trjs[[i]], ss)))
+```
+
+```{r straightness, fig.cap="_Two straightness indices (D/L and _r_) as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=c(-1)}
+par(mar = c(4, 4, 0.5, 0.5) + 0.1)
+
+# Calculate straightness (D/L) for all of the rediscretized trajectories
+ds <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajStraightness(trjs[[i]])))
+# Calculate alternate straightness (r) for all of the rediscretized trajectories
+rs <- sapply(reds, function(trjs) sapply(1:n, function(i) Mod(TrajMeanVectorOfTurningAngles(trjs[[i]]))))
+
+# Plot both indices on the same graph
+plot(rep(angularErrorSd, 3), rs,
+     pch = 16, cex = .4,
+     col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)),
+     xlab = expression(sigma["angular error"]), ylab = "Straightness")
+points(rep(angularErrorSd, 3), ds,
+     pch = 3, cex = .8,
+     col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)))
+
+legend("bottomleft", c(expression(italic(r)), "D/L", paste("Step length", stepSizes)), 
+       pch = c(16, 3, 16, 16), 
+       col = c("black", "black", "red", "blue", "darkgreen"), inset = 0.01)
+```
+
+#### Sinuosity
+
+The sinuosity index defined by Benhamou (2004) may be an appropriate measure of the tortuosity of a random search path. Sinuosity is a function of the mean cosine of turning angles, and is a corrected form of the original sinuosity index defined by Bovet & Benhamou (1988). The function `TrajSinuosity2` calculates the corrected form while `TrajSinuosity` calculates the original index. Sinuosity should be calculated for a trajectory with a constant step length, so trajectories may first require [rediscretization](#resampling-trajectories). In the absence of a biologically meaningful step size, rediscretizing to the mean step length of the trajectory will produce a trajectory with approximately the same shape and number of steps as the original. 
+
+```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=-1}
+par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate sinuosity for all of the rediscretized trajectories
 sins <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajSinuosity2(trjs[[i]])))
@@ -421,6 +447,7 @@ characteriseTrajectory <- function(trj) {
 }
 
 # Calculate all stats for trajectories in the list
+# which was built in the previous example
 stats <- TrajsMergeStats(trjs, characteriseTrajectory)
 print(stats)
 ```
@@ -449,7 +476,9 @@ customPcaPlot <- function(x, xlabs, xcols, choices = 1L:2L, ycol = "#ff2222aa", 
 }
 # ---
 
-# Get rid of NAs in the data because prcomp can't handle them
+# Here we are operating on the statistics from the previous example
+
+# Get rid of NAs in stats because prcomp can't handle them
 # First fix min_deltaS, and add an extra column which flags non-periodic trajectories
 pcaStats <- TrajsStatsReplaceNAs(stats, "min_deltaS", 
                                  replacementValue = 2 * max(stats$min_deltaS, na.rm = TRUE),
@@ -461,11 +490,11 @@ pcaStats <- TrajsStatsReplaceNAs(pcaStats, "min_C",
 PCA <- prcomp(pcaStats, scale. = TRUE)
 # Plot it using custom plotting function. Could just call biplot instead
 customPcaPlot(PCA, tracks$category, tracks$col, cex = .8)
-legend("topleft", c("Spider", "Mimic", "Ant"), pch = 16, 
-       col = c('red', 'blue', 'black'), inset = 0.01)
+legend("bottomleft", c("Spider", "Mimic", "Ant"), pch = 16, 
+       col = c('red', 'blue', 'black'), inset = c(0.01, .02))
 ```
 
-The plot above shows that the trajectory of the non-mimetic spider (red dot) seems quite different from the trajectories of  ant mimicking bugs, ant-mimicking spiders (blue dots) and ants (black dots). The arrows indicate the importance and direction of the parameters that separate the trajectories. From the plot, it seems that the non-mimetic spider varies mainly in speed (it is faster) and E~max~ (it walks in a straighter path). While these trajectories have been digitised from videos of walking animals, clearly this example does not contain enough data to be meaningful.
+The plot above shows that the trajectory of the non-mimetic spider (red dot) seems quite different from the trajectories of  ant mimicking bugs, ant-mimicking spiders (blue dots) and ants (black dots). The arrows indicate the importance and direction of the parameters that separate the trajectories. From the plot, it seems that the non-mimetic spider varies mainly in speed, (it is faster and more variable) and E~max~ (it walks in a straighter path). While these trajectories have been digitised from videos of walking animals, clearly this example does not contain enough data to be meaningful.
 
 ### Other operations
 
@@ -508,6 +537,8 @@ mtext("d)", 3, -1.3, adj = .05)
 `Trajr` is open source, with the source available on [Github](https://github.com/JimMcL/trajr). If you have any problems or suggestions, email jim_mclean@optusnet.com.au.
 
 ## References
+
+Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111 FIFTH AVE., NEW YORK, NY 10003, 1981, 388. 
 
 Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's path. Journal of Theoretical Biology, 229(2), 209-220. \doi{10.1016/j.jtbi.2004.03.016}
 

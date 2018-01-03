@@ -2,7 +2,7 @@
 % Please edit documentation in R/rediscretize.R
 \name{TrajRediscretize}
 \alias{TrajRediscretize}
-\title{Resample a trajectory to a constant path length}
+\title{Resample a trajectory to a constant step length}
 \usage{
 TrajRediscretize(trj, R)
 }
