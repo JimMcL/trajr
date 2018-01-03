@@ -33,7 +33,7 @@ alternative formulation for expected maximum displacement, Emax (see
 set.seed(1)
 # A random walk
 trj <- TrajGenerate(200)
-smoothed <- TrajSmoothSG(trjR)
+smoothed <- TrajSmoothSG(trj)
 
 # Calculate actual squared displacement at all points along the trajectory
 sd2 <- sapply(2:nrow(smoothed), function(n) TrajDistance(smoothed, 1, n) ^ 2)
