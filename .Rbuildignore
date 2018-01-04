@@ -4,3 +4,4 @@
 ^.*examples.Rmd$
 ^check-vignette.sh$
 ^\.travis\.yml$
+^RELEASE-PROCEDURE.txt$
