@@ -23,8 +23,6 @@ library("knitr")
 library("plotrix")
 library("trajr")
 
-# If fastPlots is TRUE, small sample datasets are plotted to save time
-fastPlots <- TRUE
 ```
 
 ## Introduction
@@ -93,17 +91,17 @@ plot(trj)
 
 ### Creating Trajectories
 
-In practice, trajectory coordinates are typically read from a data file such as a CSV file, and then passed in to the `TrajFromCoords` function. Run `?TrajFromCoords` to access help for the `TrajFromCoords` function, which provides detailed information about creating trajectories from coordinates. In addition, many functions (including `TrajFromCoords`) contain code examples as part of their help information. While examples are part of the help page, you can display them by calling the `example` function: `example("TrajFromCoords")` will display and run the examples for the `TrajFromCoords` function. 
+In practice, trajectory coordinates are typically read from a data file such as a CSV file, and then passed in to the `TrajFromCoords` function. 
 ```{r, eval=FALSE}
 coords <- read.csv("mycoords.csv")
 trj <- TrajFromCoords(coords)
 ```
 
-`TrajFromCoords` assumes that the first column in `coords` contains x values, the second contains y values, and the third contains time values. The help page for `TrajFromCoords` describes how to alter these defaults.
+`TrajFromCoords` assumes that the first column in `coords` contains x values, the second contains y values, and the third contains time values. The help page for `TrajFromCoords` describes how to alter these defaults - run `?TrajFromCoords` to access the help page. Many functions (including `TrajFromCoords`) contain code examples as part of their help information. You can also display and run an example by calling the `example` function: i.e. `example("TrajFromCoords")`. 
 
 ### Scaling Trajectories
 
-Trajectories may need to be scaled before analysis. For instance, when a trajectory is extracted from video, the spatial units will be pixels, and require conversion to more meaningful units such as metres. Trajectories are scaled by calling `TrajScale`, specifying the scale factor and the abbreviation of the transformed units. In the case of a trajectory digitised from a video, you can calculate scale as $width^{m}/width^{p}$, where $width^{m}$ is the width of an object in metres, and $width^{p}$ is the width of the same object in pixels, as measured from the video.
+Trajectories may need to be scaled before analysis. For instance, when a trajectory is digitised from video, the spatial units will be pixels, and require conversion to more meaningful units such as metres. Trajectories are scaled by calling `TrajScale`, specifying the scale factor and the abbreviation of the transformed units. In the case of a trajectory digitised from a video, you can calculate scale as $width^{m}/width^{p}$, where $width^{m}$ is the width of an object in metres, and $width^{p}$ is the width of the same object in pixels, as measured from the video.
 ```{r, eval=FALSE}
 # Example 1
 coords <- read.csv("H.pahangensis_096xypts.csv")
@@ -169,7 +167,8 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                 "`TrajGetFPS`", "`TrajGetNCoords`", "`TrajGetUnits`",
                                 "`TrajGetTimeUnits`", "`TrajStepLengths`", "`TrajLength`",
                                 "`TrajDistance`", "`TrajAngles`",
-                                "`TrajMeanVectorOfTurningAngles`"), 
+                                "`TrajMeanVectorOfTurningAngles`",
+                                "`TrajExpectedSquareDisplacement`"), 
                  Description = c("Rotates a trajectory",
                                  "Reverses a trajectory",
                                  "Returns the frames-per-second of a trajectory",
@@ -180,8 +179,8 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                  "Returns the total length of the trajectory",
                                  "Returns the straight-line distance from the start to the end of the trajectory",
                                  "Returns the turning angles (radians) of a trajectory",
-                                 "Returns the mean vector of the turning angles")),
-      caption = "_Miscellaneous `trajr` functions._")
+                                 "Returns the mean vector of the turning angles",
+                                 "Returns the expected square displacement of a correlated random walk")))
 
 ```
 
@@ -244,11 +243,10 @@ Various methods to measure the straightness, or conversely, tortuosity, of traje
 
 Within this section, most of the figures show the appropriate statistic plotted for multiple randomly generated correlated random walks which vary in the standard deviations of angular errors.
 
-```{r traj_prep, echo=c(-1,-4)}
+```{r traj_prep, echo=-1}
 set.seed(1)
-#Generate some trajectories for use in examples
-n <- 5000
-n <- ifelse(fastPlots, 100, n) # If debugging, small value for faster knitting. This line is hidden
+# Generate some trajectories for use in examples
+n <- 100
 # Random magnitude of angular errors
 angularErrorSd <- runif(n, 0, 2)
 
@@ -261,7 +259,8 @@ stepSizes <- c(1, 2, 10)
 reds <- lapply(stepSizes, function(ss) lapply(1:n, function(i) TrajRediscretize(trjs[[i]], ss)))
 ```
 
-```{r straightness, fig.cap="_Two straightness indices (D/L and _r_) as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=c(-1)}
+
+```{r straightness, fig.cap="_Two straightness indices (r, dots, and D/L, crosses) as a function of angular error, plotted for several different step sizes (linear axes)_", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate straightness (D/L) for all of the rediscretized trajectories
@@ -273,7 +272,8 @@ rs <- sapply(reds, function(trjs) sapply(1:n, function(i) Mod(TrajMeanVectorOfTu
 plot(rep(angularErrorSd, 3), rs,
      pch = 16, cex = .4,
      col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)),
-     xlab = expression(sigma["angular error"]), ylab = "Straightness")
+     xlab = expression(sigma["angular error"]), ylab = "Straightness",
+     ylim = range(c(ds, rs)))
 points(rep(angularErrorSd, 3), ds,
      pch = 3, cex = .8,
      col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)))
@@ -287,7 +287,7 @@ legend("bottomleft", c(expression(italic(r)), "D/L", paste("Step length", stepSi
 
 The sinuosity index defined by Benhamou (2004) may be an appropriate measure of the tortuosity of a random search path. Sinuosity is a function of the mean cosine of turning angles, and is a corrected form of the original sinuosity index defined by Bovet & Benhamou (1988). The function `TrajSinuosity2` calculates the corrected form while `TrajSinuosity` calculates the original index. Sinuosity should be calculated for a trajectory with a constant step length, so trajectories may first require [rediscretization](#resampling-trajectories). In the absence of a biologically meaningful step size, rediscretizing to the mean step length of the trajectory will produce a trajectory with approximately the same shape and number of steps as the original. 
 
-```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error (linear axes), plotted for several different step sizes_", fig.height=4, fig.width=6, echo=-1}
+```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error, plotted for several different step sizes (linear axes)_", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate sinuosity for all of the rediscretized trajectories
@@ -379,7 +379,7 @@ The direction autocorrelation function was devised to detect and quantify regula
 
 The function is calculated by `TrajDirectionAutocorrelations`, and the result may be plotted. The position of the first local minimum (or maximum) is calculated by `TrajDAFindFirstMinimum` (or `TrajDAFindFirstMaximum`). Some trajectories will not have a first local minimum (or maximum), which indicates that they do not contain regular changes in direction.
 
-```{r dirnAuto, fig.cap="_Direction autocorrelation of a random trajectory with first local minimum_", fig.width=6, fig.height=4, echo=-1:-2}
+```{r dirnAuto, fig.cap="_Direction autocorrelation of a random trajectory with first local minimum_", fig.width=6, fig.height=4, echo=c(-1,-2)}
 set.seed(1)
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 trj <- TrajGenerate(1000)
@@ -478,12 +478,12 @@ customPcaPlot <- function(x, xlabs, xcols, choices = 1L:2L, ycol = "#ff2222aa", 
 
 # Here we are operating on the statistics from the previous example
 
-# Get rid of NAs in stats because prcomp can't handle them
+# Get rid of NAs in stats because prcomp can't handle them.
 # First fix min_deltaS, and add an extra column which flags non-periodic trajectories
 pcaStats <- TrajsStatsReplaceNAs(stats, "min_deltaS", 
                                  replacementValue = 2 * max(stats$min_deltaS, na.rm = TRUE),
                                  flagColumn = "no_first_min")
-# Now fix min_C - no need to add another column since it would duplicate no_first_min
+# Also get rid of NAs in min_C - no need to add another column since it would duplicate no_first_min
 pcaStats <- TrajsStatsReplaceNAs(pcaStats, "min_C",
                                  replacementValue = 2 * max(stats$min_C, na.rm = TRUE))
 # Perform the PCA
