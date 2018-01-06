@@ -3,16 +3,20 @@ Release procedure
 
 Run devtools::build_win() and wait for the result
 
-Update version number in DESCRIPTION file (optional until first accepted into CRAN). See https://semver.org/
+Update version number in DESCRIPTION file. See https://semver.org/
+
+Update NEWS.md
 
 Commit all changes
 
 Build source package
 
-Run (possibly from RStudio terminal window): R CMD check --as-cran trajr_*.tar.gz
+Run (possibly from RStudio terminal window): cd ..; R CMD check --as-cran trajr_*.tar.gz
 
 Check that travis-ci build completed successfully with no issues (https://travis-ci.org/JimMcL/trajr)
 
 Upload to CRAN (https://cran.r-project.org/). Use the ‘Optional comment’ field on the webform (and not a separate email) to explain how the feedback on previous submission(s) has been addressed.
 
-Create a new release on GitHub (https://github.com/JimMcL/trajr) (optional until first accepted into CRAN)
+Once accepted by CRAN, create a new release on GitHub (https://github.com/JimMcL/trajr)
+
+Update version number to x.y.z.9000

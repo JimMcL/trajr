@@ -202,7 +202,7 @@ plot.TrajSpeedIntervals <- function(x,
                                     ...) {
   derivs <- attr(x, "derivs")
   speed <- derivs$speed
-  graphics::plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = xlab, ylab = ylab)
+  graphics::plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = xlab, ylab = ylab, ...)
   graphics::abline(h = attr(x, "slowerThan"), col = slowerThanColour)
   graphics::abline(h = attr(x, "fasterThan"), col = fasterThanColour)
   if (nrow(x) > 0)

@@ -5,3 +5,4 @@
 ^check-vignette.sh$
 ^\.travis\.yml$
 ^RELEASE-PROCEDURE.txt$
+^NEWS\.md$
