@@ -102,8 +102,8 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 #'   autocorrelation of a trajectory.
 #' @param windowSize Size of window used to define what constitutes a local
 #'   mimimum/maximum.
-#' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
-#'   NULL if there is no local minimum/maximum.
+#' @return Numeric vector with 2 values, \code{deltaS} and \code{C}, or NULL if
+#'   there is no local minimum/maximum.
 #' @name TrajDAMinMax
 #'
 #' @seealso \code{\link{TrajDirectionAutocorrelations}}
