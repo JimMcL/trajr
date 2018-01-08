@@ -193,8 +193,11 @@ TrajExpectedSquareDisplacement <- function(trj, n = nrow(trj), eqn1 = TRUE, comp
     # Eqn 1
     alpha <- atan2(s, c)
     gamma <- ((1 - c)^2 - s2) * cos((n + 1) * alpha) - 2 * s * (1 - c) * sin((n + 1) * alpha)
-    n * l2 + 2 * l^2 * ((c - c^2 - s2) * n  - c) / ((1 - c)^2 + s2) +
+    esd <- n * l2 + 2 * l^2 * ((c - c^2 - s2) * n  - c) / ((1 - c)^2 + s2) +
       2 * l^2 * ((2 * s2 + (c + s2) ^ ((n + 1) / 2)) / ((1 - c)^2 + s2)^2) * gamma
+    # There seems to be a bug in the expression - for very straight trajectories,
+    # value is negative although it seems to have a reasonable absolute value
+    abs(esd)
   } else {
     # Eqn 2
     n * l2 + 2 * l^2 * c / (1 - c) * (n - (1 - c^n) / (1 - c))

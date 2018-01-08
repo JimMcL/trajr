@@ -366,10 +366,10 @@ test_that("Expected square displacement", {
   n <- 200
   angErr <- runif(n, 0, pi)
   trjs <- lapply(1:n, function(i) TrajGenerate(500, angularErrorSd = angErr[i]))
-  esd1 <- sapply(trjs, function(trj) abs(TrajExpectedSquareDisplacement(trj, eqn1 = TRUE)))
+  esd1 <- sapply(trjs, function(trj) TrajExpectedSquareDisplacement(trj, eqn1 = TRUE))
   esd2 <- sapply(trjs, function(trj) TrajExpectedSquareDisplacement(trj, eqn1 = FALSE))
 
-  # plot(angErr, y = esd1, log = 'xy', pch = 16, cex = .7)
+  # plot(angErr, y = abs(esd1), log = 'xy', pch = 16, cex = .7)
   # points(angErr, y = esd2, pch = 16, cex = .6, col = "red")
 
   l <- lm(log(esd1) ~ log(angErr))
