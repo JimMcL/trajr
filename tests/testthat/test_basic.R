@@ -1,6 +1,6 @@
 library(trajr)
 
-context("trajectory creation")
+context("Basic tests")
 
 trjFromAnglesAndLengths <- function(angles, lengths) {
   coords <- c(0, cumsum(complex(modulus = lengths, argument = angles)))
@@ -360,3 +360,24 @@ test_that("fractal dimension", {
   slope <- l$coefficients[2]
   expect_true(slope > 0.2 && slope < 2)
   })
+
+test_that("Expected square displacement", {
+  set.seed(1)
+  n <- 200
+  angErr <- runif(n, 0, pi)
+  trjs <- lapply(1:n, function(i) TrajGenerate(500, angularErrorSd = angErr[i]))
+  esd1 <- sapply(trjs, function(trj) abs(TrajExpectedSquareDisplacement(trj, eqn1 = TRUE)))
+  esd2 <- sapply(trjs, function(trj) TrajExpectedSquareDisplacement(trj, eqn1 = FALSE))
+
+  # plot(angErr, y = esd1, log = 'xy', pch = 16, cex = .7)
+  # points(angErr, y = esd2, pch = 16, cex = .6, col = "red")
+
+  l <- lm(log(esd1) ~ log(angErr))
+  slope1 <- l$coefficients[2]
+  expect_true(slope1 < -1.5 && slope1 > -2)
+
+  l <- lm(log(esd2) ~ log(angErr))
+  slope2 <- l$coefficients[2]
+  expect_true(slope2 < -1.5 && slope2 > -2)
+
+})
