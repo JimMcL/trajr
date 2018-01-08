@@ -12,7 +12,7 @@ test_that("Trajectory creation", {
   expect_true(file.exists(csvFile))
   coords <- utils::read.csv(csvFile, stringsAsFactors = FALSE)
   expect_false(is.null(coords))
-  trj <- TrajFromCoords(coords, fps = 1000)
+  trj <- TrajFromCoords(coords, fps = 850)
 
   expect_false(is.null(trj))
   expect_equal(2030, nrow(trj))
@@ -20,6 +20,8 @@ test_that("Trajectory creation", {
   expect_equal(range(trj$x), xRange)
   yRange <- c(669.883810, 956.924828)
   expect_equal(range(trj$y), yRange)
+  expect_equal(TrajGetFPS(trj), 850)
+  expect_equal(TrajGetNCoords(trj), nrow(coords))
 
   # Scaling
   scale <- 1 / 2500
@@ -379,5 +381,25 @@ test_that("Expected square displacement", {
   l <- lm(log(esd2) ~ log(angErr))
   slope2 <- l$coefficients[2]
   expect_true(slope2 < -1.5 && slope2 > -2)
+})
+
+test_that("straightness r", {
+  set.seed(1)
+  n <- 200
+  angErr <- runif(n, 0, pi)
+  trjs <- lapply(1:n, function(i) TrajRediscretize(TrajGenerate(500, angularErrorSd = angErr[i]), 2))
+  sir <- sapply(trjs, function(trj) Mod(TrajMeanVectorOfTurningAngles(trj)))
+  sid <- sapply(trjs, function(trj) TrajStraightness(trj))
+
+  # plot(angErr, y = sid, pch = 16, cex = .7, ylim = range(c(sir, sid)))
+  # points(angErr, y = sir, pch = 16, cex = .6, col = "red")
+
+  l <- lm(sir ~ angErr)
+  slope1 <- l$coefficients[2]
+  expect_true(slope1 < -0 && slope1 > -.5)
+
+  l <- lm(sid ~ angErr)
+  slope2 <- l$coefficients[2]
+  expect_true(slope2 < 0 && slope2 > -.5)
 
 })
