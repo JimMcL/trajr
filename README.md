@@ -2,6 +2,7 @@
 
 [![Travis-CI Build Status](https://travis-ci.org/JimMcL/trajr.svg?branch=master)](https://travis-ci.org/JimMcL/trajr)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
+[![codecov](https://codecov.io/gh/JimMcL/trajr/branch/master/graph/badge.svg)](https://codecov.io/gh/JimMcL/trajr)
 
 Trajectory Analysis in R
 
