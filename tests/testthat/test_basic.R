@@ -348,3 +348,15 @@ test_that("Sinuosity", {
     expect_equal(TrajSinuosity(trj), TrajSinuosity2(trj), tolerance = 0.2)
   }
 })
+
+test_that("fractal dimension", {
+  set.seed(1)
+  n <- 5
+  angErr <- runif(n, 0, pi)
+  trjs <- lapply(1:n, function(i) TrajGenerate(500, angularErrorSd = angErr[i]))
+  range <- TrajLogSequence(1, 10, 10)
+  fd <- sapply(trjs, function(trj) TrajFractalDimension(trj, range))
+  l <- lm(fd ~ angErr)
+  slope <- l$coefficients[2]
+  expect_true(slope > 0.2 && slope < 2)
+  })
