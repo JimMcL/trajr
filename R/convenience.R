@@ -190,13 +190,15 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 
 #' Merge trajectory characteristics
 #'
-#' Builds a data frame by combining rows of statistical values for multiple trajectories.
+#' Builds a data frame by combining rows of statistical values for multiple
+#' trajectories. The statistics for each trajectory are defined by the caller in
+#' a user defined function - see the example for one way to acheive this.
 #'
-#' @section Note:
-#' Any NULL valued statistics are converted to NAs.
+#' @section Note: Any NULL valued statistics are converted to NAs.
 #'
 #' @param trjs List of trajectories to be characterised.
-#' @param statsFn Function to calculate statistics of interest for a single trajectory.
+#' @param statsFn Function to calculate statistics of interest for a single
+#'   trajectory.
 #' @param ... Additional arguments passed to \code{statsFn}.
 #'
 #' @examples
