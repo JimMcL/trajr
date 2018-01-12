@@ -426,4 +426,9 @@ test_that("plots", {
   expect_error(plot(scaled), NA)
   expect_error(lines(smoothed, col = "red"), NA)
   expect_error(points(smoothed, pch = '.', col = 'green'), NA)
+
+  # Plot a simple trajectory with turning angles
+  set.seed(2)
+  trj <- TrajGenerate(5)
+  expect_error(plot(trj, turning.angles = "random"), NA)
 })
