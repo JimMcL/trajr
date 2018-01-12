@@ -17,7 +17,7 @@ trajectory.}
 \description{
 Builds a data frame by combining rows of statistical values for multiple
 trajectories. The statistics for each trajectory are defined by the caller in
-a user defined function - see the example for one way to acheive this.
+a user defined function - see the example for one way to achieve this.
 }
 \section{Note}{
  Any NULL valued statistics are converted to NAs.

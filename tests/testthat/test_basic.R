@@ -78,7 +78,7 @@ test_that("Speed intervals", {
   fasterThan = 120
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
+  expect_error(plot(intervals), NA)
   expect_true(nrow(intervals) == 1)
 
   # 1 Interval with 1 start and no stop
@@ -98,7 +98,7 @@ test_that("Speed intervals", {
   fasterThan = 200
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
+  expect_error(plot(intervals), NA)
   expect_true(nrow(intervals) == 0)
 
   # 3 intervals
@@ -118,7 +118,7 @@ test_that("Speed intervals", {
   fasterThan = NULL
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
+  expect_error(plot(intervals), NA)
   expect_true(nrow(intervals) == 3)
 
   # 2 intervals

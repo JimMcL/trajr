@@ -32,10 +32,11 @@ An object with class "\code{Trajectory}", which is a data.frame with
   \item{y}{Y coordinates of trajectory points.} \item{time}{Time (in
   \code{timeUnits}) for each point. if \code{timeCol} is specified, values
   are \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
-  \item{displacementTime}{Frame times, with frame 1 at time \code{0}.}
-  \item{polar}{Coordinates represented as complex numbers, to simplify
-  working with segment angles.} \item{displacement}{Displacements between
-  each pair of consecutive points.}
+  \item{displacementTime}{Relative frame/observation times, with
+  frame/observation 1 at time \code{0}.} \item{polar}{Coordinates represented
+  as complex numbers, to simplify working with segment angles.}
+  \item{displacement}{Displacement vectors (represented as complex numbers)
+  between each pair of consecutive points.}
 }
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
