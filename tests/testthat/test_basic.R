@@ -332,6 +332,10 @@ test_that("Convenience", {
 
   stats <- TrajsMergeStats(trjs, characteriseTrajectory)
 
+  expect_true(any(is.na(stats)))
+  stats <- TrajsStatsReplaceNAs(stats, "first_min_deltaS", flagColumn = "No_first_min")
+  stats <- TrajsStatsReplaceNAs(stats, "first_min_C")
+  expect_false(any(is.na(stats)))
 })
 
 test_that("Convenience-multi", {
@@ -422,6 +426,7 @@ test_that("plots", {
   # Smoothing
   smoothed <- TrajSmoothSG(scaled, 3, 101)
 
+
   # Expect no errors from plotting (weird syntax!)
   expect_error(plot(scaled), NA)
   expect_error(lines(smoothed, col = "red"), NA)
@@ -430,5 +435,7 @@ test_that("plots", {
   # Plot a simple trajectory with turning angles
   set.seed(2)
   trj <- TrajGenerate(5)
+  expect_error(plot(scaled, turning.angles = TRUE))
   expect_error(plot(trj, turning.angles = "random"), NA)
+  expect_error(plot(trj, turning.angles = "directed"), NA)
 })
