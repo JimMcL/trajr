@@ -58,7 +58,8 @@ test_that("Trajectory creation", {
   expect_true(TrajStraightness(smoothed) > 0)
 
   corr <- TrajDirectionAutocorrelations(rd)
-  # plot(corr, type='l')
+  # Check it can be plotted without an error
+  expect_error(plot(corr, type='l'), NA)
   mn <- TrajDAFindFirstMinimum(corr, 10)
   # points(mn["deltaS"], mn["C"], pch = 16, col = "red", lwd = 2)
   # points(mn["deltaS"], mn["C"], col = "black", lwd = 2)
@@ -332,6 +333,10 @@ test_that("Convenience", {
 
   stats <- TrajsMergeStats(trjs, characteriseTrajectory)
 
+  expect_true(any(is.na(stats)))
+  stats <- TrajsStatsReplaceNAs(stats, "first_min_deltaS", flagColumn = "No_first_min")
+  stats <- TrajsStatsReplaceNAs(stats, "first_min_C")
+  expect_false(any(is.na(stats)))
 })
 
 test_that("Convenience-multi", {
@@ -422,6 +427,7 @@ test_that("plots", {
   # Smoothing
   smoothed <- TrajSmoothSG(scaled, 3, 101)
 
+
   # Expect no errors from plotting (weird syntax!)
   expect_error(plot(scaled), NA)
   expect_error(lines(smoothed, col = "red"), NA)
@@ -430,5 +436,21 @@ test_that("plots", {
   # Plot a simple trajectory with turning angles
   set.seed(2)
   trj <- TrajGenerate(5)
+  expect_error(plot(scaled, turning.angles = TRUE))
   expect_error(plot(trj, turning.angles = "random"), NA)
+  expect_error(plot(trj, turning.angles = "directed"), NA)
+})
+
+test_that("rotation", {
+  set.seed(1)
+  trj <- TrajGenerate(10)
+  r <- TrajRotate(trj)
+
+  vo <- TrajMeanVelocity(trj)
+  vr <- TrajMeanVelocity(r)
+
+  # Expect mean vector length and path length to be unchanged, but angle to be changed
+  expect_equal(Mod(vr), Mod(vo))
+  expect_equal(TrajLength(trj), TrajLength(r))
+  expect_true(Arg(vr) != Arg(vo))
 })
