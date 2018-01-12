@@ -32,6 +32,13 @@ test_that("Trajectory creation", {
   expect_equal(range(scaled$x), xRange * scale)
   expect_equal(range(scaled$y), yRange * scale)
 
+  # Duration
+  expect_equal(TrajDuration(trj), (nrow(trj) - 1) / 850)
+  # Velocity
+  v <- TrajMeanVelocity(scaled)
+  expect_equal(Mod(v), 0.0728938)
+  expect_equal(Arg(v), 0.03861151)
+
   # Smoothing
   smoothed <- TrajSmoothSG(scaled, 3, 101)
   #plot(smoothed)
@@ -358,9 +365,10 @@ test_that("fractal dimension", {
   trjs <- lapply(1:n, function(i) TrajGenerate(500, angularErrorSd = angErr[i]))
   range <- TrajLogSequence(1, 10, 10)
   fd <- sapply(trjs, function(trj) TrajFractalDimension(trj, range))
+
+  # Test slope of regression
   l <- lm(fd ~ angErr)
-  slope <- l$coefficients[2]
-  expect_true(slope > 0.2 && slope < 2)
+  l$coefficients[2] %>% expect_gt(0.2) %>% expect_lt(2)
   })
 
 test_that("Expected square displacement", {
@@ -374,13 +382,12 @@ test_that("Expected square displacement", {
   # plot(angErr, y = abs(esd1), log = 'xy', pch = 16, cex = .7)
   # points(angErr, y = esd2, pch = 16, cex = .6, col = "red")
 
+  # Test slopes of regressions
   l <- lm(log(esd1) ~ log(angErr))
-  slope1 <- l$coefficients[2]
-  expect_true(slope1 < -1.5 && slope1 > -2)
+  l$coefficients[2] %>% expect_lt(-1.5) %>% expect_gt(-2)
 
   l <- lm(log(esd2) ~ log(angErr))
-  slope2 <- l$coefficients[2]
-  expect_true(slope2 < -1.5 && slope2 > -2)
+  l$coefficients[2] %>% expect_lt(-1.5) %>% expect_gt(-2)
 })
 
 test_that("straightness r", {
@@ -394,12 +401,29 @@ test_that("straightness r", {
   # plot(angErr, y = sid, pch = 16, cex = .7, ylim = range(c(sir, sid)))
   # points(angErr, y = sir, pch = 16, cex = .6, col = "red")
 
+  # Test slopes of regressions
   l <- lm(sir ~ angErr)
-  slope1 <- l$coefficients[2]
-  expect_true(slope1 < -0 && slope1 > -.5)
+  l$coefficients[2] %>% expect_lt(0) %>% expect_gt(-.5)
 
   l <- lm(sid ~ angErr)
-  slope2 <- l$coefficients[2]
-  expect_true(slope2 < 0 && slope2 > -.5)
+  l$coefficients[2] %>% expect_lt(0) %>% expect_gt(-.5)
 
+})
+
+test_that("plots", {
+  csvFile <- "../testdata/096xypts.csv"
+  coords <- utils::read.csv(csvFile, stringsAsFactors = FALSE)
+  trj <- TrajFromCoords(coords, fps = 850)
+
+  # Scaling
+  scale <- 1 / 2500
+  scaled <- TrajScale(trj, scale, "m")
+
+  # Smoothing
+  smoothed <- TrajSmoothSG(scaled, 3, 101)
+
+  # Expect no errors from plotting (weird syntax!)
+  expect_error(plot(scaled), NA)
+  expect_error(lines(smoothed, col = "red"), NA)
+  expect_error(points(smoothed, pch = '.', col = 'green'), NA)
 })

@@ -83,13 +83,48 @@ TrajDistance <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' @param trj Trajectory whose length is to be calculated.
 #' @param startIndex Index of the starting point.
 #' @param endIndex Index of the ending point.
-#' @return Path Numeric length of the trajectory.
+#' @return Numeric length of the trajectory.
 #'
 #' @seealso \code{\link{TrajStepLengths}}
 #'
 #' @export
 TrajLength <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
   sum(Mod(diff(trj$polar[startIndex:endIndex])))
+}
+
+#' Trajectory duration
+#'
+#' Calculates the temporal duration of a trajectory (or a portion of a
+#' trajectory).
+#'
+#' @param trj Trajectory whose duration is to be calculated.
+#' @param startIndex Index of the starting point.
+#' @param endIndex Index of the ending point.
+#' @return Numeric duration of the trajectory, in time units.
+#'
+#' @seealso \code{\link{TrajGetTimeUnits}}
+#'
+#' @export
+TrajDuration <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
+  diff(trj$displacementTime[c(startIndex, endIndex)])
+}
+
+#' Trajectory mean velocity
+#'
+#' Calculates the mean velocity of a trajectory (or a portion of a
+#' trajectory).
+#'
+#' @param trj Trajectory whose duration is to be calculated.
+#' @param startIndex Index of the starting point.
+#' @param endIndex Index of the ending point.
+#' @return Numeric duration of the trajectory, in time units.
+#'
+#' @seealso \code{\link{TrajGetTimeUnits}}
+#'
+#' @export
+TrajMeanVelocity <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
+  d <- (trj[endIndex, c("x", "y")] - trj[startIndex, c("x", "y")]) / TrajDuration(trj, startIndex, endIndex)
+  complex(re = d[1], im = d[2])
 }
 
 #' Turning angles of a Trajectory

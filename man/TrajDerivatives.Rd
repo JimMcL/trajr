@@ -11,14 +11,20 @@ TrajDerivatives(trj)
 }
 \value{
 A list with components: \item{speed}{numeric vector, speed between
-  each pair of trajectory points.} \item{speedTimes}{numeric vector, times
-  corresponding to values in \code{speed}.} \item{acceleration}{numeric
-  vector.} \item{accelerationTimes}{numeric vector.}
+  each pair of trajectory points, i.e. the speed of each step.}
+  \item{speedTimes}{numeric vector, times corresponding to values in
+  \code{speed}, i.e. the time from the start of the trajectory to the end of
+  each step.} \item{acceleration}{numeric vector, acceleration between
+  steps.} \item{accelerationTimes}{numeric vector, time from start of
+  trajectory to the end of the second step in each pair.}
 }
 \description{
 Calculates speed and linear acceleration along a trajectory over time. Noisy
 trajectories should be smoothed before being passed to this function, as
 noise is effectively amplifed when calculating speed and acceleration.
+}
+\details{
+To convert \code{speedTimes} to step durations, use \code{diff(c(0, r$speedTimes))}.
 }
 \seealso{
 \code{\link{TrajSpeedIntervals}} for analysing intervals within the

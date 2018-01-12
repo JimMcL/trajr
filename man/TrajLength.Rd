@@ -14,7 +14,7 @@ TrajLength(trj, startIndex = 1, endIndex = nrow(trj))
 \item{endIndex}{Index of the ending point.}
 }
 \value{
-Path Numeric length of the trajectory.
+Numeric length of the trajectory.
 }
 \description{
 Calculates the cumulative length of a trajectory (or a portion of a

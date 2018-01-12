@@ -1,7 +1,7 @@
 ---
-title: "Junk"
+title: "Miscellaneous trajr Examples"
 author: "Jim McLean"
-date: "December 14, 2017"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -97,7 +97,7 @@ legend("bottomright", c("Random walk", "Directed walk", "Random walk, step lengt
 
 ## Relationship between Sinuosity and Sinuosity 2
 
-```{r, emax_sinuosity, fig.cap="Relationship between Emax and Sinuosity", fig.width=6, fig.height=4}
+```{r, sinuosity1_2, fig.cap="Relationship between Emax and Sinuosity", fig.width=6, fig.height=4}
 set.seed(1)
 n <- 1000
 
@@ -274,3 +274,43 @@ t <- table(data.frame(correct, results[1,]))
 cat(sprintf("Backward pattern analysis misclassified %g%% of random walks, and %g%% of directed walks\n", 
             100 * t[1,2] / sum(t), 100 * t[1,1] / sum(t)))
 ```
+
+
+## An actual fractal - the Hilbert curve
+
+Following is a plot of the values used to calculate the fractal dimension of an approximation of an actual fractal curve. The points should lie on a straight line if the curve is a fractal. Also shows an inflexion point (i.e. horizontal line, then sloped line) since the value of n used to create the curve defines the scale down to which it is fractal.
+
+```{r fig.width=6, fig.height=6}
+# Adapted from http://www.soc.napier.ac.uk/~andrew/hilbert.html
+Hilbert <- function(x0, y0, xis, xjs, yis, yjs, n) {
+  # Preallocate a matrix
+  result <- matrix(NA, 4 ^ n, 2)
+  row <- 1
+  
+  .h <- function(x0, y0, xis, xjs, yis, yjs, n) {
+    # x0 and y0 are the coordinates of the bottom left corner
+    # xis & xjs are the i & j components of the unit x vector this frame
+    # similarly yis and yjs
+    if (n <= 0) {
+      result[row, 1] <<- x0+(xis+yis)/2
+      result[row, 2] <<- y0+(xjs+yjs)/2
+      row <<- row + 1
+    } else {
+      .h(x0, y0, yis/2, yjs/2, xis/2, xjs/2, n-1)
+      .h(x0+xis/2, y0+xjs/2 ,xis/2, xjs/2, yis/2, yjs/2, n-1)
+      .h(x0+xis/2+yis/2, y0+xjs/2+yjs/2, xis/2, xjs/2, yis/2, yjs/2,n-1)
+      .h(x0+xis/2+yis, y0+xjs/2+yjs, -yis/2,-yjs/2, -xis/2, -xjs/2,n-1)
+    }
+  }
+  
+  .h(x0, y0, xis, xjs, yis, yjs, n)
+  result
+}
+
+trj <- TrajFromCoords(as.data.frame(Hilbert(0, 0, 300, 0, 0, 300, 8)))
+plot(TrajFractalDimensionValues(trj, TrajLogSequence(.1, 400, 20)), log = 'xy', pch = 16)
+trj <- TrajFromCoords(as.data.frame(Hilbert(0, 0, 300, 0, 0, 300, 4)))
+points(TrajFractalDimensionValues(trj, TrajLogSequence(.1, 300, 40)), pch = 16, col = "red")
+
+```
+

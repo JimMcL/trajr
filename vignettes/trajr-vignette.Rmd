@@ -165,8 +165,9 @@ This table lists trajectory operations not otherwise addressed by this document.
 ```{r echo=FALSE, results='asis', fig.align='left'}
 kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                 "`TrajGetFPS`", "`TrajGetNCoords`", "`TrajGetUnits`",
-                                "`TrajGetTimeUnits`", "`TrajStepLengths`", "`TrajLength`",
-                                "`TrajDistance`", "`TrajAngles`",
+                                "`TrajGetTimeUnits`", "`TrajStepLengths`", 
+                                "`TrajLength`", "`TrajDistance`", 
+                                "`TrajDuration`", "`TrajMeanVelocity`", "`TrajAngles`",
                                 "`TrajMeanVectorOfTurningAngles`",
                                 "`TrajExpectedSquareDisplacement`"), 
                  Description = c("Rotates a trajectory",
@@ -178,6 +179,8 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                  "Returns the lengths of each step within the trajectory",
                                  "Returns the total length of the trajectory (or a portion)",
                                  "Returns the straight-line distance from the start to the end of the trajectory (or a portion)",
+                                 "Returns the temporal duration of the trajectory (or a portion)",
+                                 "Returns the mean velocity vector of the trajectory (or a portion)",
                                  "Returns the turning angles (radians) of a trajectory",
                                  "Returns the mean vector of the turning angles",
                                  "Returns the expected square displacement of a correlated random walk")))
@@ -505,11 +508,11 @@ summary(TrajsStepLengths(trjs))
 
 ## Random trajectory generation
 
-`Trajr` allows you to generate random trajectories with the `TrajGenerate` function. Random trajectories may be used in simulation studies, or simply for experimenting with trajectory analysis, and it has been used to generate the majority of trajectories in this document. By default, `TrajGenerate` returns a random correlated walk, however, by specifying different arguments, a variety of trajectory types can be created.
+`Trajr` allows you to generate random trajectories with the `TrajGenerate` function. Random trajectories may be used in simulation studies, or simply for experimenting with trajectory analysis, and it has been used to generate the majority of trajectories in this document. By default, `TrajGenerate` returns a correlated random walk, however, by specifying different arguments, a variety of trajectory types can be created.
 ```{r generate, fig.width=6, fig.height=4, fig.cap="_Some generated trajectories. a) correlated walk, b) directed walk, c) brownian motion, d) Levy walk._", echo=-1:-2}
 set.seed(1)
 par(mfrow = c(2, 2), mar = c(4, 4, 0.5, 0.5) + 0.1)
-# Random correlated walk
+# Correlated random walk
 trj <- TrajGenerate(n = 200)
 # Plot it
 plot(trj)

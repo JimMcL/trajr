@@ -9,16 +9,18 @@ TrajsMergeStats(trjs, statsFn, ...)
 \arguments{
 \item{trjs}{List of trajectories to be characterised.}
 
-\item{statsFn}{Function to calculate statistics of interest for a single trajectory.}
+\item{statsFn}{Function to calculate statistics of interest for a single
+trajectory.}
 
 \item{...}{Additional arguments passed to \code{statsFn}.}
 }
 \description{
-Builds a data frame by combining rows of statistical values for multiple trajectories.
+Builds a data frame by combining rows of statistical values for multiple
+trajectories. The statistics for each trajectory are defined by the caller in
+a user defined function - see the example for one way to acheive this.
 }
 \section{Note}{
-
-Any NULL valued statistics are converted to NAs.
+ Any NULL valued statistics are converted to NAs.
 }
 
 \examples{

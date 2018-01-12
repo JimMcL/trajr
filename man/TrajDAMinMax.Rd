@@ -18,8 +18,8 @@ autocorrelation of a trajectory.}
 mimimum/maximum.}
 }
 \value{
-Numeric vector with 2 values, \code{deltaS} and \code{C}, or else
-  NULL if there is no local minimum/maximum.
+Numeric vector with 2 values, \code{deltaS} and \code{C}, or NULL if
+  there is no local minimum/maximum.
 }
 \description{
 Determines the coordinates of the first local minimum/maximum of \code{C} in
