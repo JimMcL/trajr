@@ -124,7 +124,7 @@ TrajDuration <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' @export
 TrajMeanVelocity <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
   d <- (trj[endIndex, c("x", "y")] - trj[startIndex, c("x", "y")]) / TrajDuration(trj, startIndex, endIndex)
-  complex(re = d[1], im = d[2])
+  complex(real = d[1], imaginary = d[2])
 }
 
 #' Turning angles of a Trajectory
