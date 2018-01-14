@@ -115,7 +115,7 @@ TrajStraightness <- function(trj) {
 TrajDirectionalChange <- function(trj, nFrames = 1) {
   .checkTrajHasTime(trj)
 
-    # Calculating this way is almost 1 order of magnitude faster than using the documented equation
+  # Calculating this way is almost 1 order of magnitude faster than using the documented equation
   abs(.rad2deg(TrajAngles(trj, nFrames))) / diff(trj$displacementTime, 2 * nFrames)
 }
 

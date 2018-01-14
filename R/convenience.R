@@ -31,7 +31,7 @@
     coords <- coordList[[i]]
     # Check that there are at least 2 columns
     if (ncol(coords) < 2) {
-      stop(sprintf("Invalid trajectory CSV file %s, contains %d column but requires at least 2", fileName, ncol(coords)))
+      stop(sprintf("Invalid trajectory CSV file %s, contains %d column(s) but requires at least 2", fileName, ncol(coords)))
     }
   }
   coordList
@@ -248,7 +248,7 @@ TrajsMergeStats <- function(trjs, statsFn, ...) {
     if(is.na(nc))
       nc <- length(row)
     else if (nc != length(row))
-      stop(sprintf("Statistics for trajectory %d contain %d values, but expected %d", rowNum, length(row), nc))
+      stop(sprintf("Statistics for trajectory %d contains %d values, but expected %d", rowNum, length(row), nc))
     result <- rbind(result, row)
 
     rowNum <- rowNum + 1

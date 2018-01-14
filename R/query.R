@@ -111,8 +111,9 @@ TrajDuration <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 
 #' Trajectory mean velocity
 #'
-#' Calculates the mean velocity of a trajectory (or a portion of a
-#' trajectory).
+#' Calculates the mean or net velocity of a trajectory (or a portion of a
+#' trajectory). Theisis the velocity from the start point to the end point,
+#' ignoring the path that was taken.
 #'
 #' @param trj Trajectory whose duration is to be calculated.
 #' @param startIndex Index of the starting point.
