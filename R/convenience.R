@@ -236,6 +236,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #'
 #' @export
 TrajsMergeStats <- function(trjs, statsFn, ...) {
+  # TODO rename? perhaps TrajsRBindStats would be more meaningful
   result <- data.frame()
   nc <- NA
   rowNum <- 1
@@ -278,10 +279,11 @@ TrajsStepLengths <- function(trjs) {
 
 #' Replace NAs in a data frame
 #'
-#' Replaces NAs in a single column of a data frame with an uninformative numeric
-#' replacement value, so that a principal components analysis can be applied
-#' without discarding data. Optionally adds a new "flag" column which contains
-#' \code{1} for each row which originally contained NA, otherwise \code{0}.
+#' Replaces NAs in a single column of a data frame with an imputed uninformative
+#' numeric replacement value, so that a principal component analysis can be
+#' applied without discarding data. Optionally adds a new "flag" column which
+#' contains \code{1} for each row which originally contained NA, otherwise
+#' \code{0}.
 #'
 #' @param df Data frame to be adjusted.
 #' @param column Name or index of the column to be adjusted.
