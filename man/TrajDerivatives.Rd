@@ -2,19 +2,20 @@
 % Please edit documentation in R/speed.R
 \name{TrajDerivatives}
 \alias{TrajDerivatives}
-\title{Calculates trajectory speed and acceleration}
+\title{Calculates trajectory speed and linear acceleration}
 \usage{
 TrajDerivatives(trj)
 }
 \arguments{
-\item{trj}{Trajectory whose speed and acceleration is to be calculated.}
+\item{trj}{Trajectory whose speed and linear acceleration is to be
+calculated.}
 }
 \value{
 A list with components: \item{speed}{numeric vector, speed between
   each pair of trajectory points, i.e. the speed of each step.}
   \item{speedTimes}{numeric vector, times corresponding to values in
   \code{speed}, i.e. the time from the start of the trajectory to the end of
-  each step.} \item{acceleration}{numeric vector, acceleration between
+  each step.} \item{acceleration}{numeric vector, linear acceleration between
   steps.} \item{accelerationTimes}{numeric vector, time from start of
   trajectory to the end of the second step in each pair.}
 }
@@ -24,10 +25,12 @@ trajectories should be smoothed before being passed to this function, as
 noise is effectively amplifed when calculating speed and acceleration.
 }
 \details{
-To convert \code{speedTimes} to step durations, use \code{diff(c(0, r$speedTimes))}.
+Note that it is possible to obtain the duration of each step in a trajectory
+as follows: \preformatted{r <- TrajDerivatives(trj)
+stepLengths <- diff(c(0, r$speedTimes))}.
 }
 \seealso{
-\code{\link{TrajSpeedIntervals}} for analysing intervals within the
-  trajectory of low or high speed. \code{\link{TrajSmoothSG}} for smoothing a
-  trajectory.
+\code{\link{TrajSpeedIntervals}} for analysing intervals of low or
+  high speed within the trajectory. \code{\link{TrajSmoothSG}} for smoothing
+  a trajectory.
 }

@@ -17,8 +17,9 @@ TrajMeanVelocity(trj, startIndex = 1, endIndex = nrow(trj))
 Numeric duration of the trajectory, in time units.
 }
 \description{
-Calculates the mean velocity of a trajectory (or a portion of a
-trajectory).
+Calculates the mean or net velocity of a trajectory (or a portion of a
+trajectory). Theisis the velocity from the start point to the end point,
+ignoring the path that was taken.
 }
 \seealso{
 \code{\link{TrajGetTimeUnits}}

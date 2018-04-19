@@ -45,9 +45,10 @@ are sometimes referred to as "relocations".
 }
 \details{
 If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
-the time (in seconds) of each coordinate. Otherwise, times are calculated for
-each point as \code{(coord - 1) / fps} where \code{coord} is the index of the
-point; in other words, sampling at constant time intervals is assumed.
+the time (in some numeric units) of each coordinate. Otherwise, times are
+calculated for each point as \code{(coord - 1) / fps} where \code{coord} is
+the index of the point; in other words, sampling at constant time intervals
+is assumed.
 
 \code{x} and \code{y} must be square units. Longitude and latitude are not
 suitable for use as \code{x} and \code{y} values, since in general, \code{1°

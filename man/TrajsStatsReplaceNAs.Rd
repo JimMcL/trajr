@@ -22,10 +22,11 @@ is added regardless of whether there are any NAs in the data.}
 A copy of \code{df} with NAs replaced in \code{column}.
 }
 \description{
-Replaces NAs in a single column of a data frame with an uninformative numeric
-replacement value, so that a principal components analysis can be applied
-without discarding data. Optionally adds a new "flag" column which contains
-\code{1} for each row which originally contained NA, otherwise \code{0}.
+Replaces NAs in a single column of a data frame with an imputed uninformative
+numeric replacement value, so that a principal component analysis can be
+applied without discarding data. Optionally adds a new "flag" column which
+contains \code{1} for each row which originally contained NA, otherwise
+\code{0}.
 }
 \examples{
 df <- data.frame(x = c(1, 2, 3), y = c(NA, 5, 6), z = c(NA, NA, 9))
