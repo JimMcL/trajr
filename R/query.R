@@ -13,7 +13,8 @@ TrajGetFPS <- function(trj) { attr(trj, .TRAJ_FPS) }
 
 #' Trajectory number of coordinates
 #'
-#' Returns the number of coordinates recorded for this trajectory, i.e. 1 more than the number of steps.
+#' Returns the number of coordinates recorded for this trajectory, i.e. 1 more
+#' than the number of steps.
 #'
 #' @param trj Trajectory to query
 #'
