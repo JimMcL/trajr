@@ -10,5 +10,6 @@ TrajGetNCoords(trj)
 \item{trj}{Trajectory to query}
 }
 \description{
-Returns the number of coordinates recorded for this trajectory, i.e. 1 more than the number of steps.
+Returns the number of coordinates recorded for this trajectory, i.e. 1 more
+than the number of steps.
 }

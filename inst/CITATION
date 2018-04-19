@@ -1,0 +1,18 @@
+
+year = sub('.*(2[[:digit:]]{3})-.*', '\\1', meta$Date, perl = TRUE)
+vers = paste('R package version', meta$Version)
+
+bibentry(
+     bibtype = "Article",
+     header = "To cite the 'trajr' package in publications use:",
+     textVersion = "McLean DJ, Skowron Volponi MA. trajr: An R package for characterisation of animal trajectories. Ethology. 2018;00:1–9. https://doi.org/10.1111/eth.12739",
+     title = "trajr: An R package for characterisation of animal trajectories",
+     author = as.person("Donald James McLean and Marta A. Skowron Volponi"),
+     year = 2018,
+     journal = "Ethology",
+     volume = 0,
+     number = 0,
+     doi = "10.1111/eth.12739",
+     url = "https://onlinelibrary.wiley.com/doi/abs/10.1111/eth.12739",
+     key = "doi:10.1111/eth.12739"
+   )
