@@ -39,6 +39,8 @@ TrajLogSequence <- function(from, to, length.out) {
 #' set.seed(42)
 #' trj <- TrajGenerate()
 #' muL <- mean(TrajStepLengths(trj))
+#' # Use 20 step sizes from 1/2 mean step length to 5 * mean step length.
+#' # For real use, biologically meaningful step sizes should be used.
 #' stepSizes <- TrajLogSequence(0.5 * muL, 5 * muL, 20)
 #' plot(TrajFractalDimensionValues(trj, stepSizes), log = "xy", pch = 16, cex = .5)
 #'
@@ -81,13 +83,25 @@ TrajFractalDimensionValues <- function(trj, stepSizes, adjustD = TRUE) {
 #' may be useful for studies involving differences in behaviour at different
 #' spatial scales (Nams, 2006).
 #'
+#' You can test whether a trajectory is a fractal curve for a range of step
+#' sizes using the \code{\link{TrajFractalDimensionValues}} function. The
+#' example code in its documentation demonstrates how to plot path length for a
+#' range of step sizes. If the plotted points lie along straight line, then the
+#' trajectory is a fractal curve for that range of step sizes. However, typical
+#' trajectories result in a curve rather than a straight line.
+#'
+#' If you decide to use fractal dimension despite the warnings of Benhamou
+#' (2004) and Turchin (1996), try to select a biologically meaningful range of
+#' step sizes (and be prepared to justify your choice). If comparing fractal
+#' dimensions across trajectories, be consistent in your choice of step sizes.
+#'
 #' @param trj Trajectory to calculate fractal dimension for.
 #' @param stepSizes Vector of step sizes (aka divider sizes) used to calculate
 #'   path lengths.
 #' @param adjustD If \code{TRUE}, path length is adjusted for truncation error
 #'   (Nams, 2006).
 #' @param dMean If \code{TRUE}, the fractal dimension is calculated starting
-#'   from the beginning of the trajectory, the re-calculated starting from the
+#'   from the beginning of the trajectory, then re-calculated starting from the
 #'   end and moving backwards. The value returned is the mean of the two fractal
 #'   dimensions (Nams, 2006).
 #'
@@ -95,7 +109,9 @@ TrajFractalDimensionValues <- function(trj, stepSizes, adjustD = TRUE) {
 #'
 #' @seealso \code{\link{TrajLogSequence}} to create a logarithmically spaced
 #'   sequence, \code{\link{TrajFractalDimensionValues}} for the function used
-#'   internally to calculate a range of path lengths for different step sizes.
+#'   internally to calculate a range of path lengths for different step sizes,
+#'   \code{\link{TrajEmax}} and \code{\link{TrajSinuosity2}} for some alternate
+#'   measures of trajectory tortuosity.
 #'
 #' @references
 #'

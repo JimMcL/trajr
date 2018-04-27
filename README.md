@@ -1,14 +1,15 @@
 # trajr
 
 [![Travis-CI Build Status](https://travis-ci.org/JimMcL/trajr.svg?branch=master)](https://travis-ci.org/JimMcL/trajr)
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
 [![codecov](https://codecov.io/gh/JimMcL/trajr/branch/master/graph/badge.svg)](https://codecov.io/gh/JimMcL/trajr)
+<!--![](http://cranlogs.r-pkg.org/badges/grand-total/trajr)-->
 
 Trajectory Analysis in R
 
 An R package for analysing 2-dimensional animal trajectories, which represent the movements of animals through space and time. It provides functions to easily calculate various quantitative measures of trajectories such as speed and straightness or tortuosity. It also provides a range of other trajectory operations such as resampling to fixed step lengths (_rediscretization_), determining turning angles and step lengths, and so on. `trajr` is described in [McLean DJ, Skowron Volponi MA. trajr: An R package for characterisation of animal trajectories. Ethology. 2018;00:1–9. https://doi.org/10.1111/eth.12739](http://dx.doi.org/10.1111/eth.12739)
 
-`Trajr` does not provide support for creating trajectories; it operates on existing trajectories which are sequences of (x, y, time) coordinates.
+`Trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of (x, y, time) coordinates.
 
 ## Installation
     $ install.packages("trajr")
