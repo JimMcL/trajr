@@ -106,13 +106,13 @@ trj <- TrajFromCoords(coords)
 Trajectories may need to be scaled before analysis. For instance, when a trajectory is digitised from video, the spatial units will be pixels, and require conversion to more meaningful units such as metres. Trajectories are scaled by calling `TrajScale`, specifying the scale factor and the abbreviation of the transformed units. In the case of a trajectory digitised from a video, you can calculate scale as $width^{m}/width^{p}$, where $width^{m}$ is the width of an object in metres, and $width^{p}$ is the width of the same object in pixels, as measured from the video. A commonly used method to determine the scale is to include a measuring tape in the video, then measure the number of pixels in a length of the tape.
 ```{r, eval=FALSE}
 # Example 1
-coords <- read.csv("H.pahangensis.csv")
+coords <- read.csv("H. pahangensis.csv")
 trj <- TrajFromCoords(coords, spatialUnits = "pixels")
 # A 10 mm (= .01 m) object had length 47 pixels in the video, scale to metres
 trj <- TrajScale(trj, .01 / 47, "m")
 
 # Example 2
-coords <- read.csv("A.argentifasciata.csv")
+coords <- read.csv("A. argentifasciata.csv")
 # In this video, a 20 cm (= .2 m) object had length 1800 pixels, scale to metres
 trj <- TrajScale(trj, .2 / 1800, "m")
 ```
@@ -246,7 +246,7 @@ plot(intervals)
 
 Various methods to measure the straightness, or conversely, tortuosity, of trajectories are available within `trajr`. The simplest is $D/L$, where $D$ is the distance from the start to the end of the trajectory, and $L$ is the length of the trajectory. This straightness index is calculated by the function `TrajStraightness`, and is a number ranging from 0 to 1, where 1 indicates a straight line. Benhamou (2004) considers the straightness index to be a reliable measure of the efficiency of a directed walk, but inapplicable to random trajectories. Batschelet (1981) considers this straightness index to be an approximation of _r_, which is the length of the mean vector of turning angles after rediscretizing to a constant step length. _r_ can be calculated by calling `Mod(TrajMeanVectorOfTurningAngles(trj))`, assuming `trj` is a Trajectory with constant step length.
 
-Within this section, most of the figures show the appropriate statistic plotted for multiple randomly generated correlated random walks which vary in the standard deviations of angular errors (higher standard deviations of angular errors produce more tortuous trajectories). 
+Within this section, most of the figures show the appropriate statistic plotted for multiple randomly generated correlated random walks which vary in the standard deviations of angular errors, $\sigma_{\Delta}$ (higher values of $\sigma_{\Delta}$ produce more tortuous trajectories). 
 
 ```{r traj_prep, echo=-1}
 set.seed(1)
@@ -265,7 +265,7 @@ reds <- lapply(stepSizes, function(ss) lapply(1:n, function(i) TrajRediscretize(
 ```
 
 
-```{r straightness, fig.cap="_Two straightness indices (r, dots, and D/L, crosses) as a function of angular error, plotted for several different step sizes (linear axes)._", fig.height=4, fig.width=6, echo=-1}
+```{r straightness, fig.cap="_Two straightness indices (r, dots, and D/L, crosses) as a function of $\\sigma_{\\Delta}$, plotted for several different step sizes (linear axes)._", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate straightness (D/L) for all of the rediscretized trajectories
@@ -277,7 +277,7 @@ rs <- sapply(reds, function(trjs) sapply(1:n, function(i) Mod(TrajMeanVectorOfTu
 plot(rep(angularErrorSd, 3), rs,
      pch = 16, cex = .8,
      col = c(rep('red', n), rep('blue', n), rep('darkgreen', n)),
-     xlab = expression(sigma["angular error"]), ylab = "Straightness",
+     xlab = expression(sigma[Delta]), ylab = "Straightness",
      ylim = range(c(ds, rs)))
 points(rep(angularErrorSd, 3), ds,
      pch = 3, cex = .8,
@@ -292,7 +292,7 @@ legend("bottomleft", c(expression(italic(r)), "D/L", paste("Step length", stepSi
 
 The sinuosity index defined by Benhamou (2004) may be an appropriate measure of the tortuosity of a random search path. Sinuosity is a function of the mean cosine of turning angles, and is a corrected form of the original sinuosity index defined by Bovet & Benhamou (1988). The function `TrajSinuosity2` calculates the corrected form while `TrajSinuosity` calculates the original index. Sinuosity should be calculated for a trajectory with a constant step length, so trajectories may first require [rediscretization](#resampling-trajectories). In the absence of a biologically meaningful step size, rediscretizing to the mean step length of the trajectory will produce a trajectory with approximately the same shape and number of steps as the original. 
 
-```{r Sinuosity, fig.cap="_Sinuosity as a function of angular error, plotted for several different step sizes (linear axes)._", fig.height=4, fig.width=6, echo=-1}
+```{r Sinuosity, fig.cap="_Sinuosity as a function of $\\sigma_{\\Delta}$, plotted for several different step sizes (linear axes)._", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate sinuosity for all of the rediscretized trajectories
@@ -312,7 +312,7 @@ legend("bottomright", paste("Step length", stepSizes),
 
 $E^{a}_{max}$ is a dimensionless estimate of the maximum expected displacement of a trajectory. Larger $E^{a}_{max}$ values (approaching infinity) represent straighter paths (Cheung, Zhang, Stricker, & Srinivasan, 2007). $E^{b}_{max}$ is $E^{a}_{max}$ multiplied by the mean step length, so gives the maximum possible displacement in spatial units. `TrajEmax` returns the value of $E^{a}_{max}$ for a trajectory, or $E^{b}_{max}$ if the argument `eMaxB` is `TRUE`. `TrajEmax` differentiates between random and directed walks; see `?TrajEmax` for details.
 
-```{r emax, fig.cap="_E~max~ as a function of angular error (logarithmic axes)._", fig.height=4, fig.width=6, echo=-1}
+```{r emax, fig.cap="_E~max~ as a function of $\\sigma_{\\Delta}$ (logarithmic axes)._", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 1.5, 0.5) + 0.1)
 # Calculate Emax for all of the rediscretized trajectories (from the previous example)
 emaxs <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajEmax(trjs[[i]])))
@@ -333,7 +333,7 @@ legend("bottomleft", c("Step length 1", "Step length 2", "Step length 10"),
 
 Fractal dimension has been considered a promising measure of straightness or tortuosity, varying between 1 (straight line movement) and 2 (Brownian motion). However, several studies have found it inappropriate for use with animal trajectories, as animal trajectories are not fractal curves, and the fractal dimension of a non-fractal curve  depends critically on the range of step sizes used to calculate it (Nams, 2006; Turchin, 1996). Nonetheless, fractal dimension continues to be used, and the `TrajFractalDimension` function, by default, calculates fractal dimension using the modified dividers method to account for truncation error (Nams, 2006). See `?TrajFractalDimension` and `?TrajFractalDimensionValues` for more information.
 
-```{r fractal, fig.cap="_Fractal dimension as a function of angular error._", fig.width=6, fig.height=4, echo=-1}
+```{r fractal, fig.cap="_Fractal dimension as a function of $\\sigma_{\\Delta}$._", fig.width=6, fig.height=4, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 # Use the same range of step sizes for all trajectories
 stepSizes <- TrajLogSequence(.1, 7, 10)
@@ -363,7 +363,7 @@ legend("topleft", c("Step length 1", "Step length 2", "Step length 10"),
 
 Directional change is defined as the change in direction over time, and has been used to assess locomotor mimicry in butterflies (Kitamura & Imafuku, 2015). Directional change is defined for each pair of steps, so a trajectory (or a portion thereof) may be characterised by the mean (`DC`) and standard deviation (`SDDC`) of all directional changes. `DC` may be used as an index of nonlinearity, and `SDDC` as a measure of irregularity. The directional changes for a trajectory are calculated by the function `TrajDirectionalChange`, so `SD` may be calculated as `mean(TrajDirectionalChange(trj))`, and `SDDC` as `sd(TrajDirectionalChange(trj))`. Note that directional change cannot be calculated on rediscretized trajectories, as rediscretizing discards time information.
 
-```{r DC, fig.cap="_DC and SDDC as a function of angular error._", fig.height=4, fig.width=6, echo=-1}
+```{r DC, fig.cap="_DC and SDDC as a function of $\\sigma_{\\Delta}$._", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 # Calculate DC and SDDC for all of the original trajectories (from above)
 dcs <- sapply(1:n, function(i) mean(TrajDirectionalChange(trjs[[i]])))
