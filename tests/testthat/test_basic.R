@@ -233,6 +233,14 @@ test_that("Translate", {
   expect_equal(tt$displacement, trj$displacement)
   expect_equal(TrajLength(tt), TrajLength(trj))
   expect_equal(TrajEmax(tt), TrajEmax(trj))
+
+  tto <- TrajTranslate(tt, -tt$x[1], -tt$y[1])
+  expect_equal(nrow(tto), nrow(trj))
+  expect_equal(tto$polar, trj$polar)
+  expect_equal(tto$x, trj$x)
+  expect_equal(tto$y, trj$y)
+  expect_equal(TrajLength(tto), TrajLength(trj))
+  expect_equal(TrajEmax(tto), TrajEmax(trj))
 })
 
 test_that("Step lengths", {

@@ -231,6 +231,9 @@ TrajReverse <- function(trj) {
 #' trj <- TrajGenerate()
 #' trj <- TrajTranslate(trj, 10, 15)
 #'
+#' # Translate a trajectory so its origin (0, 0)
+#' trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1])
+#'
 #' @export
 TrajTranslate <- function(trj, dx, dy) {
   trj$x <- trj$x + dx
