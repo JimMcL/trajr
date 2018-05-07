@@ -6,6 +6,13 @@
 \usage{
 TrajTranslate(trj, dx, dy)
 }
+\arguments{
+\item{trj}{The Trajectory to be reversed.}
+
+\item{dx}{Delta x.}
+
+\item{dy}{Delta y.}
+}
 \description{
 Translate a trajectory
 }
@@ -15,5 +22,8 @@ Translate a trajectory
 set.seed(42)
 trj <- TrajGenerate()
 trj <- TrajTranslate(trj, 10, 15)
+
+# Translate a trajectory so its origin (0, 0)
+trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1])
 
 }

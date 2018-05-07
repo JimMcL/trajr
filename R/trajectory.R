@@ -224,6 +224,10 @@ TrajReverse <- function(trj) {
 
 #' Translate a trajectory
 #'
+#' @param trj The Trajectory to be reversed.
+#' @param dx Delta x.
+#' @param dy Delta y.
+#'
 #' @examples
 #' # Shift a trajectory so that its origin is (10, 15).
 #' # Note that trajectories created by TrajGenerate always start at (0, 0)
