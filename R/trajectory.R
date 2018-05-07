@@ -222,6 +222,23 @@ TrajReverse <- function(trj) {
   .fillInTraj(trj)
 }
 
+#' Translate a trajectory
+#'
+#' @examples
+#' # Shift a trajectory so that its origin is (10, 15).
+#' # Note that trajectories created by TrajGenerate always start at (0, 0)
+#' set.seed(42)
+#' trj <- TrajGenerate()
+#' trj <- TrajTranslate(trj, 10, 15)
+#'
+#' @export
+TrajTranslate <- function(trj, dx, dy) {
+  trj$x <- trj$x + dx
+  trj$y <- trj$y + dy
+
+  .fillInTraj(trj)
+}
+
 #' Smooth a trajectory using a Savitzky-Golay filter
 #'
 #' Smooths a trajectory using a Savitzky-Golay smoothing filter.

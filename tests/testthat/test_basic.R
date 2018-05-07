@@ -221,6 +221,20 @@ test_that("Reverse", {
   expect_equal(TrajEmax(rv), TrajEmax(trj))
 })
 
+test_that("Translate", {
+  set.seed(1)
+  trj <- TrajGenerate()
+  dx <- 10
+  dy <- 15
+  tt <- TrajTranslate(trj, dx, dy)
+  expect_equal(nrow(tt), nrow(trj))
+  expect_equal(tt$x, trj$x + dx)
+  expect_equal(tt$y, trj$y + dy)
+  expect_equal(tt$displacement, trj$displacement)
+  expect_equal(TrajLength(tt), TrajLength(trj))
+  expect_equal(TrajEmax(tt), TrajEmax(trj))
+})
+
 test_that("Step lengths", {
   set.seed(1)
   nSteps <- 100

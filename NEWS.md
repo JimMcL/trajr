@@ -2,4 +2,4 @@
 
 * Added correct citation.
 * Fixed: `plot.TrajSpeedIntervals` was not passing additional arguments (`...`) to `plot`.
-* Added: functions `TrajDuration`, `TrajMeanVelocity`.
+* Added: functions `TrajDuration`, `TrajMeanVelocity`, `TrajTranslate`.

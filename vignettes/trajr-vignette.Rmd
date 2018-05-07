@@ -165,7 +165,7 @@ This table lists trajectory operations not otherwise addressed by this document.
 
 
 ```{r echo=FALSE, results='asis', fig.align='left'}
-kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
+kable(data.frame(`Function` = c("`TrajRotate`", "`TrajTranslate`", "`TrajReverse`",
                                 "`TrajGetFPS`", "`TrajGetNCoords`", "`TrajGetUnits`",
                                 "`TrajGetTimeUnits`", "`TrajStepLengths`", 
                                 "`TrajLength`", "`TrajDistance`", 
@@ -173,6 +173,7 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajReverse`",
                                 "`TrajMeanVectorOfTurningAngles`",
                                 "`TrajExpectedSquareDisplacement`"), 
                  Description = c("Rotates a trajectory",
+                                 "Translates a trajectory",
                                  "Reverses a trajectory",
                                  "Returns the frames-per-second of a trajectory",
                                  "Returns the number of coordinates of a trajectory",

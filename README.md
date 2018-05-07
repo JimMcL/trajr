@@ -1,8 +1,8 @@
 # trajr
 
 [![Travis-CI Build Status](https://travis-ci.org/JimMcL/trajr.svg?branch=master)](https://travis-ci.org/JimMcL/trajr)
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
 [![codecov](https://codecov.io/gh/JimMcL/trajr/branch/master/graph/badge.svg)](https://codecov.io/gh/JimMcL/trajr)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/trajr)
 
 Trajectory Analysis in R
