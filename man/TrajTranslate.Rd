@@ -7,14 +7,17 @@
 TrajTranslate(trj, dx, dy)
 }
 \arguments{
-\item{trj}{The Trajectory to be reversed.}
+\item{trj}{The Trajectory to be translated}
 
 \item{dx}{Delta x.}
 
 \item{dy}{Delta y.}
 }
+\value{
+A new trajectory which is a translated version of the input trajectory.
+}
 \description{
-Translate a trajectory
+Shifts an entire trajectory by the specified delta x and y.
 }
 \examples{
 # Shift a trajectory so that its origin is (10, 15).

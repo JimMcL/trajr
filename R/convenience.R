@@ -76,6 +76,8 @@
 #'   \code{\link{TrajSmoothSG}})
 #' @param smoothN Filter length to be used for Savitzky-Golay smoothing (must be
 #'   odd, see \code{\link{TrajSmoothSG}})
+#' @param translateToOrigin If TRUE, the trajectory is translated so that its
+#'   starting point is at (0, 0).
 #' @param rootDir Optional name of a top level directory which contains the CSV
 #'   files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
 #'   within \code{rootDir} or its sub-directories.
@@ -88,7 +90,8 @@
 #' @return A list of trajectories.
 #'
 #' @seealso \code{\link[utils]{read.csv}}, \code{\link{TrajFromCoords}},
-#'   \code{\link{TrajScale}}, \code{\link{TrajSmoothSG}}
+#'   \code{\link{TrajScale}}, \code{\link{TrajSmoothSG}},
+#'   \code{\link{TrajTranslate}}
 #'
 #' @examples
 #' \dontrun{
@@ -111,6 +114,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
                        spatialUnits = NULL, timeUnits = NULL,
                        csvStruct = list(x = 1, y = 2, time = NULL),
                        smoothP = 3, smoothN = 41,
+                       translateToOrigin = FALSE,
                        rootDir = NULL,
                        csvReadFn = utils::read.csv, ...) {
   # I hate factors!
@@ -174,6 +178,11 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
         # Smooth
         if (is.numeric(smoothP) && is.numeric(smoothN)) {
           trj <- TrajSmoothSG(trj, smoothP, smoothN)
+        }
+
+        # Translate to origin
+        if (translateToOrigin) {
+          trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1])
         }
       }
 

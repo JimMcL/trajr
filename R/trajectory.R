@@ -224,9 +224,12 @@ TrajReverse <- function(trj) {
 
 #' Translate a trajectory
 #'
-#' @param trj The Trajectory to be reversed.
+#' Shifts an entire trajectory by the specified delta x and y.
+#'
+#' @param trj The Trajectory to be translated
 #' @param dx Delta x.
 #' @param dy Delta y.
+#' @return A new trajectory which is a translated version of the input trajectory.
 #'
 #' @examples
 #' # Shift a trajectory so that its origin is (10, 15).

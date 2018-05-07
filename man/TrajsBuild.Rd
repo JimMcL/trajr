@@ -6,7 +6,7 @@
 \usage{
 TrajsBuild(fileNames, fps = NULL, scale = NULL, spatialUnits = NULL,
   timeUnits = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
-  smoothP = 3, smoothN = 41, rootDir = NULL,
+  smoothP = 3, smoothN = 41, translateToOrigin = FALSE, rootDir = NULL,
   csvReadFn = utils::read.csv, ...)
 }
 \arguments{
@@ -37,6 +37,9 @@ contain x-, y-, and optionally time-values.}
 
 \item{smoothN}{Filter length to be used for Savitzky-Golay smoothing (must be
 odd, see \code{\link{TrajSmoothSG}})}
+
+\item{translateToOrigin}{If TRUE, the trajectory is translated so that its
+starting point is at (0, 0).}
 
 \item{rootDir}{Optional name of a top level directory which contains the CSV
 files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
@@ -88,5 +91,6 @@ trjs <- TrajsBuild(fileNames, fps = 50, scale = scale, units = "m",
 }
 \seealso{
 \code{\link[utils]{read.csv}}, \code{\link{TrajFromCoords}},
-  \code{\link{TrajScale}}, \code{\link{TrajSmoothSG}}
+  \code{\link{TrajScale}}, \code{\link{TrajSmoothSG}},
+  \code{\link{TrajTranslate}}
 }
