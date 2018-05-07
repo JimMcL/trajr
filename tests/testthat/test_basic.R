@@ -327,6 +327,9 @@ test_that("Convenience", {
   expect_equal(TrajGetUnits(trjs[[2]]), "m")
   expect_equal(TrajGetTimeUnits(trjs[[2]]), "s")
 
+  # Trajectories should start at origin
+  expect_true(!any(sapply(trjs, function (t) c(t$x[1], t$y[1])) == 0))
+
   # Define a function which calculates some statistics
   # of interest for a single trajectory
   characteriseTrajectory <- function(trj) {
@@ -359,6 +362,11 @@ test_that("Convenience", {
   stats <- TrajsStatsReplaceNAs(stats, "first_min_deltaS", flagColumn = "No_first_min")
   stats <- TrajsStatsReplaceNAs(stats, "first_min_C")
   expect_false(any(is.na(stats)))
+
+  # Test translating to the origin
+  trjs <- TrajsBuild(tracks$file, translateToOrigin = TRUE, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
+  expect_true(all(sapply(trjs, function (t) c(t$x[1], t$y[1])) == 0))
+
 })
 
 test_that("Convenience-multi", {
