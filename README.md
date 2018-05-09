@@ -7,9 +7,9 @@
 
 Trajectory Analysis in R
 
-An R package for analysing 2-dimensional animal trajectories, which represent the movements of animals through space and time. It provides functions to easily calculate various quantitative measures of trajectories such as speed and straightness or tortuosity. It also provides a range of other trajectory operations such as resampling to fixed step lengths (_rediscretization_), determining turning angles and step lengths, and so on. If you use `trajr` in your research, please cite [McLean DJ, Skowron Volponi MA. trajr: An R package for characterisation of animal trajectories. Ethology. 2018;00:1–9. https://doi.org/10.1111/eth.12739](http://dx.doi.org/10.1111/eth.12739). 
+An R package for analysing 2-dimensional animal trajectories, which represent the movements of animals through space and time. It provides functions to easily calculate various quantitative measures of trajectories such as speed and straightness or tortuosity. It also provides a range of other trajectory operations such as resampling to fixed step lengths (_rediscretization_), determining turning angles and step lengths, and so on. If you use `trajr` in your research, please cite [McLean, D. J., & Skowron Volponi, M. A. (2018). trajr: An R package for characterisation of animal trajectories. Ethology, 124(6), 440-448. https://doi.org/10.1111/eth.12739](https://doi.org/10.1111/eth.12739). 
 
-`Trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of (x, y, time) coordinates.
+`trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of (x, y, time) coordinates.
 
 ## Installation
     $ install.packages("trajr")
@@ -31,32 +31,32 @@ Unfortunately, installing vignettes can be time-consuming.
 The best way to start is to read the package vignette. After installation from CRAN (or from github including vignettes), run `browseVignettes(package = "trajr")`.
 
 ## Environment
+<!-- Output from devtools::session_info() -->
 ```
-Session info ----------------------------------------------------------------------------
+Session info ----------------------------------------------------------------------------------------------------------------
  setting  value                       
- version  R version 3.4.2 (2017-09-28)
+ version  R version 3.5.0 (2018-04-23)
  system   x86_64, mingw32             
- ui       RStudio (1.1.383)           
+ ui       RStudio (1.1.447)           
  language (EN)                        
- collate  English_United States.1252  
+ collate  English_Australia.1252      
  tz       Australia/Sydney            
- date     2017-12-24                  
+ date     2018-05-09                  
 
-Packages --------------------------------------------------------------------------------
- package   * version date       source        
- base      * 3.4.2   2017-09-28 local         
- compiler    3.4.2   2017-09-28 local         
- datasets  * 3.4.2   2017-09-28 local         
- devtools    1.13.4  2017-11-09 CRAN (R 3.4.3)
- digest      0.6.12  2017-01-27 CRAN (R 3.4.2)
- graphics  * 3.4.2   2017-09-28 local         
- grDevices * 3.4.2   2017-09-28 local         
- memoise     1.1.0   2017-04-21 CRAN (R 3.4.2)
- methods   * 3.4.2   2017-09-28 local         
- stats     * 3.4.2   2017-09-28 local         
- tools       3.4.2   2017-09-28 local         
- trajr     * 1.0.0   2017-12-21 local         
- utils     * 3.4.2   2017-09-28 local         
- withr       2.1.0   2017-11-01 CRAN (R 3.4.2)
- yaml        2.1.14  2016-11-12 CRAN (R 3.4.2)
-```
+Packages --------------------------------------------------------------------------------------------------------------------
+ package   * version    date       source        
+ base      * 3.5.0      2018-04-23 local         
+ compiler    3.5.0      2018-04-23 local         
+ datasets  * 3.5.0      2018-04-23 local         
+ devtools    1.13.5     2018-02-18 CRAN (R 3.5.0)
+ digest      0.6.15     2018-01-28 CRAN (R 3.5.0)
+ graphics  * 3.5.0      2018-04-23 local         
+ grDevices * 3.5.0      2018-04-23 local         
+ memoise     1.1.0      2017-04-21 CRAN (R 3.5.0)
+ methods   * 3.5.0      2018-04-23 local         
+ stats     * 3.5.0      2018-04-23 local         
+ tools       3.5.0      2018-04-23 local         
+ trajr     * 1.0.1      2018-05-07 local         
+ utils     * 3.5.0      2018-04-23 local         
+ withr       2.1.2      2018-03-15 CRAN (R 3.5.0)
+ yaml        2.1.18     2018-03-08 CRAN (R 3.5.0)```
