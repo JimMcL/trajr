@@ -3,17 +3,18 @@ Release procedure
 
 Run devtools::build_win() and wait for the result
 
-Update version number in DESCRIPTION file. See https://semver.org/
+Update version number and date in DESCRIPTION file. See https://semver.org/
 
 Update NEWS.md
-
-Update session info in README.md: devtools::session_info()
 
 Commit and push all changes
 
 Build source package
 
+Update session info in README.md: devtools::session_info()
+
 Run (possibly from RStudio terminal window): cd ..; R CMD check --as-cran trajr_*.tar.gz
+Perhaps add --no-manual in case of error: pdflatex is not available
 
 Check that travis-ci build completed successfully with no issues (https://travis-ci.org/JimMcL/trajr)
 
