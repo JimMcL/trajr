@@ -7,7 +7,9 @@ Update version number in DESCRIPTION file. See https://semver.org/
 
 Update NEWS.md
 
-Commit all changes
+Update session info in README.md: devtools::session_info()
+
+Commit and push all changes
 
 Build source package
 

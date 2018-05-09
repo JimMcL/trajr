@@ -43,11 +43,12 @@
 #'   Other functions provide information about trajectories, such as
 #'   \code{\link{TrajStepLengths}}, \code{\link{TrajGetNCoords}},
 #'   \code{\link{TrajGetUnits}}, \code{\link{TrajGetTimeUnits}},
-#'   \code{\link{TrajGetFPS}}, or allow some manipulations of trajectories, such
-#'   as \code{\link{TrajScale}}, \code{\link{TrajReverse}}, and
-#'   \code{\link{TrajRotate}}.
+#'   \code{\link{TrajReverse}}, \code{\link{TrajDuration}},
+#'   \code{\link{TrajMeanVelocity}}, or allow some manipulations of
+#'   trajectories, such as \code{\link{TrajScale}}, \code{\link{TrajReverse}},
+#'   \code{\link{TrajTranslate}}, and \code{\link{TrajRotate}}.
 #'
-#'   \code{Trajr} also provides the capability of plotting a \code{Trajectory}
+#'   \code{Trajr} also provides the capability to plot a \code{Trajectory}
 #'   and the results of some analyses.
 #'
 #' @docType package
