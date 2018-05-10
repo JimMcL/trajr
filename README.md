@@ -28,7 +28,7 @@ Unfortunately, installing vignettes can be time-consuming.
 
 ## Using trajr
 
-The best way to start is to read the package vignette. After installation from CRAN (or from github including vignettes), run `browseVignettes(package = "trajr")`.
+The best way to start is to read the package vignette. After installation from CRAN (or from github including vignettes), run `browseVignettes(package = "trajr")`. The vignette for the latest released version is available on CRAN at https://cran.r-project.org/web/packages/trajr/vignettes/trajr-vignette.html.
 
 ## Environment
 <!-- Output from devtools::session_info() -->
