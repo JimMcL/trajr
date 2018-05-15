@@ -245,7 +245,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #'
 #' @export
 TrajsMergeStats <- function(trjs, statsFn, ...) {
-  # TODO rename? perhaps TrajsRBindStats would be more meaningful
+  # TODO rename this function? perhaps TrajsCombineIndices (or TrajsRBindStats) would be more meaningful
   result <- data.frame()
   nc <- NA
   rowNum <- 1

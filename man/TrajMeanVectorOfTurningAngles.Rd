@@ -32,5 +32,5 @@ Mod(TrajMeanVectorOfTurningAngles(trj))}, assuming that \code{trj} has a
 constant step length.
 }
 \seealso{
-\code{\link{TrajStraightness}}
+\code{\link{TrajStraightness}}, \code{\link{TrajAngles}}
 }

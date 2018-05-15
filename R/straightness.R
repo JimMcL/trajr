@@ -26,7 +26,12 @@
 #'   \code{Mod(r)} is the length of the mean vector which varies between 0 and
 #'   1, \code{Arg(r)} is the angle.
 #'
-#' @seealso \code{\link{TrajStraightness}}
+#' @seealso \code{\link{TrajStraightness}}, \code{\link{TrajAngles}}
+#'
+#' @references
+#'
+#' Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
+#' FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
 #'
 #' @export
 TrajMeanVectorOfTurningAngles <- function(trj, compass.direction = NULL) {

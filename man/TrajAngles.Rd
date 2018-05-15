@@ -22,6 +22,18 @@ Step angles in radians, normalised so that \code{-pi < angle <= pi}.
 Calculates the step angles (in radians) of each segment, either relative to
 the previous segment or relative to the specified compass direction.
 }
+\details{
+Note that since turning angles are circular quantities, i.e. 360° == 0°, it is
+incorrect to treat them as linear quantities. In particular, do not calculate
+arithmetic means or standard deviations of turning angles. See Batschelet,
+(1981) for a detailed expalanation and techniques for dealing with circular
+quantities.
+}
+\references{
+Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
+FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
+}
 \seealso{
-\code{\link{TrajStepLengths}}
+\code{\link{TrajStepLengths}},
+  \code{\link{TrajMeanVectorOfTurningAngles}}
 }
