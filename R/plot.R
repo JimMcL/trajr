@@ -50,9 +50,10 @@
 }
 
 # Private
-.drawTrajExtras <- function(x, draw.start.pt = TRUE, turning.angles = NULL, ...) {
-  if (draw.start.pt)
-    graphics::points(x$x[1], x$y[1], pch = 16, cex = .8)
+.drawTrajExtras <- function(x, draw.start.pt = TRUE, start.pt.cex = .8, turning.angles = NULL, ...) {
+  if (draw.start.pt) {
+    graphics::points(x$x[1], x$y[1], pch = 16, cex = start.pt.cex)
+  }
 
   if (!is.null(turning.angles)) {
     .drawTurningAngles(x, turning.angles)
@@ -67,9 +68,10 @@
 #' The \code{plot} method for Trajectory objects.
 #'
 #' @param x An object of class "Trajectory", the trajectory to be plotted.
+#' @param add If TRUE, the trajectory is added to the current plot.
 #' @param draw.start.pt If TRUE, draws a dot at the start point of the
 #'   trajectory.
-#' @param add If TRUE, the trajectory is added to the current plot.
+#' @param start.pt.cex Scale to apply when drawing the start point dot.
 #' @param turning.angles If \code{random} or \code{directed}, draws step turning
 #'   angles. \code{directed} assumes errors are relative to the first recorded
 #'   step angle. \code{random} assumes errors are relative to the previous step.
@@ -86,7 +88,7 @@
 #'
 #' @export
 plot.Trajectory <- function(x, add = FALSE,
-                            draw.start.pt = TRUE, turning.angles = NULL,
+                            draw.start.pt = TRUE, start.pt.cex = TRUE, turning.angles = NULL,
                             xlim = grDevices::extendrange(x$x), ylim = grDevices::extendrange(x$y),
                             xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (%s)", TrajGetUnits(x))),
                             ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (%s)", TrajGetUnits(x))),
@@ -94,7 +96,7 @@ plot.Trajectory <- function(x, add = FALSE,
   if (!add) {
     graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp, ...)
   }
-  graphics::lines(x, draw.start.pt = draw.start.pt, turning.angles = turning.angles, ...)
+  graphics::lines(x, draw.start.pt = draw.start.pt, start.pt.cex = start.pt.cex, turning.angles = turning.angles, ...)
 }
 
 #' Add Trajectory lines to a plot
@@ -104,15 +106,16 @@ plot.Trajectory <- function(x, add = FALSE,
 #' @param x An object of class "Trajectory", the trajectory to be plotted.
 #' @param draw.start.pt If TRUE, draws a dot at the start point of the
 #'   trajectory.
+#' @param start.pt.cex Scale to apply when drawing the start point dot.
 #' @param turning.angles If \code{random} or \code{directed}, draws step turning
 #'   angles. \code{directed} assumes errors are relative to the first recorded
 #'   step angle. \code{random} assumes errors are relative to the previous step.
 #' @param ... Additional arguments are passed to \code{\link[graphics]{lines}}.
 #'
 #' @export
-lines.Trajectory <- function(x, draw.start.pt = TRUE, turning.angles = NULL, ...) {
+lines.Trajectory <- function(x, draw.start.pt = TRUE, start.pt.cex = 0.8, turning.angles = NULL, ...) {
   graphics::lines(y ~ x, data = x, ...)
-  .drawTrajExtras(x, draw.start.pt, turning.angles, ...)
+  .drawTrajExtras(x, draw.start.pt, start.pt.cex, turning.angles, ...)
 }
 
 #' Add Trajectory points to a plot

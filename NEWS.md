@@ -1,3 +1,7 @@
+# trajr 1.2.0
+
+* Added start.pt.cex parameter to function `lines.Trajectory`.
+
 # trajr 1.1.0
 
 * Added correct citation.

@@ -137,7 +137,7 @@ TrajMeanVelocity <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' Note that since turning angles are circular quantities, i.e. 360° == 0°, it is
 #' incorrect to treat them as linear quantities. In particular, do not calculate
 #' arithmetic means or standard deviations of turning angles. See Batschelet,
-#' (1981) for a detailed expalanation and techniques for dealing with circular
+#' (1981) for a detailed explanation and techniques for dealing with circular
 #' quantities.
 #'
 #' @param trj the trajectory whose whose angles are to be calculated.
