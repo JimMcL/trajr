@@ -321,3 +321,37 @@ TrajsStatsReplaceNAs <- function(df, column, replacementValue = mean(df[,column]
   }
   df
 }
+
+# Time conversion ####
+
+#' Converts a delimited time string to a numeric value
+#'
+#' Time values may be imported in a format which is not immediately usable by
+#' trajr. This function converts times which are specified as a number of
+#' delimited fields to a single numeric value. The default parameter values
+#' handle a value with 4 colon-separated values, which are hours, minutes,
+#' seconds and milliseconds, eg: "0:01:04:108" represents 1 minutes, 4 seconds
+#' and 108 milliseconds, or 64.108 seconds.
+#'
+#' Note that the base R strptime can be used to convert time values in more
+#' complext date/time formats, but it does not handle millisecond fields.
+#'
+#' @param time A character string containing the time value to be converted.
+#' @param sep Field separator.
+#' @param factor Vector of numeric factors to be applied to each field, in the
+#'   order they occur within `time`. The default assumes 4 fields containing
+#'   numeric hours, minutes, seconds and milliseconds.
+#' @return `time` converted to a numeric value.
+#'
+#' @seealso \code{\link[base]{strptime}}
+#'
+#' @examples
+#' time <- c("0:00:00:029", "0:01:00:216", "0:02:01:062", "1:00:02:195", "1:06:03:949", "1:42:04:087")
+#' seconds <- TrajConvertTime(time)
+#'
+#' @export
+TrajConvertTime <- function(time, sep = ":", factors = c(60 * 60, 60, 1, .001)) {
+  # Split time on separator, and use matrix (inner) multiplication to
+  # convert each component to seconds then sum all components
+  c(as.matrix(read.table(text = time, sep = sep)) %*% factors)
+}

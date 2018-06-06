@@ -484,3 +484,20 @@ test_that("rotation", {
   expect_equal(TrajLength(trj), TrajLength(r))
   expect_true(Arg(vr) != Arg(vo))
 })
+
+test_that("Convert times", {
+  .checkTimes <- function(t, s) {
+    seconds <- TrajConvertTime(t)
+    expect_equal(length(t), length(seconds))
+    expect_identical(seconds, s)
+  }
+
+  .checkTimes(c("0:00:00:000", "0:00:00:001", "0:00:01:000", "0:01:00:000", "1:00:00:000"),
+              c(0, .001, 1, 60, 60 * 60))
+
+  .checkTimes(c("0:00:00:001", "0:00:00:002", "0:00:00:003", "0:00:00:004"),
+              c(.001, .002, .003, .004))
+
+  .checkTimes(c("1:01:01:001", "2:02:02:002", "3:03:03:003", "4:04:04:004"),
+              c(3661.001, 7322.002, 10983.003, 14644.004))
+})

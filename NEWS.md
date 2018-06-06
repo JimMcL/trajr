@@ -1,6 +1,7 @@
 # trajr 1.2.0
 
 * Added start.pt.cex parameter to function `lines.Trajectory`.
+* Added function `TrajConvertTime`.
 
 # trajr 1.1.0
 

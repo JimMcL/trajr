@@ -99,7 +99,7 @@ coords <- read.csv("mycoords.csv")
 trj <- TrajFromCoords(coords)
 ```
 
-`TrajFromCoords` assumes that the first column in `coords` contains x values, the second contains y values, and the third contains time values. The help page for `TrajFromCoords` describes how to alter these defaults - run `?TrajFromCoords` to access the help page. Many functions (including `TrajFromCoords`) contain code examples as part of their help information. You can also display and run an example by calling the `example` function: i.e. `example("TrajFromCoords")`. 
+`TrajFromCoords` assumes that the first column in `coords` contains x values, the second contains y values, and that points were sampled at a constant sampling frequency of 50 points/second. The help page for `TrajFromCoords` describes how to alter these defaults - run `?TrajFromCoords` to access the help page. Many functions (including `TrajFromCoords`) contain code examples as part of their help information. You can also display and run an example by calling the `example` function: i.e. `example("TrajFromCoords")`. 
 
 ### Scaling Trajectories
 
