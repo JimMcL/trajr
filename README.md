@@ -11,6 +11,8 @@ An R package for analysing 2-dimensional animal trajectories, which represent th
 
 `trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of `(x, y, time)` coordinates.
 
+Refer to [NEWS.md](NEWS.md) for a list of changes in each version.
+
 ## Installation
     $ install.packages("trajr")
 
