@@ -33,7 +33,7 @@ The best way to start is to read the package vignette. After installation from C
 ## Environment
 <!-- Output from devtools::session_info() -->
 ```
-Session info ----------------------------------------------------------------------------------------------------------------
+Session info --------------------------------------------------------------------------------
  setting  value                       
  version  R version 3.5.0 (2018-04-23)
  system   x86_64, mingw32             
@@ -41,22 +41,21 @@ Session info -------------------------------------------------------------------
  language (EN)                        
  collate  English_Australia.1252      
  tz       Australia/Sydney            
- date     2018-05-09                  
+ date     2018-09-05                  
 
-Packages --------------------------------------------------------------------------------------------------------------------
- package   * version    date       source        
- base      * 3.5.0      2018-04-23 local         
- compiler    3.5.0      2018-04-23 local         
- datasets  * 3.5.0      2018-04-23 local         
- devtools    1.13.5     2018-02-18 CRAN (R 3.5.0)
- digest      0.6.15     2018-01-28 CRAN (R 3.5.0)
- graphics  * 3.5.0      2018-04-23 local         
- grDevices * 3.5.0      2018-04-23 local         
- memoise     1.1.0      2017-04-21 CRAN (R 3.5.0)
- methods   * 3.5.0      2018-04-23 local         
- stats     * 3.5.0      2018-04-23 local         
- tools       3.5.0      2018-04-23 local         
- trajr     * 1.1.0      2018-05-07 local         
- utils     * 3.5.0      2018-04-23 local         
- withr       2.1.2      2018-03-15 CRAN (R 3.5.0)
- yaml        2.1.18     2018-03-08 CRAN (R 3.5.0)```
+Packages ------------------------------------------------------------------------------------
+ package   * version date       source        
+ base      * 3.5.0   2018-04-23 local         
+ compiler    3.5.0   2018-04-23 local         
+ datasets  * 3.5.0   2018-04-23 local         
+ devtools    1.13.6  2018-06-27 CRAN (R 3.5.0)
+ digest      0.6.15  2018-01-28 CRAN (R 3.5.0)
+ graphics  * 3.5.0   2018-04-23 local         
+ grDevices * 3.5.0   2018-04-23 local         
+ memoise     1.1.0   2017-04-21 CRAN (R 3.5.0)
+ methods   * 3.5.0   2018-04-23 local         
+ stats     * 3.5.0   2018-04-23 local         
+ tools       3.5.0   2018-04-23 local         
+ utils     * 3.5.0   2018-04-23 local         
+ withr       2.1.2   2018-03-15 CRAN (R 3.5.0)
+ yaml        2.1.18  2018-03-08 CRAN (R 3.5.0)```
