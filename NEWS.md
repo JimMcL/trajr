@@ -1,6 +1,8 @@
 # Changes to the `trajr` package
 
-## trajr 1.3.0
+## trajr 1.2.0.9000
+
+Intended to be released as version 1.3.0.
 
 * Altered handling of parameter `readcsvFn` to `TrajsBuild` to make it 
   possible to use `readr::read_csv` without a wrapper function.
