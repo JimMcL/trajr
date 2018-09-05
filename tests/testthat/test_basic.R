@@ -528,3 +528,37 @@ test_that("Convert times", {
   .checkTimes(c("1:01:01:001", "2:02:02:002", "3:03:03:003", "4:04:04:004"),
               c(3661.001, 7322.002, 10983.003, 14644.004))
 })
+
+test_that("Resampling", {
+  # Plot one trajectory over another
+  plotTwoTrjs <- function(trj1, trj2) {
+    plot(trj1, draw.start.pt = FALSE, lwd = 2)
+    points(trj1, cex = .6, draw.start.pt = FALSE)
+    lines(trj2, col = "red", lty = 2)
+    points(trj2, col = "red", draw.start.pt = FALSE)
+  }
+
+  set.seed(1)
+  # Give it a constant step length of 1 so that it has a constant speed to simplify some tests
+  trj <- TrajGenerate(10, angularErrorSd = 1, stepLength = 1, linearErrorDist = function(n) rep(0, n), fps = 1)
+  trjL <- TrajLength(trj)
+
+  # These tests aren't strictly required to be true because resampled
+  # trajectories are also smoothed, so may be shorter than expected
+  ta <- TrajResampleTime(trj, .5)
+  expect_true(trjL - TrajLength(ta) < .5)
+  # plotTwoTrjs(trj, ta)
+  tb <- TrajResampleTime(trj, .7)
+  expect_true(trjL - TrajLength(tb) < .7)
+  # plotTwoTrjs(trj, tb)
+  tc <- TrajResampleTime(trj, 1)
+  expect_true(trjL - TrajLength(tc) == 0)
+  # plotTwoTrjs(trj, tc)
+  td <- TrajResampleTime(trj, 2)
+  expect_true(trjL - TrajLength(td) < 2)
+  # plotTwoTrjs(trj, td)
+  te <- TrajResampleTime(trj, 2.1)
+  # This isn't TRUE, since resampled te is straighter than trj
+  #expect_true(trjL - TrajLength(td) < 2)
+  # plotTwoTrjs(trj, te)
+})

@@ -138,6 +138,8 @@ legend("topright", c("Original", "Smoothed"), lwd = c(1, 2), lty = c(1, 1), col 
 
 ### Resampling trajectories
 
+`trajr` provides functions to resample a trajectory to a fixed step length or a fixed step stime.
+
 Some functions require a `Trajectory` with a fixed step length. The process of resampling a trajectory to a fixed step length is called _rediscretization_. The function `TrajRediscretize` implements trajectory resampling using the algorithm described by Bovet & Benhamou (1988). There are no clear guidelines for choosing a suitable step length for rediscretization: too small a step length leads to oversampling, leading to high autocorrelation between steps and high variability; too large a step length results in undersampling and loss of information. See Turchin (1998) section 5.2.2 for a discussion.
 ```{r rediscretize, fig.width=6, fig.height=4, fig.cap="_Rediscretization of trajectory with $\\mu_{L} = 2$ to step length $1$._", echo=-1:-2}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
@@ -146,7 +148,7 @@ trj <- TrajGenerate(10, stepLength = 2)
 
 # Plot original trajectory with dots at trajectory coordinates
 plot(trj, lwd = 2)
-points(trj, draw.start.pt = FALSE, pch = 16, col = "black")
+points(trj, draw.start.pt = FALSE, pch = 16, col = "black", cex = 1.2)
 
 # Resample to step length 1
 resampled <- TrajRediscretize(trj, 1)
@@ -158,6 +160,27 @@ legend("topright", c("Original", "Rediscretized"), col = c("black", "red"),
        lwd = 2, inset = c(0.01, 0.02))
 ```
 
+The function `TrajResampleTime` linearly interpolates points along a trajectory to create a new trajectory with fixed step time intervals. 
+```{r resample, fig.width=6, fig.height=4, fig.cap="_Resampling of trajectory with step duration  $1$ hour._", echo=-1:-2}
+par(mar = c(4, 4, 0.5, 0.5) + 0.1)
+set.seed(5)
+# Generate trajectory with a point every 2 hours and highly variable speed (which equates to step length)
+trj <- TrajGenerate(10, stepLength = 1, fps = .5, timeUnits = "hours", linearErrorSd = .8)
+
+# Plot original trajectory with dots at trajectory coordinates
+plot(trj, lwd = 2)
+points(trj, draw.start.pt = FALSE, pch = 16, col = "black", cex = 1.2)
+
+# Resample to 1 hourly steps
+resampled <- TrajResampleTime(trj, 1)
+
+# Plot rediscretized trajectory in red
+lines(resampled, col = "#FF0000A0", lwd = 2)
+points(resampled, type = 'p', col = "#FF0000A0", pch = 16)
+legend("topright", c("Original", "Resampled"), col = c("black", "red"), 
+       lwd = 2, inset = c(0.01, 0.02))
+
+```
 
 ### Other trajectory operations
 
@@ -507,6 +530,13 @@ The plot above shows that the trajectory of the non-mimetic spider (red dot) see
 The function `TrajsStepLengths` returns a vector containing all of the step lengths in a list of trajectories.
 ```{r}
 summary(TrajsStepLengths(trjs))
+```
+
+`TrajConvertTime` is a convenience function that converts a delimited time string to a numeric value. This may be useful if your data contains times which are formatted as strings with millisecond accuracy. In general, the base R function `strptime` should be used to convert strings to times, but it does not handle milliseconds.
+```{r}
+t <- data.frame(time = c("0:00:00:029", "0:01:00:216", "0:02:01:062", "1:00:02:195", "1:06:03:949", "1:42:04:087"), stringsAsFactors = FALSE)
+t$seconds <- TrajConvertTime(t$time)
+t
 ```
 
 ## Random trajectory generation

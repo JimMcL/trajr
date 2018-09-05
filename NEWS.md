@@ -1,9 +1,10 @@
 # Changes to the `trajr` package
 
-## trajr 1.2.1
+## trajr 1.3.0
 
 * Altered handling of parameter `readcsvFn` to `TrajsBuild` to make it 
   possible to use `readr::read_csv` without a wrapper function.
+* Added function `TrajResampleTime` to resample a trajectory to fixed step times.
 
 ## trajr 1.2.0
 

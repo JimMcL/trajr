@@ -7,7 +7,7 @@
 TrajGenerate(n = 1000, random = TRUE, stepLength = 2,
   angularErrorSd = 0.5, angularErrorDist = function(n) stats::rnorm(n, sd =
   angularErrorSd), linearErrorSd = 0.2, linearErrorDist = function(n)
-  stats::rnorm(n, sd = linearErrorSd), fps = 50)
+  stats::rnorm(n, sd = linearErrorSd), fps = 50, ...)
 }
 \arguments{
 \item{n}{Number of steps in the trajectory.}
@@ -36,6 +36,8 @@ generate the lengths of each step.}
 
 \item{fps}{Simulated frames-per-second - used to generate times for each
 point in the trajectory.}
+
+\item{...}{Additional arguments are passed to \code{\link{TrajFromCoords}}.}
 }
 \value{
 A new Trajectory with \code{n} segments and \code{n + 1} coordinate

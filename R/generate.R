@@ -38,6 +38,7 @@
 #'   generate the lengths of each step.
 #' @param fps Simulated frames-per-second - used to generate times for each
 #'   point in the trajectory.
+#' @param ... Additional arguments are passed to \code{\link{TrajFromCoords}}.
 #'
 #' @return A new Trajectory with \code{n} segments and \code{n + 1} coordinate
 #'   pairs.
@@ -78,7 +79,8 @@ TrajGenerate <- function(n = 1000, random = TRUE, stepLength = 2,
                          angularErrorDist = function(n) stats::rnorm(n, sd = angularErrorSd),
                          linearErrorSd = 0.2,
                          linearErrorDist = function(n) stats::rnorm(n, sd = linearErrorSd),
-                         fps = 50) {
+                         fps = 50,
+                         ...) {
   angularErrors <- angularErrorDist(n)
   linearErrors <- linearErrorDist(n)
   stepLengths <- stepLength + linearErrors
@@ -100,5 +102,5 @@ TrajGenerate <- function(n = 1000, random = TRUE, stepLength = 2,
     coords <- c(complex(length.out = 1), cumsum(steps))
   }
 
-  TrajFromCoords(data.frame(x = Re(coords), y = Im(coords)), fps = fps)
+  TrajFromCoords(data.frame(x = Re(coords), y = Im(coords)), fps = fps, ...)
 }

@@ -1,6 +1,8 @@
 Release procedure
 -----------------
 
+Check that all exported functions have been mentioned in the vignette by running check-vignette.sh (from bash). This may require editing to convert to UNIX line endings.
+
 Run devtools::build_win() and wait for the result
 
 Update version number and date in DESCRIPTION file. See https://semver.org/
