@@ -73,9 +73,9 @@
 #' @param csvStruct A list which identifies the columns in each CSV file which
 #'   contain x-, y-, and optionally time-values.
 #' @param smoothP Filter order to be used for Savitzky-Golay smoothing (see
-#'   \code{\link{TrajSmoothSG}})
+#'   \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is performed.
 #' @param smoothN Filter length to be used for Savitzky-Golay smoothing (must be
-#'   odd, see \code{\link{TrajSmoothSG}})
+#'   odd, see \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is performed.
 #' @param translateToOrigin If TRUE, the trajectory is translated so that its
 #'   starting point is at (0, 0).
 #' @param rootDir Optional name of a top level directory which contains the CSV
