@@ -22,8 +22,8 @@
 }
 
 # Reads a file and returns a list of trajectory coordinates
-.readAndCheckCoords <- function(fileName, csvReadFn) {
-  coordList <- csvReadFn(fileName, stringsAsFactors = FALSE)
+.readAndCheckCoords <- function(fileName, csvReadFn, ...) {
+  coordList <- csvReadFn(fileName, ...)
   # Note a data.frame is a type of list, so we can't use is.list() here
   if (!inherits(coordList, "list"))
     coordList <- list(coordList)
@@ -75,7 +75,8 @@
 #' @param smoothP Filter order to be used for Savitzky-Golay smoothing (see
 #'   \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is performed.
 #' @param smoothN Filter length to be used for Savitzky-Golay smoothing (must be
-#'   odd, see \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is performed.
+#'   odd, see \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is
+#'   performed.
 #' @param translateToOrigin If TRUE, the trajectory is translated so that its
 #'   starting point is at (0, 0).
 #' @param rootDir Optional name of a top level directory which contains the CSV
@@ -84,7 +85,8 @@
 #' @param csvReadFn Function used to read the CSV files. Required to accept
 #'   arguments \code{filename, ...}, and return a data frame of coordinates, or
 #'   a list of multiple data frames (see \code{\link[utils]{read.csv}},
-#'   \code{\link[utils]{read.csv2}}).
+#'   \code{\link[utils]{read.csv2}}). The default function calls
+#'   \code{\link[utils]{read.csv}} with argument \code{stringsAsFactors = FALSE}.
 #' @param ... Additional arguments passed to \code{csvReadFn}.
 #'
 #' @return A list of trajectories.
@@ -116,7 +118,8 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
                        smoothP = 3, smoothN = 41,
                        translateToOrigin = FALSE,
                        rootDir = NULL,
-                       csvReadFn = utils::read.csv, ...) {
+                       csvReadFn = function (filename, ...) utils::read.csv(filename, stringsAsFactors = FALSE, ...),
+                       ...) {
   # I hate factors!
   fileNames <- as.character(fileNames)
   # Check that file names are unique
@@ -327,18 +330,18 @@ TrajsStatsReplaceNAs <- function(df, column, replacementValue = mean(df[,column]
 #' Converts a delimited time string to a numeric value
 #'
 #' Time values may be imported in a format which is not immediately usable by
-#' trajr. This function converts times which are specified as a number of
+#' `trajr`. This function converts times that are specified as a number of
 #' delimited fields to a single numeric value. The default parameter values
 #' handle a value with 4 colon-separated values, which are hours, minutes,
-#' seconds and milliseconds, eg: "0:01:04:108" represents 1 minutes, 4 seconds
+#' seconds and milliseconds, eg: "0:01:04:108" represents 1 minute, 4 seconds
 #' and 108 milliseconds, or 64.108 seconds.
 #'
 #' Note that the base R strptime can be used to convert time values in more
-#' complext date/time formats, but it does not handle millisecond fields.
+#' complex date/time formats, but it does not handle millisecond fields.
 #'
 #' @param time A character string containing the time value to be converted.
 #' @param sep Field separator.
-#' @param factor Vector of numeric factors to be applied to each field, in the
+#' @param factors Vector of numeric factors to be applied to each field, in the
 #'   order they occur within `time`. The default assumes 4 fields containing
 #'   numeric hours, minutes, seconds and milliseconds.
 #' @return `time` converted to a numeric value.
@@ -353,5 +356,5 @@ TrajsStatsReplaceNAs <- function(df, column, replacementValue = mean(df[,column]
 TrajConvertTime <- function(time, sep = ":", factors = c(60 * 60, 60, 1, .001)) {
   # Split time on separator, and use matrix (inner) multiplication to
   # convert each component to seconds then sum all components
-  c(as.matrix(read.table(text = time, sep = sep)) %*% factors)
+  c(as.matrix(utils::read.table(text = time, sep = sep)) %*% factors)
 }

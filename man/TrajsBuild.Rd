@@ -7,7 +7,8 @@
 TrajsBuild(fileNames, fps = NULL, scale = NULL, spatialUnits = NULL,
   timeUnits = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
   smoothP = 3, smoothN = 41, translateToOrigin = FALSE, rootDir = NULL,
-  csvReadFn = utils::read.csv, ...)
+  csvReadFn = function(filename, ...) utils::read.csv(filename,
+  stringsAsFactors = FALSE, ...), ...)
 }
 \arguments{
 \item{fileNames}{Vector of the names of CSV files containing trajectory
@@ -33,10 +34,11 @@ scaling, e.g. "m".}
 contain x-, y-, and optionally time-values.}
 
 \item{smoothP}{Filter order to be used for Savitzky-Golay smoothing (see
-\code{\link{TrajSmoothSG}})}
+\code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is performed.}
 
 \item{smoothN}{Filter length to be used for Savitzky-Golay smoothing (must be
-odd, see \code{\link{TrajSmoothSG}})}
+odd, see \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is
+performed.}
 
 \item{translateToOrigin}{If TRUE, the trajectory is translated so that its
 starting point is at (0, 0).}
@@ -48,7 +50,8 @@ within \code{rootDir} or its sub-directories.}
 \item{csvReadFn}{Function used to read the CSV files. Required to accept
 arguments \code{filename, ...}, and return a data frame of coordinates, or
 a list of multiple data frames (see \code{\link[utils]{read.csv}},
-\code{\link[utils]{read.csv2}}).}
+\code{\link[utils]{read.csv2}}). The default function calls
+\code{\link[utils]{read.csv}} with argument \code{stringsAsFactors = FALSE}.}
 
 \item{...}{Additional arguments passed to \code{csvReadFn}.}
 }

@@ -384,6 +384,33 @@ test_that("Convenience-multi", {
   expect_equal(length(trjs), 4)
 })
 
+test_that("works with readr", {
+  tracks <- rbind(
+    data.frame(file = "3527.csv", species = "Zodariid2 sp1", category = "spider"),
+    data.frame(file = "3530.csv", species = "Daerlac nigricans", category = "mimic bug"),
+    data.frame(file = "3534.csv", species = "Daerlac nigricans", category = "mimic bug"),
+    data.frame(file = "3537.csv", species = "Myrmarachne erythrocephala", category = "mimic spider"),
+    data.frame(file = "3542.csv", species = "Polyrhachis sp1", category = "ant"),
+    data.frame(file = "3543.csv", species = "Polyrhachis sp1", category = "ant"),
+    data.frame(file = "3548.csv", species = "Crematogaster sp1", category = "ant"),
+    stringsAsFactors = FALSE
+  )
+  csvStruct <- list(x = "x", y = "y", time = "Time")
+
+  trjs <- TrajsBuild(tracks$file, csvStruct = csvStruct, smoothN = 11, rootDir = "..",
+                     csvReadFn = readr::read_csv,
+                     col_types = readr::cols(
+                       Frame = readr::col_integer(),
+                       Time = readr::col_double(),
+                       TrackId = readr::col_integer(),
+                       x = readr::col_double(),
+                       y = readr::col_double(),
+                       ValueChanged = readr::col_logical()
+                     ))
+
+  expect_equal(length(trjs), nrow(tracks))
+})
+
 test_that("Sinuosity", {
   set.seed(1)
   for(aa in seq(0, 2, by = .1)) {
