@@ -7,7 +7,7 @@
 TrajTranslate(trj, dx, dy)
 }
 \arguments{
-\item{trj}{The Trajectory to be translated}
+\item{trj}{The Trajectory to be translated.}
 
 \item{dx}{Delta x.}
 

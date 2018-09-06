@@ -9,8 +9,8 @@ TrajResampleTime(trj, stepTime, newFps = NULL)
 \arguments{
 \item{trj}{The trajectory to be resampled.}
 
-\item{stepTime}{New sampled step time. Each step in the new trajectory will
-have this duration.}
+\item{stepTime}{The resampled trajectory step time. Each step in the new
+trajectory will have this duration.}
 
 \item{newFps}{Value to be stored as the FPS value in the new trajectory (see
 \code{\link{TrajGetFPS}}). It is not otherwise used by this function.}
@@ -24,4 +24,18 @@ A new trajectory with a constant time interval for each step. Points
 Constructs a new trajectory by resampling the input trajectory to a fixed
 time interval. Points are linearly interpolated along the trajectory. Spatial
 and time units are preserved.
+}
+\examples{
+# Simulate a trajectory with steps every 5 hours
+set.seed(46)
+trj <- TrajGenerate(10, stepLength = 5, fps = 1/5, timeUnits = "hours", linearErrorSd = .8)
+
+# Resample to 1 hour steps
+resampled <- TrajResampleTime(trj, 1)
+
+par(mar = c(5, 4, .5, .5))
+plot(trj, lwd = 2)
+points(trj, pch = 16)
+points(resampled, col = "red", draw.start.pt = FALSE)
+
 }
