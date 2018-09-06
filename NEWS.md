@@ -1,6 +1,6 @@
 # Changes to the `trajr` package
 
-## trajr 1.2.0.9000
+## trajr 1.2.0.9001
 
 Current development version, intended to be released as version 1.3.0.
 
