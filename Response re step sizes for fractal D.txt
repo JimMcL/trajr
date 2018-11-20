@@ -1,0 +1,8 @@
+Response for questions about how to choose step sizes when calculating fractal dimension:
+
+Before you use fractal dimension, you should understand what it is and whether it is appropriate for you to use. Make sure you read the documentation in the trajr vignette, as well as the documentation for the functions TrajFractalDimension and TrajFractalDimensionValues. In summary, most animal trajectories are not fractal curves, and that means that the fractal dimension varies with step size, hence your choice of step size affects your results. In other words, the calculated fractal dimension is an artifact of your choice of step size. Ideally, you should read the references mentioned in the documentation, particularly Benhamou (2004) and/or Turchin (1996).
+
+You can use the code in the example from the documentation to TrajFractalDimensionValues to plot the points for different step sizes for your own trajectories. If the points lie on a straight line for at least some range of step sizes, the trajectory is a fractal curve and fractal dimension may be an appropriate index for those trajectories.
+
+If you do decide it is appropriate to use fractal dimension, you can use the documentation for the function TrajFractalDimensionValues as a starting point for calculating step sizes.
+

@@ -377,7 +377,7 @@ d <- sapply(reds, function(trjs) sapply(use, function(i) {
 plot(rep(fangularErrorSd, 3), d,
      pch = 16, cex = .8, 
      col = c(rep('red', fn), rep('blue', fn), rep('darkgreen', fn)),
-     xlab = expression(sigma["angular error"]), ylab = expression(E[max]))
+     xlab = expression(sigma["angular error"]), ylab = "Fractal dimension")
 
 legend("topleft", c("Step length 1", "Step length 2", "Step length 10"), 
        pch = 16, col = c("red", "blue", "darkgreen"), inset = 0.01)
