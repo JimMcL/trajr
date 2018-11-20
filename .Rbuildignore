@@ -8,3 +8,4 @@
 ^NEWS\.md$
 ^vignettes/junk.Rmd$
 ^vignettes/Ninas comments.docx$
+^Response.*.txt$
