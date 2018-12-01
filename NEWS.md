@@ -4,6 +4,7 @@
 
 Current development version, intended to be released as version 1.3.0.
 
+* Detect and report some invalid parameter values.
 * Altered handling of parameter `readcsvFn` to `TrajsBuild` to make it 
   possible to use `readr::read_csv` without a wrapper function.
 * Added function `TrajResampleTime` to resample a trajectory to fixed step times.

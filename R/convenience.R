@@ -45,13 +45,18 @@
 #' them, and optionally smooths and scales them. Attempts to collect and report
 #' errors for multiple trajectories in a single call.
 #'
-#' For each file name in \code{fileNames}, searches through the folder
-#' \code{rootDir} (unless it's \code{NULL}) to find the file, then reads the
-#' file by calling \code{csvReadFn} to obtain a set of coordinates and
-#' optionally times. A Trajectory is constructed by passing the coordinates to
+#' If \code{rootDir} is not null, it should be the name of a directory which is
+#' searched for the files in \code{fileNames}. The found files are then used as
+#' the list of files to be read in. This may be useful when the names of the
+#' files are known, but their exact location within a directory structure is not
+#' known.
+#'
+#' For each file name in \code{fileNames}, reads the file by calling
+#' \code{csvReadFn} to obtain a set of coordinates and optionally times. A
+#' Trajectory is then constructed by passing the coordinates to
 #' \code{\link{TrajFromCoords}}, passing in the appropriate \code{fps} value,
 #' and x, y and time column names/indices from \code{csvStruct}. If \code{scale}
-#' is not \code{NULL}, the trajectory is then scaled by calling
+#' is not \code{NULL}, the trajectory is scaled by calling
 #' \code{\link{TrajScale}}. If \code{smoothP} and \code{smoothN} are not
 #' \code{NULL}, the trajectory is smoothed by calling
 #' \code{\link{TrajSmoothSG}}.
@@ -77,7 +82,7 @@
 #' @param smoothN Filter length to be used for Savitzky-Golay smoothing (must be
 #'   odd, see \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is
 #'   performed.
-#' @param translateToOrigin If TRUE, the trajectory is translated so that its
+#' @param translateToOrigin If TRUE, each trajectory is translated so that its
 #'   starting point is at (0, 0).
 #' @param rootDir Optional name of a top level directory which contains the CSV
 #'   files. If \code{rootDir} is not NULL, the CSV files may be located anywhere
@@ -86,7 +91,8 @@
 #'   arguments \code{filename, ...}, and return a data frame of coordinates, or
 #'   a list of multiple data frames (see \code{\link[utils]{read.csv}},
 #'   \code{\link[utils]{read.csv2}}). The default function calls
-#'   \code{\link[utils]{read.csv}} with argument \code{stringsAsFactors = FALSE}.
+#'   \code{\link[utils]{read.csv}} with argument \code{stringsAsFactors =
+#'   FALSE}.
 #' @param ... Additional arguments passed to \code{csvReadFn}.
 #'
 #' @return A list of trajectories.
@@ -180,7 +186,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 
         # Smooth
         if (is.numeric(smoothP) && is.numeric(smoothN)) {
-          trj <- TrajSmoothSG(trj, smoothP, smoothN)
+          trj <- TrajSmoothSG(trj, p = smoothP, n = smoothN)
         }
 
         # Translate to origin

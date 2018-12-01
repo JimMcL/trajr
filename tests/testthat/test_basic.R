@@ -562,3 +562,8 @@ test_that("Resampling", {
   #expect_true(trjL - TrajLength(td) < 2)
   # plotTwoTrjs(trj, te)
 })
+
+test_that("Invalid parameter detection", {
+  expect_error(TrajsBuild("short.csv", csvStruct = list(x = "x", y = "y", time="t"), rootDir = ".."),
+               "Invalid smoothing parameter n \\(41): n must be less than the number of points in the trajectory \\(5)")
+})

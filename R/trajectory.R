@@ -110,6 +110,8 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
     if (is.numeric(col)) {
       names(trj)[col] <- name
     } else {
+      if (!(col %in% names(trj)))
+        stop(sprintf("Missing column '%s'", col))
       names(trj)[names(trj) == col] <- name
     }
     trj
@@ -272,6 +274,10 @@ TrajTranslate <- function(trj, dx, dy) {
 #'
 #' @export
 TrajSmoothSG <- function(trj, p = 3, n = p + 3 - p%%2, ...) {
+  if (n %% 2 != 1)
+    stop(sprintf("Invalid smoothing parameter n (%d): n must be odd", n))
+  if (n > nrow(trj))
+    stop(sprintf("Invalid smoothing parameter n (%d): n must be less than the number of points in the trajectory (%d)", n, nrow(trj)))
   trj$x <- signal::sgolayfilt(trj$x, p, n, ...)
   trj$y <- signal::sgolayfilt(trj$y, p, n, ...)
   .fillInTraj(trj)
