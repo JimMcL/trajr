@@ -5,8 +5,9 @@
 \title{Plot method for trajectories}
 \usage{
 \method{plot}{Trajectory}(x, add = FALSE, draw.start.pt = TRUE,
-  start.pt.cex = TRUE, turning.angles = NULL,
-  xlim = grDevices::extendrange(x$x), ylim = grDevices::extendrange(x$y),
+  start.pt.cex = 0.8, start.pt.pch = 16, start.pt.col = "black",
+  turning.angles = NULL, xlim = grDevices::extendrange(x$x),
+  ylim = grDevices::extendrange(x$y),
   xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)",
   TrajGetUnits(x))), ylab = ifelse(is.null(TrajGetUnits(x)), "y",
   sprintf("y (\%s)", TrajGetUnits(x))), asp = 1, ...)
@@ -20,6 +21,11 @@
 trajectory.}
 
 \item{start.pt.cex}{Scale to apply when drawing the start point dot.}
+
+\item{start.pt.pch}{Pch (i.e. plot character, symbol or shape) to apply when
+drawing the start point dot.}
+
+\item{start.pt.col}{Colour to apply when drawing the start point dot.}
 
 \item{turning.angles}{If \code{random} or \code{directed}, draws step turning
 angles. \code{directed} assumes errors are relative to the first recorded

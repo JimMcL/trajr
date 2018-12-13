@@ -4,8 +4,8 @@
 \alias{points.Trajectory}
 \title{Add Trajectory points to a plot}
 \usage{
-\method{points}{Trajectory}(x, draw.start.pt = TRUE, turning.angles = NULL,
-  ...)
+\method{points}{Trajectory}(x, draw.start.pt = TRUE,
+  turning.angles = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}
