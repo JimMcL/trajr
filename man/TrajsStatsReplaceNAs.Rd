@@ -4,8 +4,8 @@
 \alias{TrajsStatsReplaceNAs}
 \title{Replace NAs in a data frame}
 \usage{
-TrajsStatsReplaceNAs(df, column, replacementValue = mean(df[, column], na.rm =
-  TRUE), flagColumn = NULL)
+TrajsStatsReplaceNAs(df, column, replacementValue = mean(df[, column],
+  na.rm = TRUE), flagColumn = NULL)
 }
 \arguments{
 \item{df}{Data frame to be adjusted.}

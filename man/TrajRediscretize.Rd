@@ -9,7 +9,7 @@ TrajRediscretize(trj, R)
 \arguments{
 \item{trj}{The trajectory to be resampled.}
 
-\item{R}{rediscretization step length.}
+\item{R}{rediscretization step length, in the spatial units of \code{trj}.}
 }
 \value{
 A new trajectory with a constant segment length which follows

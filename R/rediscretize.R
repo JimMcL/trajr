@@ -79,7 +79,7 @@
 #' Based on the appendix in Bovet and Benhamou, (1988).
 #'
 #' @param trj The trajectory to be resampled.
-#' @param R rediscretization step length.
+#' @param R rediscretization step length, in the spatial units of \code{trj}.
 #' @return A new trajectory with a constant segment length which follows
 #'   \code{trj}.
 #'

@@ -6,9 +6,9 @@
 \usage{
 TrajsBuild(fileNames, fps = NULL, scale = NULL, spatialUnits = NULL,
   timeUnits = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
-  smoothP = 3, smoothN = 41, translateToOrigin = FALSE, rootDir = NULL,
-  csvReadFn = function(filename, ...) utils::read.csv(filename,
-  stringsAsFactors = FALSE, ...), ...)
+  smoothP = 3, smoothN = 41, translateToOrigin = FALSE,
+  rootDir = NULL, csvReadFn = function(filename, ...)
+  utils::read.csv(filename, stringsAsFactors = FALSE, ...), ...)
 }
 \arguments{
 \item{fileNames}{Vector of the names of CSV files containing trajectory
@@ -40,7 +40,7 @@ contain x-, y-, and optionally time-values.}
 odd, see \code{\link{TrajSmoothSG}}). If \code{NA}, no smoothing is
 performed.}
 
-\item{translateToOrigin}{If TRUE, the trajectory is translated so that its
+\item{translateToOrigin}{If TRUE, each trajectory is translated so that its
 starting point is at (0, 0).}
 
 \item{rootDir}{Optional name of a top level directory which contains the CSV
@@ -51,7 +51,8 @@ within \code{rootDir} or its sub-directories.}
 arguments \code{filename, ...}, and return a data frame of coordinates, or
 a list of multiple data frames (see \code{\link[utils]{read.csv}},
 \code{\link[utils]{read.csv2}}). The default function calls
-\code{\link[utils]{read.csv}} with argument \code{stringsAsFactors = FALSE}.}
+\code{\link[utils]{read.csv}} with argument \code{stringsAsFactors =
+FALSE}.}
 
 \item{...}{Additional arguments passed to \code{csvReadFn}.}
 }
@@ -64,13 +65,18 @@ them, and optionally smooths and scales them. Attempts to collect and report
 errors for multiple trajectories in a single call.
 }
 \details{
-For each file name in \code{fileNames}, searches through the folder
-\code{rootDir} (unless it's \code{NULL}) to find the file, then reads the
-file by calling \code{csvReadFn} to obtain a set of coordinates and
-optionally times. A Trajectory is constructed by passing the coordinates to
+If \code{rootDir} is not null, it should be the name of a directory which is
+searched for the files in \code{fileNames}. The found files are then used as
+the list of files to be read in. This may be useful when the names of the
+files are known, but their exact location within a directory structure is not
+known.
+
+For each file name in \code{fileNames}, reads the file by calling
+\code{csvReadFn} to obtain a set of coordinates and optionally times. A
+Trajectory is then constructed by passing the coordinates to
 \code{\link{TrajFromCoords}}, passing in the appropriate \code{fps} value,
 and x, y and time column names/indices from \code{csvStruct}. If \code{scale}
-is not \code{NULL}, the trajectory is then scaled by calling
+is not \code{NULL}, the trajectory is scaled by calling
 \code{\link{TrajScale}}. If \code{smoothP} and \code{smoothN} are not
 \code{NULL}, the trajectory is smoothed by calling
 \code{\link{TrajSmoothSG}}.
