@@ -7,6 +7,23 @@ trjFromAnglesAndLengths <- function(angles, lengths) {
   TrajFromCoords(data.frame(Re(coords), Im(coords)))
 }
 
+# Reads a set of points from a file. The points come from multiple tracks
+# due to noise in the video conversion process.
+# The longest track is the one we are interested in
+#
+# Value - data frame with values x & y, and an attribute "numFrames" which records the number of frames in the source video
+.MreadPoints <- function(file, ...) {
+  points <- read.csv(file, comment.char = '#')
+
+  # Save the number of frames in the file in case the track doesn't extend until the end
+  maxFrame <- max(points$Frame)
+
+  # Save number of frames
+  attr(points, 'numFrames') <- maxFrame
+
+  points
+}
+
 test_that("Trajectory creation", {
   csvFile <- "../testdata/096xypts.csv"
   expect_true(file.exists(csvFile))
@@ -286,23 +303,6 @@ test_that("Smoothing", {
 })
 
 test_that("Convenience", {
-  # Reads a set of points from a file. The points come from multiple tracks
-  # due to noise in the video conversion process.
-  # The longest track is the one we are interested in
-  #
-  # Value - data frame with values x & y, and an attribute "numFrames" which records the number of frames in the source video
-  .MreadPoints <- function(file, ...) {
-    points <- read.csv(file, comment.char = '#')
-
-    # Save the number of frames in the file in case the track doesn't extend until the end
-    maxFrame <- max(points$Frame)
-
-    # Save number of frames
-    attr(points, 'numFrames') <- maxFrame
-
-    points
-  }
-
   tracks <- rbind(
     data.frame(file = "3527.csv", species = "Zodariid2 sp1", category = "spider"),
     data.frame(file = "3530.csv", species = "Daerlac nigricans", category = "mimic bug"),
@@ -566,4 +566,28 @@ test_that("Resampling", {
 test_that("Invalid parameter detection", {
   expect_error(TrajsBuild("short.csv", csvStruct = list(x = "x", y = "y", time="t"), rootDir = ".."),
                "Invalid smoothing parameter n \\(41): n must be less than the number of points in the trajectory \\(5)")
+})
+
+test_that("FPS calculation", {
+  tracks <- rbind(
+    data.frame(file = "3527.csv", species = "Zodariid2 sp1", category = "spider"),
+    stringsAsFactors = FALSE
+  )
+  csvStruct <- list(x = "x", y = "y")
+
+  # Expect an error if there's no time column or FPS specified
+  expect_error(TrajsBuild(tracks$file, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints),
+               ".*Cannot create a trajectory without times: one of fps or a time column must be specified")
+  fps <- 50
+  trjs <- TrajsBuild(tracks$file, fps = fps, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
+  # Expect the time interval between every 50 frames to be 1 second (allow small tolerance when testing == 1)
+  diffs <- diff(trjs[[1]]$Time, fps)
+  expect_true(all(abs(diffs - 1) < .00001))
+
+  # Now do the same thing with a frame rate of 240
+  fps <- 240
+  trjs <- TrajsBuild(tracks$file, fps = fps, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
+  # Expect the time interval between every 50 frames to be 1 second (allow small tolerance when testing == 1)
+  diffs <- diff(trjs[[1]]$Time, fps)
+  expect_true(all(abs(diffs - 1) < .00001))
 })
