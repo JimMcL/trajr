@@ -4,7 +4,7 @@
 \alias{TrajTranslate}
 \title{Translate a trajectory}
 \usage{
-TrajTranslate(trj, dx, dy)
+TrajTranslate(trj, dx, dy, dt = 0)
 }
 \arguments{
 \item{trj}{The Trajectory to be translated.}
@@ -12,6 +12,8 @@ TrajTranslate(trj, dx, dy)
 \item{dx}{Delta x.}
 
 \item{dy}{Delta y.}
+
+\item{dt}{Delta time.}
 }
 \value{
 A new trajectory which is a translated version of the input trajectory.
@@ -26,7 +28,7 @@ set.seed(42)
 trj <- TrajGenerate()
 trj <- TrajTranslate(trj, 10, 15)
 
-# Translate a trajectory so its origin (0, 0)
-trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1])
+# Translate a trajectory so its origin (0, 0) and it starts at time 0
+trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1], -trj$time[1])
 
 }
