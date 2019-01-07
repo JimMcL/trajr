@@ -243,19 +243,22 @@ test_that("Translate", {
   trj <- TrajGenerate()
   dx <- 10
   dy <- 15
-  tt <- TrajTranslate(trj, dx, dy)
+  dt <- 2
+  tt <- TrajTranslate(trj, dx, dy, dt)
   expect_equal(nrow(tt), nrow(trj))
   expect_equal(tt$x, trj$x + dx)
   expect_equal(tt$y, trj$y + dy)
+  expect_equal(tt$time, trj$time + dt)
   expect_equal(tt$displacement, trj$displacement)
   expect_equal(TrajLength(tt), TrajLength(trj))
   expect_equal(TrajEmax(tt), TrajEmax(trj))
 
-  tto <- TrajTranslate(tt, -tt$x[1], -tt$y[1])
+  tto <- TrajTranslate(tt, -tt$x[1], -tt$y[1], -tt$time[1])
   expect_equal(nrow(tto), nrow(trj))
   expect_equal(tto$polar, trj$polar)
   expect_equal(tto$x, trj$x)
   expect_equal(tto$y, trj$y)
+  expect_equal(tto$time, trj$time)
   expect_equal(TrajLength(tto), TrajLength(trj))
   expect_equal(TrajEmax(tto), TrajEmax(trj))
 })

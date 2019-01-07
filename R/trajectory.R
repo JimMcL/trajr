@@ -233,6 +233,7 @@ TrajReverse <- function(trj) {
 #' @param trj The Trajectory to be translated.
 #' @param dx Delta x.
 #' @param dy Delta y.
+#' @param dt Delta time.
 #' @return A new trajectory which is a translated version of the input trajectory.
 #'
 #' @examples
@@ -242,13 +243,14 @@ TrajReverse <- function(trj) {
 #' trj <- TrajGenerate()
 #' trj <- TrajTranslate(trj, 10, 15)
 #'
-#' # Translate a trajectory so its origin (0, 0)
-#' trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1])
+#' # Translate a trajectory so its origin (0, 0) and it starts at time 0
+#' trj <- TrajTranslate(trj, -trj$x[1], -trj$y[1], -trj$time[1])
 #'
 #' @export
-TrajTranslate <- function(trj, dx, dy) {
+TrajTranslate <- function(trj, dx, dy, dt = 0) {
   trj$x <- trj$x + dx
   trj$y <- trj$y + dy
+  trj$time <- trj$time + dt
 
   .fillInTraj(trj)
 }

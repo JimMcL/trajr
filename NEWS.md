@@ -9,6 +9,7 @@ Current development version, intended to be released as version 1.3.0.
   possible to use `readr::read_csv` without a wrapper function.
 * Added function `TrajResampleTime` to resample a trajectory to fixed step times.
 * Added parameters `start.pt.pch` and `start.pt.col` to plotting functions.
+* Added parameter `dt` to `TrajTranslate`
 
 ## trajr 1.2.0
 
