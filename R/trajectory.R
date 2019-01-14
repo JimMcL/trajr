@@ -37,7 +37,8 @@
   coords <- coords[startIdx:endIdx,]
   # Shouldn't be any NAs remaining
   if (anyNA(coords)) {
-    stop("Trajectory contains missing coordinate values")
+    stop(sprintf("Trajectory contains missing coordinate values, first row with NA is %d",
+                 which(is.na(coords))[1]))
   }
   coords
 }
@@ -259,11 +260,17 @@ TrajTranslate <- function(trj, dx, dy, dt = 0) {
 #'
 #' Smooths a trajectory using a Savitzky-Golay smoothing filter.
 #'
+#' Consider carefully the effects of smoothing an a trajectory with temporal
+#' gaps in the data. If the smoothed trajectory is to used used to derive speed
+#' and/or acceleration, it may be advisable to fill in the gaps before
+#' smoothing, possibly by calling \code{TrajResampleTime}.
+#'
 #' @param trj The trajectory to be smoothed.
 #' @param p polynomial order (passed to \code{\link[signal]{sgolayfilt}}).
 #' @param n Filter length (or window size), must be an odd number.  Passed to
 #'   \code{\link[signal]{sgolayfilt}}.
-#' @param ... Additional arguments are passed to \code{\link[signal]{sgolayfilt}}.
+#' @param ... Additional arguments are passed to
+#'   \code{\link[signal]{sgolayfilt}}.
 #' @return A new trajectory which is a smoothed version of the input trajectory.
 #'
 #' @seealso \code{\link[signal]{sgolayfilt}}

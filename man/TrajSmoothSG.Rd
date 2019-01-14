@@ -14,13 +14,20 @@ TrajSmoothSG(trj, p = 3, n = p + 3 - p\%\%2, ...)
 \item{n}{Filter length (or window size), must be an odd number.  Passed to
 \code{\link[signal]{sgolayfilt}}.}
 
-\item{...}{Additional arguments are passed to \code{\link[signal]{sgolayfilt}}.}
+\item{...}{Additional arguments are passed to
+\code{\link[signal]{sgolayfilt}}.}
 }
 \value{
 A new trajectory which is a smoothed version of the input trajectory.
 }
 \description{
 Smooths a trajectory using a Savitzky-Golay smoothing filter.
+}
+\details{
+Consider carefully the effects of smoothing an a trajectory with temporal
+gaps in the data. If the smoothed trajectory is to used used to derive speed
+and/or acceleration, it may be advisibale to fill in the gaps before
+smoothing, possibly by calling \code{TrajResampleTime}.
 }
 \examples{
 set.seed(3)

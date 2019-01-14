@@ -119,7 +119,11 @@ trj <- TrajScale(trj, .2 / 1800, "m")
 
 ### Smoothing trajectories
 
-Many trajectories will suffer from noise which will bias the results of some analyses. The `TrajSmoothSG` function reduces high frequency noise while preserving the shape of the trajectory, by applying  a Savitzky-Golay smoothing filter. It requires two arguments (in addition to the trajectory), `n`, the filter order, and `m`, the filter length (which must be odd). Refer to the help for the function `sgolayfilt` (run `?signal::sgolayfilt`) for details of the filter function.
+Many trajectories will suffer from noise which may bias the results of some analyses. The `TrajSmoothSG` function reduces high frequency noise while preserving the shape of the trajectory, by applying  a Savitzky-Golay smoothing filter. It requires two arguments (in addition to the trajectory), `n`, the filter order, and `m`, the filter length (which must be odd). Refer to the help for the function `sgolayfilt` (run `?signal::sgolayfilt`) for details of the filter function.
+
+There are some issues which should be considered when deciding whether to smooth 
+and by how much. If duplicate points are omitted from a trajectory (i.e. multiple points representing the same stopped location are not explicitly specified), smoothing is likely to result in a segment spanning the gap which  is decreasing in velocity, but not stopped. Similarly, smoothing (or too much smoothing) may eliminate short periods of zero (or near-zero) velocity.
+
 ```{r smooth, fig.width=6, fig.height=4, fig.cap="_Effect of smoothing a trajectory._", echo=-1:-2}
 set.seed(3)
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
@@ -220,7 +224,7 @@ Once you have obtained a correctly scaled `Trajectory` object, you may call vari
 
 ### Analysing speed
 
-The `TrajDerivatives` function calculates linear speed and acceleration along a `Trajectory`. If the trajectory is noisy, it should be smoothed before the derivatives are calculated (see [Smoothing trajectories](#smoothing-trajectories)).
+The `TrajDerivatives` function calculates linear speed and acceleration along a `Trajectory`. If the trajectory is noisy, it should be smoothed before the derivatives are calculated (see [Smoothing trajectories](#smoothing-trajectories), but take note of the caveats described there).
 
 ```{r speed, fig.cap="_Speed and acceleration over time._", fig.width=6, fig.height=4, echo=-1:-2}
 set.seed(1)
@@ -404,11 +408,11 @@ legend("bottomright", c("DC", "SDDC"),
 
 #### Direction autocorrelation
 
-The direction autocorrelation function was devised to detect and quantify regularities within trajectories, in the context of locomotor mimicry of ant-mimics (Shamble, Hoy, Cohen, & Beatus, 2017). It detects wave-like periodicities, and provides an indication of their wavelength and amplitude, so can be used to detect, for example, the winding movements of trail-following ants. The function $C(\Delta s)$ is applied to a rediscretized trajectory, and calculates the differences in step angles at all steps separated by $\Delta$, for a range of $\Delta s$. The position of the first local minimum in $C(\Delta s)$ (i.e. the 2-dimensional position $(\Delta s, c(\Delta s))$) may be used to characterise the periodicity within a trajectory.
+The direction autocorrelation function was devised to detect and quantify regularities within trajectories, in the context of locomotor mimicry by ant-mimics (Shamble, Hoy, Cohen, & Beatus, 2017). It detects wave-like periodicities, and provides an indication of their wavelength and amplitude, so can be used to detect, for example, the winding movements of trail-following ants. The function $C(\Delta s)$ is applied to a rediscretized trajectory, and calculates the differences in step angles at all steps separated by $\Delta$, for a range of $\Delta s$. The position of the first local minimum in $C(\Delta s)$ (i.e. the 2-dimensional position $(\Delta s, c(\Delta s))$) may be used to characterise the periodicity within a trajectory.
 
 The function is calculated by `TrajDirectionAutocorrelations`, and the result may be plotted. The position of the first local minimum (or maximum) is calculated by `TrajDAFindFirstMinimum` (or `TrajDAFindFirstMaximum`). Some trajectories will not have a first local minimum (or maximum), which indicates that they do not contain regular changes in direction.
 
-```{r dirnAuto, fig.cap="_Direction autocorrelation of a random trajectory with first local minimum._", fig.width=6, fig.height=4, echo=c(-1,-2)}
+```{r dirnAuto, fig.cap="_Direction autocorrelation of a random trajectory with first local minimum indicated._", fig.width=6, fig.height=4, echo=c(-1,-2)}
 set.seed(1)
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 trj <- TrajGenerate(1000)
@@ -420,7 +424,7 @@ plot(corr)
 
 ### Building multiple trajectories
 
-As trajectory studies are likely to involve multiple trajectories per individual, per species, or trajectories for multiple species, `trajr` provides some functions to simplify the manipulation of multiple trajectories. `TrajsBuild` assumes that you have a set of trajectory files (such as CSV files), each of which may have a scale and a frames-per-second value. The function reads each of the files specified in a list of file names, optionally using a custom function, then passes the result to `TrajFromCoords`, which assumes that the first column is `x`, the second is `y`, and there is no time column. If these settings are incorrect, the `csvStruct` argument can be specified to identify the `x`, `y` and `time` columns (see the example below). `TrajsBuild` optionally scales the trajectories with the specified scale (by calling `TrajScale`), and optionally smooths them with the specified smoothing parameters (by calling `TrajSmoothSG`). The value returned is a list of `Trajectory` objects.
+As trajectory studies are likely to involve multiple trajectories per individual, per species, or trajectories for multiple species, `trajr` provides some functions to simplify the manipulation of multiple trajectories. `TrajsBuild` assumes that you have a set of trajectory files (such as CSV files), each of which may have a scale and a frames-per-second value. The function reads each of the files specified in a list of file names, optionally using a custom function, then passes the result to `TrajFromCoords`, which assumes that the first column is `x`, the second is `y`, and there is no time column. If these assumptions are incorrect, the `csvStruct` argument can be specified to identify the `x`, `y` and `time` columns (see the example below). `TrajsBuild` optionally scales the trajectories with the specified scale (by calling `TrajScale`), and optionally smooths them with the specified smoothing parameters (by calling `TrajSmoothSG`). The value returned is a list of `Trajectory` objects.
 
 ```{r multBuild}
 tracks <- as.data.frame(rbind(
