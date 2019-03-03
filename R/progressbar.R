@@ -50,7 +50,7 @@ buildWinReportFn <- function(title) {
       close(pb)
     else {
       label <- .formatProgressMsg(n, total, secsElapsed, secsRemaining, sd, finished)
-      setWinProgressBar(pb, 100 * secsElapsed / (secsElapsed + secsRemaining), label = label)
+      utils::setWinProgressBar(pb, 100 * secsElapsed / (secsElapsed + secsRemaining), label = label)
     }
   }
 }

@@ -17,7 +17,10 @@
 #' the \code{angularErrorDist} and/or \code{linearErrorDist} parameters.
 #'
 #' The initial angle (for a random walk) or the intended direction (for a
-#' directed walk) is \code{0} radians. The starting position is \code{(0, 0)}.
+#' directed walk) is \code{0} radians. To change the initial angle or intended
+#' direction, call \code{\link{TrajRotate}} on the new trajectory. The starting
+#' position is \code{(0, 0)}. To change the starting position, call
+#' \code{\link{TrajTranslate}} on the new trajectory.
 #'
 #' @param n Number of steps in the trajectory.
 #' @param random If TRUE, a random search trajectory is returned, otherwise a
@@ -59,6 +62,14 @@
 #' # Generate an uncorrelated random walk
 #' trj <- TrajGenerate(500, angularErrorDist = function(n) runif(n, -pi, pi))
 #' plot(trj, main = "Uncorrelated walk")
+#'
+#' # Generate a walk directed northwards, starting from (200, 300),
+#' # with a mean step length of 100
+#' trj <- TrajGenerate(n = 20, stepLength = 200, random = FALSE)
+#' # Rotate 90 degress about (0, 0)
+#' trj <- TrajRotate(trj, pi / 2, relative = FALSE)
+#' # Translate to desired starting point
+#' trj <- TrajTranslate(trj, 200, 300)
 #'
 #' @references
 #'
