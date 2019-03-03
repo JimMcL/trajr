@@ -4,13 +4,21 @@
 \alias{TrajsMergeStats}
 \title{Merge trajectory characteristics}
 \usage{
-TrajsMergeStats(trjs, statsFn, ...)
+TrajsMergeStats(trjs, statsFn, progressBar = c("none", "text", "win",
+  "tk"), ...)
 }
 \arguments{
 \item{trjs}{List of trajectories to be characterised.}
 
 \item{statsFn}{Function to calculate statistics of interest for a single
 trajectory.}
+
+\item{progressBar}{Displays an optional progressbar, which may be helpful if
+processing is very slow. The progressbar is displayed by printing to the
+console or by using \code{\link{winProgressBar}} or
+\code{\link{tkProgressBar}}, if \code{progressBar} is \code{"text"},
+\code{"win"} or \code{"tk"} respectively. The default is no progressbar.
+(value \code{"none"}).}
 
 \item{...}{Additional arguments passed to \code{statsFn}.}
 }

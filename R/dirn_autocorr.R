@@ -58,9 +58,9 @@
 #' @param trj The trajectory to calculate the directional autocorrelations for.
 #' @param deltaSMax Maximum delta s to calculate, default is \eqn{1/4} the
 #'   number of segments in the trajectory.
-#' @return a data frame with class \code{TrajDirectionAutocorrelations} and 2
+#' @return A data frame with class \code{TrajDirectionAutocorrelations} and 2
 #'   columns, \code{deltaS} and \code{C}. Plotting this object displays a graph
-#'   of the direction autocorrelation function, optionally with the locatino of
+#'   of the direction autocorrelation function, optionally with the location of
 #'   the first local minimum marked
 #'
 #' @seealso \code{\link{TrajDAFindFirstMinimum}},

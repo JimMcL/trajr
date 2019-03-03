@@ -572,6 +572,13 @@ mtext("d)", 3, -1.3, adj = .05)
 ```
 
 
+## Performance
+
+Processing time can be a problem when operating on large numbers of large trajectories.
+
+* Use an appropriate step length for _rediscretization_. Too small a step length will result in trajectories with an excessive number of steps and will take a long time to process.
+* Some steps, such as calculating directional autocorrelations, may be amenable to [memoisation](http://en.wikipedia.org/wiki/Memoization). 
+
 ## And finally...
 
 `Trajr` is open source, with the source available on [Github](https://github.com/JimMcL/trajr). If you have any problems or suggestions, email jim_mclean@optusnet.com.au.

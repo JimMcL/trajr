@@ -9,7 +9,8 @@ TrajAngles(trj, lag = 1, compass.direction = NULL)
 \arguments{
 \item{trj}{the trajectory whose whose angles are to be calculated.}
 
-\item{lag}{Angles between every lag'th segment are calculated.}
+\item{lag}{Angles between every lag'th segment are calculated. Only applies
+to non-directed walks, i.e. \code{compass.direction} is \code{NULL}.}
 
 \item{compass.direction}{If not \code{NULL}, step angles are calculated
 relative to this angle (in radians), otherwise they are calculated relative
@@ -23,11 +24,11 @@ Calculates the step angles (in radians) of each segment, either relative to
 the previous segment or relative to the specified compass direction.
 }
 \details{
-Note that since turning angles are circular quantities, i.e. 360° == 0°, it is
-incorrect to treat them as linear quantities. In particular, do not calculate
-arithmetic means or standard deviations of turning angles. See Batschelet,
-(1981) for a detailed explanation and techniques for dealing with circular
-quantities.
+Note that since turning angles are circular quantities, i.e. 360° == 0°, it
+is incorrect to treat them as linear quantities. In particular, do not
+calculate arithmetic means or standard deviations of turning angles. See
+Batschelet, (1981) for a detailed explanation and techniques for dealing with
+circular quantities.
 }
 \references{
 Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111

@@ -26,6 +26,7 @@ Suggests: knitr,
     rmarkdown,
     testthat,
     BH,
-    readr
+    readr,
+    tcltk
 VignetteBuilder: knitr
 BuildVignettes: true

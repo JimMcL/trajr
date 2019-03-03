@@ -217,6 +217,12 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #' @param trjs List of trajectories to be characterised.
 #' @param statsFn Function to calculate statistics of interest for a single
 #'   trajectory.
+#' @param progressBar Displays an optional progressbar, which may be helpful if
+#'   processing is very slow. The progressbar is displayed by printing to the
+#'   console or by using \code{\link{winProgressBar}} or
+#'   \code{\link{tkProgressBar}}, if \code{progressBar} is \code{"text"},
+#'   \code{"win"} or \code{"tk"} respectively. The default is no progressbar.
+#'   (value \code{"none"}).
 #' @param ... Additional arguments passed to \code{statsFn}.
 #'
 #' @examples
@@ -253,26 +259,38 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #' }
 #'
 #' @export
-TrajsMergeStats <- function(trjs, statsFn, ...) {
+TrajsMergeStats <- function(trjs, statsFn, progressBar = c("none", "text", "win", "tk"), ...) {
   # TODO rename this function? perhaps TrajsCombineIndices (or TrajsRBindStats) would be more meaningful
-  result <- data.frame()
-  nc <- NA
-  rowNum <- 1
-  for (trj in trjs) {
-    row <- statsFn(trj, ...)
-    # Replace NULL with NA because NULL values are removed by rbind, resulting
-    # in: invalid list argument: all variables should have the same length
-    row[sapply(row, is.null)] <- NA
 
-    if(is.na(nc))
-      nc <- length(row)
-    else if (nc != length(row))
-      stop(sprintf("Statistics for trajectory %d contains %d values, but expected %d", rowNum, length(row), nc))
-    result <- rbind(result, row)
+  # Setup the progress bar
+  progressBar <- match.arg(progressBar)
+  pb <- switch(progressBar,
+               none = function(close){},
+               text = ElapsedTimeProgressBarFn(length(trjs), buildTxtReportFn()),
+               win = ElapsedTimeProgressBarFn(length(trjs), buildWinReportFn("TrajsMergeStats")),
+               tk = ElapsedTimeProgressBarFn(length(trjs), buildTkReportFn("TrajsMergeStats"))
+  )
+  tryCatch({
+    result <- data.frame()
+    nc <- NA
 
-    rowNum <- rowNum + 1
-  }
-  result
+    for (trj in trjs) {
+      pb()
+      row <- statsFn(trj, ...)
+      # Replace NULL with NA because NULL values are removed by rbind, resulting
+      # in: invalid list argument: all variables should have the same length
+      row[sapply(row, is.null)] <- NA
+
+      if(is.na(nc))
+        nc <- length(row)
+      else if (nc != length(row))
+        stop(sprintf("Statistics for trajectory %d contains %d values, but expected %d", nrow(result), length(row), nc))
+      result <- rbind(result, row)
+    }
+    result
+  },
+  finally = pb(close = TRUE)
+  )
 }
 
 #' Step lengths of multiple trajectories

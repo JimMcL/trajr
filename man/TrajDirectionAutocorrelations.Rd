@@ -13,9 +13,9 @@ TrajDirectionAutocorrelations(trj, deltaSMax = round(nrow(trj)/4))
 number of segments in the trajectory.}
 }
 \value{
-a data frame with class \code{TrajDirectionAutocorrelations} and 2
+A data frame with class \code{TrajDirectionAutocorrelations} and 2
   columns, \code{deltaS} and \code{C}. Plotting this object displays a graph
-  of the direction autocorrelation function, optionally with the locatino of
+  of the direction autocorrelation function, optionally with the location of
   the first local minimum marked
 }
 \description{

@@ -26,7 +26,7 @@ Smooths a trajectory using a Savitzky-Golay smoothing filter.
 \details{
 Consider carefully the effects of smoothing an a trajectory with temporal
 gaps in the data. If the smoothed trajectory is to used used to derive speed
-and/or acceleration, it may be advisibale to fill in the gaps before
+and/or acceleration, it may be advisable to fill in the gaps before
 smoothing, possibly by calling \code{TrajResampleTime}.
 }
 \examples{

@@ -11,6 +11,7 @@ Current development version, intended to be released as version 1.3.0.
 * Added parameters `start.pt.pch` and `start.pt.col` to plotting functions.
 * Added parameter `dt` to `TrajTranslate`
 * Fix vertical extents of rectangles in `plot.TrajSpeedIntervals` to handle non-default ylim values.
+* Added optional progressbar to `TrajsMergeStats`.
 
 ## trajr 1.2.0
 
