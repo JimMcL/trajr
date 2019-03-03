@@ -187,23 +187,34 @@ TrajScale <- function(trj, scale, units, yScale = scale) {
 
 #' Rotate a trajectory
 #'
-#' Rotates a trajectory so that \code{angle(finish - start) == angle}
+#' Rotates a trajectory by \code{angle} (when \code{relative} is \code{FALSE}), or so
+#' that \code{angle(finish - start) == angle} (when \code{relative} is \code{TRUE}).
 #'
 #' @param trj The trajectory to be rotated.
-#' @param angle The angle between the first and last points in the rotated trajectory.
+#' @param angle The angle in radians between the first and last points in the
+#'   rotated trajectory.
+#' @param origin Trajectory is rotated about this point.
+#' @param relative If TRUE, \code{angle} is the angle (after rotation) from the
+#'   start to the end point of the trajectory. If FALSE, the trajectory is
+#'   rotated about its start point by \code{angle}.
 #' @return A new trajectory which is a rotated version of the input trajectory.
 #'
 #' @export
-TrajRotate <- function(trj, angle = 0) {
-  # Calculate current orientation
-  orient <- Arg(trj$polar[length(trj$polar)] - trj$polar[1])
-  # Calculate required rotation
-  alpha <- angle - orient
+TrajRotate <- function(trj, angle = 0, origin = c(0, 0), relative = TRUE) {
+  if (relative) {
+    # Calculate current orientation
+    orient <- Arg(trj$polar[length(trj$polar)] - trj$polar[1])
+    # Calculate required rotation
+    alpha <- angle - orient
+  } else {
+    alpha <- angle
+  }
   # Rotation matrix
   rm <- matrix(c(cos(alpha), sin(alpha), -sin(alpha), cos(alpha)), ncol = 2)
 
   # New track is old track rotated
-  nt <- as.data.frame(t(rm %*% (t(trj[,c('x', 'y')]))))
+  pts <- t(trj[,c('x', 'y')]) - origin
+  nt <- as.data.frame(t(rm %*% pts + origin))
   colnames(nt) <- c('x', 'y')
   trj$x <- nt$x
   trj$y <- nt$y

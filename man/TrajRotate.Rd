@@ -4,16 +4,24 @@
 \alias{TrajRotate}
 \title{Rotate a trajectory}
 \usage{
-TrajRotate(trj, angle = 0)
+TrajRotate(trj, angle = 0, origin = c(0, 0), relative = TRUE)
 }
 \arguments{
 \item{trj}{The trajectory to be rotated.}
 
-\item{angle}{The angle between the first and last points in the rotated trajectory.}
+\item{angle}{The angle in radians between the first and last points in the
+rotated trajectory.}
+
+\item{origin}{Trajectory is rotated about this point.}
+
+\item{relative}{If TRUE, \code{angle} is the angle (after rotation) from the
+start to the end point of the trajectory. If FALSE, the trajectory is
+rotated about its start point by \code{angle}.}
 }
 \value{
 A new trajectory which is a rotated version of the input trajectory.
 }
 \description{
-Rotates a trajectory so that \code{angle(finish - start) == angle}
+Rotates a trajectory by \code{angle} (when \code{relative} is \code{FALSE}), or so
+that \code{angle(finish - start) == angle} (when \code{relative} is \code{TRUE}).
 }

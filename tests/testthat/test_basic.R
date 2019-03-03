@@ -502,9 +502,31 @@ test_that("plots", {
 })
 
 test_that("rotation", {
+  # Expect a value to be equal in the first and last points
+  .expectSameCol <- function(trj, col = "x") {
+    expect_equal(trj[1, col], tail(trj, 1)[, col])
+  }
+
   set.seed(1)
   trj <- TrajGenerate(10)
+  # All default parameters
   r <- TrajRotate(trj)
+  .expectSameCol(r, "y")
+  rotAngle <- pi / 2
+  r <- TrajRotate(trj, rotAngle)
+  .expectSameCol(r)
+  # Test rotation of trajectory that doesn't start at the origin
+  ttrj <- TrajTranslate(trj, 1, 1)
+  tr <- TrajRotate(ttrj, rotAngle)
+  .expectSameCol(tr)
+  or <- TrajRotate(trj, rotAngle, origin = as.numeric(trj[1, c("x", "y")]))
+  .expectSameCol(or)
+  # Rotate about start point
+  otr <- TrajRotate(ttrj, rotAngle, origin = as.numeric(ttrj[1, c("x", "y")]))
+  .expectSameCol(otr)
+  # Rotated start point should be same as unrotated start point
+  expect_equal(otr[1, "x"], ttrj[1, "x"])
+  expect_equal(otr[1, "y"], ttrj[1, "y"])
 
   vo <- TrajMeanVelocity(trj)
   vr <- TrajMeanVelocity(r)
@@ -513,6 +535,19 @@ test_that("rotation", {
   expect_equal(Mod(vr), Mod(vo))
   expect_equal(TrajLength(trj), TrajLength(r))
   expect_true(Arg(vr) != Arg(vo))
+
+  # Test absolute rotation
+  aotr <- TrajRotate(ttrj, rotAngle, origin = as.numeric(ttrj[1, c("x", "y")]), relative = FALSE)
+  expect_equal(Arg(aotr$displacement[2]), Arg(ttrj$displacement[2]) + rotAngle)
+  expect_true(aotr[1, "y"] != tail(aotr, 1)[, "y"])
+
+  plot(trj, ylim = c(-5, 20))
+  plot(ttrj, lty = 2, add = TRUE)
+  plot(r, col = "blue", add = TRUE)
+  plot(tr, col = "blue", lty = 2, add = TRUE)
+  plot(or, col = "red", lty = 3, add = TRUE)
+  plot(otr, col = "red", lty = 3, add = TRUE)
+  plot(aotr, col = "green", lty = 3, lwd = 2, add = TRUE)
 })
 
 test_that("Convert times", {

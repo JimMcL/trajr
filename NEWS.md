@@ -12,6 +12,7 @@ Current development version, intended to be released as version 1.3.0.
 * Added parameter `dt` to `TrajTranslate`
 * Fix vertical extents of rectangles in `plot.TrajSpeedIntervals` to handle non-default ylim values.
 * Added optional progressbar to `TrajsMergeStats`.
+* Enhanced `TrajRotate` to allow absolute rotation and have arbitrary origin of rotation.
 
 ## trajr 1.2.0
 
