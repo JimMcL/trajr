@@ -38,13 +38,13 @@ buildTxtReportFn <- function(title, newline = "\r") {
     else {
       cat(paste0(.formatProgressMsg(n, total, secsElapsed, secsRemaining, sd, finished),
              "                                    ", newline))
-      flush.console()
+      utils::flush.console()
     }
   }
 }
 
 buildWinReportFn <- function(title) {
-  pb <- winProgressBar(title, "Estimated completion time", min = 0, max = 100)
+  pb <- utils::winProgressBar(title, "Estimated completion time", min = 0, max = 100)
   function(n, total, secsElapsed, secsRemaining, sd, finished) {
     if (!missing(finished) && finished)
       close(pb)
@@ -114,7 +114,7 @@ ElapsedTimeProgressBarFn <- function(numItems, reportFn) {
 
     closed <<- nRemaining == 0
     # To get sd, sum the variances (= sd ^ 2) and take square root
-    reportFn(index, numItems, (now - startTime)[3], secsRemaining, sqrt(sd(durations) ^ 2 * nRemaining), finished = closed)
+    reportFn(index, numItems, (now - startTime)[3], secsRemaining, sqrt(stats::sd(durations) ^ 2 * nRemaining), finished = closed)
 
     # Move on - ignore very quick first entry, assume function was called before
     # the work was performed

@@ -214,7 +214,7 @@ plot.TrajSpeedIntervals <- function(x,
   graphics::abline(h = attr(x, "slowerThan"), col = slowerThanColour)
   graphics::abline(h = attr(x, "fasterThan"), col = fasterThanColour)
   if (nrow(x) > 0) {
-    plotExtents <- par("usr")
+    plotExtents <- graphics::par("usr")
     graphics::rect(x$startTime, plotExtents[3], x$stopTime, plotExtents[4], col = highlightColor, border = NA)
   }
 }
