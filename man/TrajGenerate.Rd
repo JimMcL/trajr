@@ -84,9 +84,10 @@ trj <- TrajGenerate(500, angularErrorDist = function(n) runif(n, -pi, pi))
 plot(trj, main = "Uncorrelated walk")
 
 # Generate a walk directed northwards, starting from (200, 300),
-# with a mean step length of 100
+# with a mean step length of 200. The initially generated trajectory
+# is directed to angle 0, with starting point (0, 0)
 trj <- TrajGenerate(n = 20, stepLength = 200, random = FALSE)
-# Rotate 90 degress about (0, 0)
+# Rotate 90 degrees about (0, 0) (i.e. from east to north)
 trj <- TrajRotate(trj, pi / 2, relative = FALSE)
 # Translate to desired starting point
 trj <- TrajTranslate(trj, 200, 300)
