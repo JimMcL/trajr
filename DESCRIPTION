@@ -1,8 +1,8 @@
 Package: trajr
 Type: Package
 Title: Animal Trajectory Analysis
-Version: 1.2.0.9001
-Date: 2018-09-06
+Version: 1.2.0.9002
+Date: 2019-03-04
 Authors@R: person("Jim", "McLean", email = "jim_mclean@optusnet.com.au",
     role = c("aut", "cre"))
 Description: A toolbox to assist with statistical analysis of 2-dimensional animal trajectories.
