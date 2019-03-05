@@ -219,10 +219,11 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #'   trajectory.
 #' @param progressBar Displays an optional progressbar, which may be helpful if
 #'   processing is very slow. The progressbar is displayed by printing to the
-#'   console, by using \code{\link{winProgressBar}} or
+#'   console, by using \code{winProgressBar} or
 #'   \code{\link[tcltk]{tkProgressBar}}, if \code{progressBar} is \code{"text"},
-#'   \code{"win"} or \code{"tk"} respectively. The default is no progressbar.
-#'   (value \code{"none"}).
+#'   \code{"win"} or \code{"tk"} respectively. The default is no progressbar
+#'   (value \code{"none"}). The \code{"win"} progressbar is only available on
+#'   Windows.
 #' @param ... Additional arguments passed to \code{statsFn}.
 #'
 #' @examples
