@@ -29,12 +29,12 @@ ranging from 0 to 1, where \code{r} is the length of the mean vector of
 turning angles of a trajectory with constant step length. Values of \code{r}
 near 1 indicating straighter paths. Hence, \code{r =
 Mod(TrajMeanVectorOfTurningAngles(trj))}, assuming that \code{trj} has a
-constant step length.
+constant step length (e.g. has been rediscretized).
 }
 \references{
 Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
 FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
 }
 \seealso{
-\code{\link{TrajStraightness}}, \code{\link{TrajAngles}}
+\code{\link{TrajStraightness}}, \code{\link{TrajAngles}}, \code{\link{TrajRediscretize}}
 }

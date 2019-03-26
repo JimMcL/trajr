@@ -203,15 +203,17 @@ TrajSinuosity2 <- function(trj, compass.direction = NULL) {
 
 #' Trajectory straightness index, E-max
 #'
-#' Emax is a single-valued measure of straightness defined by (Cheung, Zhang,
-#' Stricker, & Srinivasan, 2007). Emax-a is a dimensionless, scale-independent
-#' measure of the maximum possible expected displacement. Emax-b is Emax-a *
-#' mean step length, and gives the maximum possible expected displacement in
-#' spatial units. Values closer to 0 are more sinuous, while larger values
-#' (approaching infinity) are straighter.
+#' Emax, the maximum expected displacement, is a single-valued measure of
+#' straightness defined by (Cheung, Zhang, Stricker, & Srinivasan, 2007). Emax-a
+#' is a dimensionless, scale-independent measure of the maximum possible
+#' expected displacement. Emax-b is \code{Emax-a * mean step length}, and gives
+#' the maximum possible expected displacement in spatial units. Values closer to
+#' 0 are more sinuous, while larger values (approaching infinity) are
+#' straighter.
 #'
 #' @param trj Trajectory to be analysed.
-#' @param eMaxB If TRUE, calculates and returns Emax-b, otherwise returns Emax-a.
+#' @param eMaxB If TRUE, calculates and returns Emax-b, otherwise returns
+#'   Emax-a.
 #' @param compass.direction if not \code{NULL}, turning angles are calculated
 #'   for a directed walk, assuming the specified compass direction (in radians).
 #'   Otherwise, a random walk is assumed.
