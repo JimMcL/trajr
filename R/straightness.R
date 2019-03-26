@@ -15,7 +15,7 @@
 #' turning angles of a trajectory with constant step length. Values of \code{r}
 #' near 1 indicating straighter paths. Hence, \code{r =
 #' Mod(TrajMeanVectorOfTurningAngles(trj))}, assuming that \code{trj} has a
-#' constant step length.
+#' constant step length (e.g. has been rediscretized).
 #'
 #' @param trj Trajectory object.
 #' @param compass.direction If not \code{NULL}, step angles are calculated
@@ -26,7 +26,7 @@
 #'   \code{Mod(r)} is the length of the mean vector which varies between 0 and
 #'   1, \code{Arg(r)} is the angle.
 #'
-#' @seealso \code{\link{TrajStraightness}}, \code{\link{TrajAngles}}
+#' @seealso \code{\link{TrajStraightness}}, \code{\link{TrajAngles}}, \code{\link{TrajRediscretize}}
 #'
 #' @references
 #'
