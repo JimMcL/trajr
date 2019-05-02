@@ -36,5 +36,8 @@ Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
 FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
 }
 \seealso{
-\code{\link{TrajStraightness}}, \code{\link{TrajAngles}}, \code{\link{TrajRediscretize}}
+\code{\link{TrajStraightness}}, \code{\link{TrajAngles}},
+  \code{\link{TrajRediscretize}} for resampling a trajectory to a constant
+  step length, \code{\link{TrajResampleTime}} for resampling a trajectory to
+  a constant step time.
 }

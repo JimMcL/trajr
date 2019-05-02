@@ -26,7 +26,10 @@
 #'   \code{Mod(r)} is the length of the mean vector which varies between 0 and
 #'   1, \code{Arg(r)} is the angle.
 #'
-#' @seealso \code{\link{TrajStraightness}}, \code{\link{TrajAngles}}, \code{\link{TrajRediscretize}}
+#' @seealso \code{\link{TrajStraightness}}, \code{\link{TrajAngles}},
+#'   \code{\link{TrajRediscretize}} for resampling a trajectory to a constant
+#'   step length, \code{\link{TrajResampleTime}} for resampling a trajectory to
+#'   a constant step time.
 #'
 #' @references
 #'
@@ -131,12 +134,16 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 
 #' Sinuosity of a trajectory
 #'
-#' Calculates the sinuosity of a trajectory as defined by Bovet & Benhamou
-#' (1988), which is: \eqn{S = 1.18\sigma / \sqrt q} where \eqn{\sigma} is the
-#' standard deviation of the step turning angles and \eqn{q} is the mean step
-#' length. A corrected sinuosity index is available as the function
-#' \code{\link{TrajSinuosity2}} which handles a wider range of variations in
-#' step angles.
+#' Calculates the sinuosity of a (constant step length) trajectory as defined by
+#' Bovet & Benhamou (1988), which is: \eqn{S = 1.18\sigma / \sqrt q} where
+#' \eqn{\sigma} is the standard deviation of the step turning angles and \eqn{q}
+#' is the mean step length. A corrected sinuosity index is available as the
+#' function \code{\link{TrajSinuosity2}} which handles a wider range of
+#' variations in step angles.
+#'
+#' If your trajectory does not have a constant step length, it should be
+#' _rediscretized_ by calling \code{\link{TrajRediscretize}} before calling this
+#' function.
 #'
 #' @param trj Trajectory to calculate sinuosity of.
 #' @param compass.direction if not \code{NULL}, turning angles are calculated
@@ -146,7 +153,8 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #'
 #' @seealso \code{\link{TrajAngles}} for the turning angles in a trajectory,
 #'   \code{\link{TrajStepLengths}} for the step lengths,
-#'   \code{\link{TrajSinuosity2}} for a corrected version of sinuosity.
+#'   \code{\link{TrajSinuosity2}} for a corrected version of sinuosity, and
+#'   \code{\link{TrajRediscretize}} for resampling to a constant step length.
 #'
 #' @references
 #'
@@ -162,21 +170,26 @@ TrajSinuosity <- function(trj, compass.direction = NULL) {
 
 #' Sinuosity of a trajectory
 #'
-#' Calculates the sinuosity of a trajectory as defined by Benhamou (2004),
-#' equation 8. This is a corrected version of the sinuosity index defined in
-#' Bovet & Benhamou (1988), which is suitable for a wider range of turning angle
-#' distributions.
+#' Calculates the sinuosity of a (constant step length) trajectory as defined by
+#' Benhamou (2004), equation 8. This is a corrected version of the sinuosity
+#' index defined in Bovet & Benhamou (1988), which is suitable for a wider range
+#' of turning angle distributions.
 #'
 #' This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
 #' b^2)]^-0.5} where \eqn{c} is the mean cosine of turning angles, and \eqn{b}
 #' is the coefficient of variation of the step length.
+#'
+#' If your trajectory does not have a constant step length, it should be
+#' _rediscretized_ by calling \code{\link{TrajRediscretize}} before calling this
+#' function.
 #'
 #' @param trj A Trajectory object.
 #' @param compass.direction if not \code{NULL}, turning angles are calculated
 #'   for a directed walk, assuming the specified compass direction (in radians).
 #'   Otherwise, a random walk is assumed.
 #'
-#' @seealso \code{\link{TrajSinuosity}} for the uncorrected sinuosity index.
+#' @seealso \code{\link{TrajSinuosity}} for the uncorrected sinuosity index, and
+#'   \code{\link{TrajRediscretize}} for resampling to a constant step length.
 #'
 #' @references
 #'

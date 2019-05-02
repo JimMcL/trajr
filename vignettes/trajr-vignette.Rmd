@@ -297,9 +297,9 @@ reds <- lapply(stepSizes, function(ss) lapply(1:n, function(i) TrajRediscretize(
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate straightness (D/L) for all of the rediscretized trajectories
-ds <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajStraightness(trjs[[i]])))
+ds <- sapply(reds, function(rtrjs) sapply(1:n, function(i) TrajStraightness(rtrjs[[i]])))
 # Calculate alternate straightness (r) for all of the rediscretized trajectories
-rs <- sapply(reds, function(trjs) sapply(1:n, function(i) Mod(TrajMeanVectorOfTurningAngles(trjs[[i]]))))
+rs <- sapply(reds, function(rtrjs) sapply(1:n, function(i) Mod(TrajMeanVectorOfTurningAngles(rtrjs[[i]]))))
 
 # Plot both indices on the same graph
 plot(rep(angularErrorSd, 3), rs,
@@ -324,7 +324,7 @@ The sinuosity index defined by Benhamou (2004) may be an appropriate measure of 
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 
 # Calculate sinuosity for all of the rediscretized trajectories
-sins <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajSinuosity2(trjs[[i]])))
+sins <- sapply(reds, function(rtrjs) sapply(1:n, function(i) TrajSinuosity2(rtrjs[[i]])))
 
 # Plot sinuosity vs angular error
 plot(rep(angularErrorSd, 3), sins,
@@ -343,7 +343,7 @@ $E^{a}_{max}$ is a dimensionless estimate of the maximum expected displacement o
 ```{r emax, fig.cap="_E~max~ as a function of $\\sigma_{\\Delta}$ (logarithmic axes)._", fig.height=4, fig.width=6, echo=-1}
 par(mar = c(4, 4, 1.5, 0.5) + 0.1)
 # Calculate Emax for all of the rediscretized trajectories (from the previous example)
-emaxs <- sapply(reds, function(trjs) sapply(1:n, function(i) TrajEmax(trjs[[i]])))
+emaxs <- sapply(reds, function(rtrjs) sapply(1:n, function(i) TrajEmax(rtrjs[[i]])))
 emaxs[emaxs < 0] <- NA # Avoid warnings when plotting on log axes
 
 # Plot Emax vs angular error on log axes
@@ -373,8 +373,8 @@ use <- sample.int(fn, n = length(angularErrorSd))
 fangularErrorSd <- angularErrorSd[use]
 
 # Calculate fractal dimension for all of the rediscretized trajectories
-d <- sapply(reds, function(trjs) sapply(use, function(i) {
-  TrajFractalDimension(trjs[[i]], stepSizes)
+d <- sapply(reds, function(rtrjs) sapply(use, function(i) {
+  TrajFractalDimension(rtrjs[[i]], stepSizes)
 }))
 
 # Plot fractal dimension vs angular error
