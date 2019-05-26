@@ -43,8 +43,12 @@ characteriseTrajectory <- function(trj) {
   mean_speed <- mean(derivs$speed)
   sd_speed <- sd(derivs$speed)
 
+  # Resample to constant step length.
+  # Step length must be appropriate for the trajectory
+  resampled <- TrajRediscretize(trj, 2)
+
   # Measures of straightness
-  sinuosity <- TrajSinuosity(trj)
+  sinuosity <- TrajSinuosity2(resampled)
   Emax <- TrajEmax(resampled)
 
   # Periodicity
