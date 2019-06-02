@@ -12,6 +12,8 @@ Current development version, intended to be released as version 1.3.0.
 * Added parameter `dt` to `TrajTranslate`
 * Fix vertical extents of rectangles in `plot.TrajSpeedIntervals` to handle non-default ylim values.
 * Added optional progressbar to `TrajsMergeStats`.
+* TrajsMergeStats now passes the arguments stringsAsFactors = FALSE to rbind. This prevents incorrect 
+  behaviour and the warninig "invalid factor level, NA generated" if one or more of your statistics are characters.
 * Enhanced `TrajRotate` to allow absolute rotation and arbitrary origin of rotation.
 
 ## trajr 1.2.0

@@ -290,7 +290,7 @@ TrajsMergeStats <- function(trjs, statsFn, progressBar = c("none", "text", "win"
         nc <- length(row)
       else if (nc != length(row))
         stop(sprintf("Statistics for trajectory %d contains %d values, but expected %d", nrow(result), length(row), nc))
-      result <- rbind(result, row)
+      result <- rbind(result, row, stringsAsFactors = FALSE)
     }
     result
   },
