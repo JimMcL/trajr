@@ -1,8 +1,6 @@
 # Changes to the `trajr` package
 
-## trajr 1.2.0.9001
-
-Current development version, intended to be released as version 1.3.0.
+## trajr 1.3.0
 
 * Detect and report some invalid parameter values.
 * Altered handling of parameter `readcsvFn` to `TrajsBuild` to make it 
@@ -13,7 +11,7 @@ Current development version, intended to be released as version 1.3.0.
 * Fix vertical extents of rectangles in `plot.TrajSpeedIntervals` to handle non-default ylim values.
 * Added optional progressbar to `TrajsMergeStats`.
 * TrajsMergeStats now passes the arguments stringsAsFactors = FALSE to rbind. This prevents incorrect 
-  behaviour and the warninig "invalid factor level, NA generated" if one or more of your statistics are characters.
+  behaviour and the warning "invalid factor level, NA generated" if one or more of your statistics are characters.
 * Enhanced `TrajRotate` to allow absolute rotation and arbitrary origin of rotation.
 
 ## trajr 1.2.0
