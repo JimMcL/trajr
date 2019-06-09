@@ -20,7 +20,7 @@ Perhaps add --no-manual in case of error: pdflatex is not available
 
 Check that travis-ci build completed successfully with no issues (https://travis-ci.org/JimMcL/trajr)
 
-Upload to CRAN (https://cran.r-project.org/). Use the ‘Optional comment’ field on the webform (and not a separate email) to explain how the feedback on previous submission(s) has been addressed.
+Upload ../trajr_x.y.z.tar.gz to CRAN (https://cran.r-project.org/). Use the ‘Optional comment’ field on the webform (and not a separate email) to explain how the feedback on previous submission(s) has been addressed.
 
 Once accepted by CRAN, create a new release on GitHub (https://github.com/JimMcL/trajr)
 
