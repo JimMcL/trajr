@@ -5,7 +5,6 @@
 ^check-vignette.sh$
 ^\.travis\.yml$
 ^RELEASE-PROCEDURE.txt$
-^NEWS\.md$
 ^vignettes/junk.Rmd$
 ^vignettes/Ninas comments.docx$
 ^Response.*.txt$
