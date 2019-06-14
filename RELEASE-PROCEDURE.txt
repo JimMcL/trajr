@@ -27,4 +27,4 @@ Once accepted by CRAN:
 
 Create a new release on GitHub (https://github.com/JimMcL/trajr)
 
-Update version number to x.y.z.9000
+Update version number (in DESCRIPTION) to x.y.z.9000. See http://r-pkgs.had.co.nz/description.html#version for rationale for the use of 9000 as a version number.
