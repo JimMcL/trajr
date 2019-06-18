@@ -16,8 +16,12 @@
   # Get polar coordinates
   trj$polar <- complex(real = trj$x, imaginary = trj$y)
 
-  # Calculate displacements from each point to the next
-  trj$displacement <- c(0, diff(trj$polar))
+  # Calculate displacements from each point to the next.
+  # Handle an empty trajectory
+  if (nrow(trj) > 0)
+    trj$displacement <- c(0, diff(trj$polar))
+  else
+    trj$displacement <- numeric()
 
   # Give it a special class
   if (class(trj)[1] != .TRAJ_CLASS)
@@ -127,7 +131,7 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
     if (is.null(fps))
       stop("Cannot create a trajectory without times: one of fps or a time column must be specified")
     # Assign times to each frame, starting at 0
-    trj$time <- 0:(nrow(trj) - 1) / fps
+    trj$time <- (seq_len(nrow(trj)) - 1) / fps
   }
 
   # Check coordinates are valid
@@ -135,7 +139,7 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
 
   # Get times associated with displacements, with the first point at time 0,
   # i.e. time at each point in displacement, not time between points
-  trj$displacementTime <- trj$time[1:nrow(trj)] - trj$time[1]
+  trj$displacementTime <- trj$time - trj$time[1]
 
   # Save number of frames
   attr(trj, .TRAJ_NFRAMES) <- nrow(trj)

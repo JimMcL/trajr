@@ -1,5 +1,9 @@
 # Changes to the `trajr` package
 
+## trajr 1.3.0.9000
+
+* Allow the creation of trajectories with 0 points.
+
 ## trajr 1.3.0
 
 * Detect and report some invalid parameter values.

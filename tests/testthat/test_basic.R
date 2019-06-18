@@ -629,3 +629,10 @@ test_that("FPS calculation", {
   diffs <- diff(trjs[[1]]$Time, fps)
   expect_true(all(abs(diffs - 1) < .00001))
 })
+
+test_that("Empty trajectory", {
+  trj <- TrajFromCoords(data.frame(numeric(), numeric()))
+  expect_equal(nrow(trj), 0)
+  trj <- TrajFromCoords(data.frame(0, 0))
+  expect_equal(nrow(trj), 1)
+})
