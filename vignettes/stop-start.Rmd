@@ -14,52 +14,50 @@ disp <- function(times) {
   f <- times - ft
   ft * .5 + ifelse(f > 0.5, f - 0.5, 0)
 }
-fadedCol <- "#d0d3d0"
+fadedCol <- "#d3d3c0"
 addSpeed <- function() lines(seq(0, 6, .5), c(rep(c(0, 1), 6), 0), type = 's', col = fadedCol)
-addDisplacement <- function() lines(x, disp(x), type = "l", col = fadedCol)
 tFromT <- function(times) TrajFromCoords(data.frame(disp(times), rep(0, length(times)), times), timeCol = 3)
 plotSpeedAndDisp <- function(times, cex = 1) {
   t <- tFromT(times)
   f <- 1 / mean(diff(times))
   
-  plot(t$time, cumsum(t$displacement), type = "l", xlim = range(c(0, t$time)), xlab = "Time", ylab = "Displacement", main = sprintf("Sampled Displacement (f = %g Hz)", f))
-  addDisplacement()
+  plot(x, disp(x), type = "l", col = fadedCol, xlim = range(c(0, t$time)), xlab = "Time", ylab = "Displacement", main = sprintf("Sampled Displacement (f = %g Hz)", f))
+  lines(t$time, cumsum(t$displacement))
   points(t$time, cumsum(t$displacement), pch = 16, cex = cex)
   
   plot(TrajSpeedIntervals(t, slowerThan = 0.1), xlim = range(t$time), ylim = c(0, 1), main = sprintf("Derived speed (f = %g Hz)", f))
   addSpeed()
   td <- TrajDerivatives(t)
-  points(td$speedTimes, td$speed, pch = 16, cex = cex)
+  points(td$speedTimes + t$time[1], td$speed, pch = 16, cex = cex)
 }
 
 ```
 
-If a trajectory contains periodic stop-start motion, what sampling frequency is required to detect it? A first assumption might be that the Nyquist frequency is adequate. However, that is not the case, since we are not measuring speed directly, but instead approximating it by measuring the mean speed between pairs of points.
+If a trajectory contains periodic stop-start motion, what sampling frequency is required to detect it? A first assumption might be that the [Nyquist rate](https://en.wikipedia.org/wiki/Nyquist_rate) is adequate. However, that is not the case, since when we work with trajectories, we are not measuring speed directly, but instead approximating it by measuring the mean speed between pairs of points.
 
-To see why, let's use an example. We will simulate a trajectory with speed varying between 0 for 0.5 seconds and 1 m/s for 0.5 seconds, so speed forms a square wave with frequency 1 Hz. We will will consider any speed slower than 0.1 to be stopped.
+To see why, let's use an example. We will simulate a trajectory of an animal that repatedly stops for 0.5 secs then walks at 1 m/s for 0.5 seconds, so speed forms a square wave with frequency 1 Hz. We will will consider any speed slower than 0.1 to be stopped.
 
-```{r echo=FALSE, fig.height=3.5, fig.width=4}
-plot(seq(0, 6, .5), c(rep(c(0, 1), 6), 0), type = 's', xlab = "Time", ylab = "Speed", main = "Actual speed")
+```{r echo=FALSE, fig.height=4, fig.width=4.5}
 plot(x, disp(x), type = "l", xlab = "Time", ylab = "Displacement", main = "Actual Displacement")
-
+plot(seq(0, 6, .5), c(rep(c(0, 1), 6), 0), type = 's', xlab = "Time", ylab = "Speed", main = "Actual speed")
 ```
 
-If we create a trajectory by sampling at the Nyquist sampling frequency of `signal frequency * 2 = 2 Hz`, this is the result, which looks good:
+If we create a trajectory by sampling at the Nyquist rate of `signal frequency * 2 = 2 Hz`, this is the result, which looks good:
 
-```{r echo=FALSE, fig.height=3.5, fig.width=4}
+```{r echo=FALSE, fig.height=4, fig.width=4.5}
 plotSpeedAndDisp(seq(0, 6, 1 / 2))
 ```
 
 But it turns out we were "lucky" here, and this frequency is only adequate if the sampling is in phase with the trajectory. If we phase shift the sampling times by 1/4 of the signal wavelength without altering the sampling rate, we suffer from _signal aliasing_ and no longer detect any variation in speed! Remember that we are actually sampling displacement, and then deriving speed from the sampled displacement.
 
-```{r echo=FALSE, fig.height=3.5, fig.width=4}
+```{r echo=FALSE, fig.height=4, fig.width=4.5}
 times <- seq(0, 6, 1 / 2) + .25
 plotSpeedAndDisp(times)
 ```
 
-To reliably detect stopping, we need to sample (at least) twice within a stopped period. In our example, stopping durations last for 0.5 seconds. To ensure we sample stopped periods twice regardless of phase shifts, we need to sample at a minimum frequency of `3 / stopping duration = 6 Hz`. Now we are certain to obtain the correct frequency, although stopping and moving durations and acceleration are still very inaccurate. 
+To reliably detect stopping, we need to sample (at least) twice within a stopped (or moving) period. In our example, the animal stops for 0.5 seconds at a time. To ensure we sample stopped periods twice regardless of phase shifts, we need to sample at a minimum frequency of `3 / stopping duration = 6 Hz`. Now we are certain to obtain the correct frequency, regardless of phase shifts in sampling, although stopping and moving durations and acceleration are still very inaccurate. 
 
-```{r echo=FALSE, fig.height=3.5, fig.width=4}
+```{r echo=FALSE, fig.height=4, fig.width=4.5}
 times <- seq(0, 6, 1 / 6) + .25
 plotSpeedAndDisp(times)
 ```
@@ -69,10 +67,10 @@ Furthermore, if the speed is actually closer to  a sine wave than a square wave,
 
 ## Conclusion
 
-If you are trying to detect the frequency of stop-start motion in a trajectory, the highest frequency that it is theoretically possible to detect reliably is 1/4 the sampling frequency. However, what actually matters is the number of samples within a stopped period rather than the frequency of stopping and starting. So let's just sample at a very high frequency!
+If you are trying to detect the frequency of stop-start motion in a trajectory, the highest frequency that it is theoretically possible to detect reliably is 1/4 the sampling frequency. However, what actually matters is the number of samples within a stopped or moving period, rather than the frequency of stopping and starting. So let's just sample at a very high frequency!
 
-```{r echo=FALSE, fig.height=3.5, fig.width=4}
-times <- seq(0, 6, 1 / 100) + .25
-plotSpeedAndDisp(times, cex = .2)
+```{r echo=FALSE, fig.height=4, fig.width=4.5}
+times <- seq(0, 6, 1 / 12) + .25
+plotSpeedAndDisp(times, cex = .5)
 ```
 
