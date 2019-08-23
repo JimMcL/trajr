@@ -2,7 +2,7 @@
 
 ## trajr 1.3.0.9000
 
-* Allow the creation of trajectories with 0 points.
+* Allow the creation of trajectories with 0 points in `TrajFromCoords`.
 
 ## trajr 1.3.0
 
