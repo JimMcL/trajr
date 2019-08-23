@@ -16,8 +16,8 @@ A list with components: \item{speed}{numeric vector, speed between
   \item{speedTimes}{numeric vector, times corresponding to values in
   \code{speed}, i.e. the time from the start of the trajectory to the end of
   each step.} \item{acceleration}{numeric vector, linear acceleration between
-  steps.} \item{accelerationTimes}{numeric vector, time from start of
-  trajectory to the end of the second step in each pair.}
+  steps.} \item{accelerationTimes}{numeric vector, time from the start of
+  the trajectory to the end of the second step in each pair.}
 }
 \description{
 Calculates speed and linear acceleration along a trajectory over time. Noisy

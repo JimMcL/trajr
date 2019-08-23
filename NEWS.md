@@ -3,6 +3,7 @@
 ## trajr 1.3.0.9000
 
 * Allow the creation of trajectories with 0 points in `TrajFromCoords`.
+* Fix bug in plot.TrajSpeedIntervals: time (x-axis) didn't handle trajectories with a non-zero starting time.
 
 ## trajr 1.3.0
 

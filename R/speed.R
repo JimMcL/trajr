@@ -24,8 +24,8 @@
 #'   \item{speedTimes}{numeric vector, times corresponding to values in
 #'   \code{speed}, i.e. the time from the start of the trajectory to the end of
 #'   each step.} \item{acceleration}{numeric vector, linear acceleration between
-#'   steps.} \item{accelerationTimes}{numeric vector, time from start of
-#'   trajectory to the end of the second step in each pair.}
+#'   steps.} \item{accelerationTimes}{numeric vector, time from the start of
+#'   the trajectory to the end of the second step in each pair.}
 #'
 #' @seealso \code{\link{TrajSpeedIntervals}} for analysing intervals of low or
 #'   high speed within the trajectory. \code{\link{TrajSmoothSG}} for smoothing
@@ -101,8 +101,9 @@ TrajDerivatives <- function(trj) {
 #' @return A data frame of class "TrajSpeedIntervals", each row is an interval,
 #'   columns are: \item{startFrame}{Indices of frames at the start of each
 #'   interval.} \item{stopFrame}{Indices of frames at the end of each interval.}
-#'   \item{startTime}{Time at the start of each interval.} \item{stopTime}{Time
-#'   at the end of each interval} \item{duration}{Duration of each interval.}
+#'   \item{startTime}{Time since start of trajectory at the start of each
+#'   interval.} \item{stopTime}{Time since start of trajectory at the end of
+#'   each interval} \item{duration}{Duration of each interval.}
 #'
 #'   The data frame will also have non-standard attributes:
 #'   \item{trajectory}{Value of the \code{trj} argument.}
@@ -208,13 +209,14 @@ plot.TrajSpeedIntervals <- function(x,
                                     xlab = sprintf("Time (%s)", TrajGetTimeUnits(attr(x, "trajectory"))),
                                     ylab = sprintf("Speed (%s/%s)", TrajGetUnits(attr(x, "trajectory")), TrajGetTimeUnits(attr(x, "trajectory"))),
                                     ...) {
+  trj <- attr(x, "trajectory")
   derivs <- attr(x, "derivs")
   speed <- derivs$speed
-  graphics::plot(x = derivs$speedTimes, y = speed, type = 'l', xlab = xlab, ylab = ylab, ...)
+  graphics::plot(x = derivs$speedTimes + trj$time[1], y = speed, type = 'l', xlab = xlab, ylab = ylab, ...)
   graphics::abline(h = attr(x, "slowerThan"), col = slowerThanColour)
   graphics::abline(h = attr(x, "fasterThan"), col = fasterThanColour)
   if (nrow(x) > 0) {
     plotExtents <- graphics::par("usr")
-    graphics::rect(x$startTime, plotExtents[3], x$stopTime, plotExtents[4], col = highlightColor, border = NA)
+    graphics::rect(x$startTime + trj$time[1], plotExtents[3], x$stopTime + trj$time[1], plotExtents[4], col = highlightColor, border = NA)
   }
 }

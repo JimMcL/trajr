@@ -565,7 +565,7 @@ trj <- TrajGenerate(n = 500, angularErrorDist = function(n) stats::runif(n, -pi,
 plot(trj)
 mtext("c)", 3, -1.3, adj = .05)
 
-# Levy walk - path lengths follow a cauchy distribution
+# Levy walk - path lengths follow a Cauchy distribution
 trj <- TrajGenerate(linearErrorDist = stats::rcauchy)
 plot(trj)
 mtext("d)", 3, -1.3, adj = .05)

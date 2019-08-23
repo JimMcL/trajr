@@ -20,8 +20,9 @@ between frames.}
 A data frame of class "TrajSpeedIntervals", each row is an interval,
   columns are: \item{startFrame}{Indices of frames at the start of each
   interval.} \item{stopFrame}{Indices of frames at the end of each interval.}
-  \item{startTime}{Time at the start of each interval.} \item{stopTime}{Time
-  at the end of each interval} \item{duration}{Duration of each interval.}
+  \item{startTime}{Time since start of trajectory at the start of each
+  interval.} \item{stopTime}{Time since start of trajectory at the end of
+  each interval} \item{duration}{Duration of each interval.}
 
   The data frame will also have non-standard attributes:
   \item{trajectory}{Value of the \code{trj} argument.}
