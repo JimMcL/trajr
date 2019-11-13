@@ -1,6 +1,13 @@
 ---
 title: "Detecting stop-start motion in trajectories"
-output: html_document
+author: "Jim McLean"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to trajr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}

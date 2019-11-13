@@ -17,16 +17,12 @@ Otherwise, a random walk is assumed.}
 Calculates the sinuosity of a (constant step length) trajectory as defined by
 Benhamou (2004), equation 8. This is a corrected version of the sinuosity
 index defined in Bovet & Benhamou (1988), which is suitable for a wider range
-of turning angle distributions.
+of turning angle distributions, and does not require a constant step length.
 }
 \details{
 This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
 b^2)]^-0.5} where \eqn{c} is the mean cosine of turning angles, and \eqn{b}
 is the coefficient of variation of the step length.
-
-If your trajectory does not have a constant step length, it should be
-_rediscretized_ by calling \code{\link{TrajRediscretize}} before calling this
-function.
 }
 \references{
 Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
@@ -34,6 +30,5 @@ path. Journal of Theoretical Biology, 229(2), 209-220.
 doi:10.1016/j.jtbi.2004.03.016
 }
 \seealso{
-\code{\link{TrajSinuosity}} for the uncorrected sinuosity index, and
-  \code{\link{TrajRediscretize}} for resampling to a constant step length.
+\code{\link{TrajSinuosity}} for the uncorrected sinuosity index.
 }
