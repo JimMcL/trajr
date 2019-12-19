@@ -275,10 +275,10 @@ TrajTranslate <- function(trj, dx, dy, dt = 0) {
 #'
 #' Smooths a trajectory using a Savitzky-Golay smoothing filter.
 #'
-#' Consider carefully the effects of smoothing an a trajectory with temporal
-#' gaps in the data. If the smoothed trajectory is to used used to derive speed
-#' and/or acceleration, it may be advisable to fill in the gaps before
-#' smoothing, possibly by calling \code{TrajResampleTime}.
+#' Consider carefully the effects of smoothing a trajectory with temporal gaps
+#' in the data. If the smoothed trajectory is used to derive speed and/or
+#' acceleration, it may be advisable to fill in the gaps before smoothing,
+#' possibly by calling \code{TrajResampleTime}.
 #'
 #' @param trj The trajectory to be smoothed.
 #' @param p polynomial order (passed to \code{\link[signal]{sgolayfilt}}).
