@@ -9,7 +9,7 @@ Trajectory Analysis in R
 
 An R package for analysing 2-dimensional animal trajectories, which represent the movements of animals through space and time. It provides functions to easily calculate various quantitative measures of trajectories such as speed and straightness or tortuosity. It also provides a range of other trajectory operations such as resampling to fixed step lengths (_rediscretization_), determining turning angles and step lengths, and so on. If you use `trajr` in your research, please cite [McLean, D. J., & Skowron Volponi, M. A. (2018). trajr: An R package for characterisation of animal trajectories. Ethology, 124(6), 440-448. https://doi.org/10.1111/eth.12739](https://doi.org/10.1111/eth.12739). 
 
-`trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of `(x, y, time)` coordinates.
+`trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of `(x, y, time)` coordinates. It does, however, provide some functionality to generate random trajectories for simulation or testing of analyses.
 
 Refer to [NEWS.md](NEWS.md) for a list of changes in each version.
 

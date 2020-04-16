@@ -27,6 +27,7 @@ Suggests: knitr,
     testthat,
     BH,
     readr,
-    tcltk
+    tcltk,
+    sp
 VignetteBuilder: knitr
 BuildVignettes: true
