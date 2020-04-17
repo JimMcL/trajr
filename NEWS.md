@@ -4,6 +4,7 @@
 
 * Allow the creation of trajectories with 0 points in `TrajFromCoords`.
 * Fix bug in plot.TrajSpeedIntervals: time (x-axis) didn't handle trajectories with a non-zero starting time.
+* Added functions to assist in simulating trajectories that are bounded or vary spatially in some way. The new functions are `TrajInPolygon`, `TrajSplit`, `TrajMerge` and `TrajSplitAtFirstCrossing`.
 
 ## trajr 1.3.0
 
