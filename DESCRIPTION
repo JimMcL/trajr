@@ -28,6 +28,7 @@ Suggests: knitr,
     BH,
     readr,
     tcltk,
-    sp
+    sp,
+    MASS
 VignetteBuilder: knitr
 BuildVignettes: true

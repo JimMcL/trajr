@@ -21,7 +21,7 @@ library(trajr)
 ```{r defFns, echo = FALSE}
 # Some colours
 DARKBLUE <- "#102050"
-MIDRED <- "#b82010"
+MIDRED <- "#f82010"
 MIDBLUE <- "#2040b8"
 LIGHTBLUE <- "#60a0ff"
 
@@ -114,7 +114,7 @@ ConstrainTrajectory <- function(trj, boundary) {
 
 ## Simulating bounded trajectories
 
-`trajr` provides some functionality to assist with simulating trajectories. Functions are provided to split and merge trajectories (`TrajSplit` and `TrajMerge`), to identify where a trajectory crosses an arbitrary polygon (`TrajInPolygon`), and to split a trajectory where it first crosses a polygon (`TrajSplitAtFirstCrossing`). `trajr` does not attempt to model animal behaviours other than by generating random walks (i.e. the `TrajGenerate` function). 
+`trajr` provides some functionality to assist with simulating trajectories. Functions are provided to split and merge trajectories (`TrajSplit` and `TrajMerge`), to identify where a trajectory crosses an arbitrary polygon (`TrajInPolygon`), and to split a trajectory where it first crosses a polygon (`TrajSplitAtFirstCrossing`). `trajr` does not attempt to model animal behaviours other than by generating random walks (i.e. the `TrajGenerate` function). To use the `TrajInPolygon` or `TrajSplitAtFirstCrossing` functions, you must have the `sp` package installed.
 
 To demonstrate one way in which this functionality can be used, I will simulate a trajectory in a bounded space. Let's assume a very simple behaviour - that animals cannot walk through walls. Whenever a wall is encountered, the animal will turn by the smallest angle possible to allow it to continue walking. This behaviour is _not_ part of the `trajr` package, however the implementation is fully described in this vignette.
 
@@ -162,7 +162,7 @@ plot(l[[1]], xlim = xlim, ylim = ylim, col = MIDRED, lwd = 2)
 lines(l[[2]], col = MIDBLUE)
 polygon(boundary, border = "brown", lwd = 2, lwd = 2)
 text(4, -.8, "t1", pos = 1, font = 4)
-text(18, -2, "t2", pos = 1, font = 4)
+text(18, -2.5, "t2", pos = 1, font = 4)
 mtext("C", line = line, adj = adj)
 
 # Step 4
@@ -267,8 +267,7 @@ polygon(boundary, border = "brown", lwd = 2)
 If we plot a heatmap of the trajectory, we can visualise locations where the animal spends more time. Darker regions indicate areas visited more frequently, and lighter regions are less visited.
 
 ```{r, fig.cap="Figure 4. Heatmap of trajectory constrained to an hourglass arena"}
-library(MASS)
-d <- kde2d(constrained$x, constrained$y, n = 300)
+d <- MASS::kde2d(constrained$x, constrained$y, n = 300)
 par(mar = c(3, 2, 1, 1) + .1)
 image(d, asp = 1)
 polygon(boundary, border = "blue", lwd = 2)

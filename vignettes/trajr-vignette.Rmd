@@ -497,7 +497,7 @@ customPcaPlot <- function(x, xlabs, xcols, choices = 1L:2L, ycol = "#ff2222aa", 
   # Draw points
   pts <- t(t(x$x[, choices]))
   plot(pts, type = "p", 
-       xlim = grDevices::extendrange(pts[, 1L]), ylim = extendrange(pts[, 2L]), 
+       xlim = extendrange(pts[, 1L]), ylim = extendrange(pts[, 2L]), 
        asp = 1,
        xlab = "PC1", ylab = "PC2", pch = 16, col = xcols, ...)
   text(pts, labels = xlabs, pos = 1, ...)
