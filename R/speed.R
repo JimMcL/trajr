@@ -123,7 +123,7 @@ TrajDerivatives <- function(trj) {
 #' intervals <- TrajSpeedIntervals(smoothed, slowerThan = 50, fasterThan = NULL)
 #' plot(intervals)
 #'
-#' # Report the duration of the maximum period of low speed
+#' # Report the duration of the longest period of low speed
 #' cat(sprintf("Duration of the longest low-speed interval was %g secs\n", max(intervals$duration)))
 #'
 #' @export
