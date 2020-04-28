@@ -11,7 +11,7 @@ An R package for analysing 2-dimensional animal trajectories, which represent th
 
 `trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of `(x, y, time)` coordinates. It does, however, provide some functionality to generate random trajectories for simulation or testing of analyses.
 
-Refer to [NEWS.md](NEWS.md) for a list of changes in each version. The article [trajr: An R package for characterisation of animal trajectories](https://doi.org/10.1111/eth.12739) described `trajr` version 1.0.0. Please refer to [NEWS.md](NEWS.md) for a brief summary of what has changed.
+Refer to [NEWS.md](NEWS.md) for a list of changes in each version. The article [trajr: An R package for characterisation of animal trajectories](https://doi.org/10.1111/eth.12739) described `trajr` version 1.0.0. Please refer to [NEWS.md](NEWS.md) for a brief summary of what has changed since the article was written.
 
 ## Installation
     $ install.packages("trajr")
