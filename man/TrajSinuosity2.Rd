@@ -14,10 +14,10 @@ for a directed walk, assuming the specified compass direction (in radians).
 Otherwise, a random walk is assumed.}
 }
 \description{
-Calculates the sinuosity of a (constant step length) trajectory as defined by
-Benhamou (2004), equation 8. This is a corrected version of the sinuosity
-index defined in Bovet & Benhamou (1988), which is suitable for a wider range
-of turning angle distributions, and does not require a constant step length.
+Calculates the sinuosity of a trajectory as defined by Benhamou (2004),
+equation 8. This is a corrected version of the sinuosity index defined in
+Bovet & Benhamou (1988), which is suitable for a wider range of turning angle
+distributions, and does not require a constant step length.
 }
 \details{
 This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +

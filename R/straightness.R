@@ -170,10 +170,10 @@ TrajSinuosity <- function(trj, compass.direction = NULL) {
 
 #' Sinuosity of a trajectory
 #'
-#' Calculates the sinuosity of a (constant step length) trajectory as defined by
-#' Benhamou (2004), equation 8. This is a corrected version of the sinuosity
-#' index defined in Bovet & Benhamou (1988), which is suitable for a wider range
-#' of turning angle distributions, and does not require a constant step length.
+#' Calculates the sinuosity of a trajectory as defined by Benhamou (2004),
+#' equation 8. This is a corrected version of the sinuosity index defined in
+#' Bovet & Benhamou (1988), which is suitable for a wider range of turning angle
+#' distributions, and does not require a constant step length.
 #'
 #' This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
 #' b^2)]^-0.5} where \eqn{c} is the mean cosine of turning angles, and \eqn{b}
