@@ -13,7 +13,7 @@
 #
 # A maximimum is defined here as a point equal to the greatest value within a
 # window. Hence, two or more equal contiguous values will count as maxima if
-# there are no higher vaues within each window.
+# there are no higher values within each window.
 #
 # @param v vector of values.
 # @param window Number of points on each side which defines what counts as a

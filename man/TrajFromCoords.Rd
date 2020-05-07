@@ -31,7 +31,7 @@ An object with class "\code{Trajectory}", which is a data.frame with
   the following components: \item{x}{X coordinates of trajectory points.}
   \item{y}{Y coordinates of trajectory points.} \item{time}{Time (in
   \code{timeUnits}) for each point. if \code{timeCol} is specified, values
-  are \code{trj[,timeCol]}, otherwise values are calculated from \code{fps}.}
+  are \code{track[,timeCol]}, otherwise values are calculated from \code{fps}.}
   \item{displacementTime}{Relative frame/observation times, with
   frame/observation 1 at time \code{0}.} \item{polar}{Coordinates represented
   as complex numbers, to simplify working with segment angles.}
