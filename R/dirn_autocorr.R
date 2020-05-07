@@ -101,10 +101,10 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
 #' the direction autocorrelation function of a trajectory as returned by
 #' \code{\link{TrajDirectionAutocorrelations}}. The end point is excluded from
 #' consideration as a minimum, similarly the start point will not be returned as
-#' a maximum. if the trajectory does not osciallate in direction, there will not
+#' a maximum. If the trajectory does not oscillate in direction, there will not
 #' be a local minimum/maximum, and \code{NULL} is returned.
 #'
-#' @param corr a \code{TrajDirectionAutocorrelations} object, i.e. the direction
+#' @param corr A \code{TrajDirectionAutocorrelations} object, i.e. the direction
 #'   autocorrelation of a trajectory.
 #' @param windowSize Size of window used to define what constitutes a local
 #'   mimimum/maximum.
