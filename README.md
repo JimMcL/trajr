@@ -4,6 +4,9 @@
 [![codecov](https://codecov.io/gh/JimMcL/trajr/branch/master/graph/badge.svg)](https://codecov.io/gh/JimMcL/trajr)
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
 ![CRAN download count](https://cranlogs.r-pkg.org/badges/trajr)
+<!-- To display total CRAN downloads, use
+https://cranlogs.r-pkg.org/badges/grand-total/trajr
+-->
 
 Trajectory Analysis in R
 
