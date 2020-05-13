@@ -142,7 +142,7 @@ legend("topright", c("Original", "Smoothed"), lwd = c(1, 2), lty = c(1, 1), col 
 
 ### Resampling trajectories
 
-`trajr` provides functions to resample a trajectory to a fixed step length or a fixed step stime.
+`trajr` provides functions to resample a trajectory to a fixed step length or a fixed step time.
 
 Some functions require a `Trajectory` with a fixed step length. The process of resampling a trajectory to a fixed step length is called _rediscretization_. The function `TrajRediscretize` implements trajectory resampling using the algorithm described by Bovet & Benhamou (1988). There are no clear guidelines for choosing a suitable step length for rediscretization: too small a step length leads to oversampling, leading to high autocorrelation between steps and high variability; too large a step length results in undersampling and loss of information. See Turchin (1998) section 5.2.2 for a discussion.
 ```{r rediscretize, fig.width=6, fig.height=4, fig.cap="_Rediscretization of trajectory with $\\mu_{L} = 2$ to step length $1$._", echo=-1:-2}
@@ -164,7 +164,8 @@ legend("topright", c("Original", "Rediscretized"), col = c("black", "red"),
        lwd = 2, inset = c(0.01, 0.02))
 ```
 
-The function `TrajResampleTime` linearly interpolates points along a trajectory to create a new trajectory with fixed step time intervals. 
+The function `TrajResampleTime` linearly interpolates points along a trajectory to create a new trajectory with fixed step time intervals. The functions `TrajVelocity` and `TrajAcceleration` require constant step time trajectories as input. 
+
 ```{r resample, fig.width=6, fig.height=4, fig.cap="_Resampling of trajectory with step duration  $1$ hour._", echo=-1:-2}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 set.seed(5)
@@ -224,7 +225,7 @@ Once you have obtained a correctly scaled `Trajectory` object, you may call vari
 
 ### Analysing speed
 
-The `TrajDerivatives` function calculates linear speed and acceleration along a `Trajectory`. If the trajectory is noisy, it should be smoothed before the derivatives are calculated (see [Smoothing trajectories](#smoothing-trajectories), but take note of the caveats described there).
+The `TrajDerivatives` function calculates speed and change in speed along a `Trajectory`. If the trajectory is noisy, it should be smoothed before the derivatives are calculated (see [Smoothing trajectories](#smoothing-trajectories), but take note of the caveats described there). The functions `TrajVelocity` and `TrajAcceleration` estimate velocity and acceleration as vectors at each point along a trajectory.
 
 ```{r speed, fig.cap="_Speed and acceleration over time._", fig.width=6, fig.height=4, echo=-1:-2}
 set.seed(1)
@@ -241,7 +242,7 @@ derivs <- TrajDerivatives(smoothed)
 plot(derivs$acceleration ~ derivs$accelerationTimes, type = 'l', col = 'red', 
      yaxt = 'n',
      xlab = 'Time (s)',
-     ylab = expression(paste('Acceleration (', m/s^2, ')')))
+     ylab = expression(paste('Change in speed (', m/s^2, ')')))
 axis(side = 2, col = "red")
 lines(derivs$speed ~ derivs$speedTimes, col = 'blue')
 axis(side = 4, col = "blue")
@@ -249,7 +250,7 @@ mtext('Speed (m/s)', side = 4, line = 3)
 abline(h = 0, col = 'lightGrey')
 ```
 
-Once the trajectory speed and acceleration have been obtained, it is simple to calculate values such as mean, maximum, minimum or standard deviation of speed (or acceleration): `mean(derivs$speed)`, `max(derivs$speed)`, `min(derivs$speed)`, or `sd(derivs$speed)`. Similarly, calculations excluding periods when speed drops below (or above) some value are also straightforward, for example: `mean(derivs$speed[deriv$speed > STOPPED_SPEED])`. In addition, the function `TrajSpeedIntervals` allows you to determine the time intervals within the trajectory that satisfy a speed constraint, either slower than some speed, faster than a speed, or both. This may be useful, for example, when testing how often, or for how long, a flying insect hovers, or a running insect stops, i.e. when its speed drops below some threshold. The object returned by a call to `TrajSpeedIntervals` can be plotted.
+Once the trajectory speed has been obtained, it is simple to calculate values such as mean, maximum, minimum or standard deviation of speed: `mean(derivs$speed)`, `max(derivs$speed)`, `min(derivs$speed)`, or `sd(derivs$speed)`. Similarly, calculations excluding periods when speed drops below (or above) some value are also straightforward, for example: `mean(derivs$speed[deriv$speed > STOPPED_SPEED])`. In addition, the function `TrajSpeedIntervals` allows you to determine the time intervals within the trajectory that satisfy a speed constraint, either slower than some speed, faster than a speed, or both. This may be useful, for example, when testing how often, or for how long, a flying insect hovers, or a running insect stops, i.e. when its speed drops below some threshold. The object returned by a call to `TrajSpeedIntervals` can be plotted.
 
 
 ```{r speedIntervals, fig.cap="_Speed over time, hovering intervals (speed < 2 m/s) highlighted._", fig.width=6, fig.height=4, echo=-1:-2}
