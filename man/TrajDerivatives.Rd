@@ -2,35 +2,42 @@
 % Please edit documentation in R/speed.R
 \name{TrajDerivatives}
 \alias{TrajDerivatives}
-\title{Calculates trajectory speed and linear acceleration}
+\title{Calculates trajectory speed and change of speed}
 \usage{
 TrajDerivatives(trj)
 }
 \arguments{
-\item{trj}{Trajectory whose speed and linear acceleration is to be
-calculated.}
+\item{trj}{Trajectory whose speed and change in speed is to be calculated.}
 }
 \value{
 A list with components: \item{speed}{numeric vector, speed between
   each pair of trajectory points, i.e. the speed of each step.}
   \item{speedTimes}{numeric vector, times corresponding to values in
   \code{speed}, i.e. the time from the start of the trajectory to the end of
-  each step.} \item{acceleration}{numeric vector, linear acceleration between
-  steps.} \item{accelerationTimes}{numeric vector, time from the start of
-  the trajectory to the end of the second step in each pair.}
+  each step.} \item{acceleration}{numeric vector, change in speed between
+  steps. Despite the name, this is not acceleration as defined by mechanics.}
+  \item{accelerationTimes}{numeric vector, time from the start of the
+  trajectory to the end of the second step in each pair.}
 }
 \description{
-Calculates speed and linear acceleration along a trajectory over time. Noisy
+Calculates speed and change of speed along a trajectory over time. Noisy
 trajectories should be smoothed before being passed to this function, as
-noise is effectively amplifed when calculating speed and acceleration.
+noise is effectively amplifed when taking derivatives.
 }
 \details{
+The value returned as \code{acceleration} is \emph{not} acceleration. In
+mechanics, acceleration is a vector. This value is a scalar quantity - change
+of speed, which is sometimes known colloquially as acceleration. See
+\code{\link{TrajAcceleration}} for an approximation of (vector) acceleration,
+and \code{\link{TrajVelocity}} for an approximation of velocity.
+
 Note that it is possible to obtain the duration of each step in a trajectory
-as follows: \preformatted{r <- TrajDerivatives(trj)
-stepLengths <- diff(c(0, r$speedTimes))}.
+as follows: \preformatted{r <- TrajDerivatives(trj) stepLengths <- diff(c(0,
+r$speedTimes))}.
 }
 \seealso{
 \code{\link{TrajSpeedIntervals}} for analysing intervals of low or
   high speed within the trajectory. \code{\link{TrajSmoothSG}} for smoothing
-  a trajectory.
+  a trajectory. \code{\link{TrajAcceleration}} for calculating acceleration,
+  and \code{\link{TrajVelocity}} for calculating velocity.
 }

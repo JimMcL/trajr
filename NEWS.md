@@ -5,6 +5,7 @@
 * Allow the creation of trajectories with 0 points in `TrajFromCoords`.
 * Fix bug in plot.TrajSpeedIntervals: time (x-axis) didn't handle trajectories with a non-zero starting time.
 * Added functions to assist in simulating trajectories that are bounded or vary spatially in some way. The new functions are `TrajInPolygon`, `TrajSplit`, `TrajMerge` and `TrajSplitAtFirstCrossing`.
+* Added functions to calculate velocity and acceleration: `TrajVelocity` and `TrajAcceleration`. The documentation for `TrajDerivatives` has been updated to state that the `acceleration` returned is not really acceleration, rather it is change in speed over time.
 
 ## trajr 1.3.0
 
@@ -16,7 +17,7 @@
 * Added parameter `dt` to `TrajTranslate`
 * Fix vertical extents of rectangles in `plot.TrajSpeedIntervals` to handle non-default ylim values.
 * Added optional progressbar to `TrajsMergeStats`.
-* TrajsMergeStats now passes the arguments stringsAsFactors = FALSE to rbind. This prevents incorrect 
+* TrajsMergeStats now passes the arguments `stringsAsFactors = FALSE` to rbind. This prevents incorrect 
   behaviour and the warning "invalid factor level, NA generated" if one or more of your statistics are characters.
 * Enhanced `TrajRotate` to allow absolute rotation and arbitrary origin of rotation.
 

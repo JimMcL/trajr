@@ -6,30 +6,37 @@
     stop("Missing time information in trajectory. Perhaps this is a rediscretized trajectory?")
 }
 
-#' Calculates trajectory speed and linear acceleration
+#' Calculates trajectory speed and change of speed
 #'
-#' Calculates speed and linear acceleration along a trajectory over time. Noisy
+#' Calculates speed and change of speed along a trajectory over time. Noisy
 #' trajectories should be smoothed before being passed to this function, as
-#' noise is effectively amplifed when calculating speed and acceleration.
+#' noise is effectively amplifed when taking derivatives.
+#'
+#' The value returned as \code{acceleration} is \emph{not} acceleration. In
+#' mechanics, acceleration is a vector. This value is a scalar quantity - change
+#' of speed, which is sometimes known colloquially as acceleration. See
+#' \code{\link{TrajAcceleration}} for an approximation of (vector) acceleration,
+#' and \code{\link{TrajVelocity}} for an approximation of velocity.
 #'
 #' Note that it is possible to obtain the duration of each step in a trajectory
-#' as follows: \preformatted{r <- TrajDerivatives(trj)
-#' stepLengths <- diff(c(0, r$speedTimes))}.
+#' as follows: \preformatted{r <- TrajDerivatives(trj) stepLengths <- diff(c(0,
+#' r$speedTimes))}.
 #'
-#' @param trj Trajectory whose speed and linear acceleration is to be
-#'   calculated.
+#' @param trj Trajectory whose speed and change in speed is to be calculated.
 #'
 #' @return A list with components: \item{speed}{numeric vector, speed between
 #'   each pair of trajectory points, i.e. the speed of each step.}
 #'   \item{speedTimes}{numeric vector, times corresponding to values in
 #'   \code{speed}, i.e. the time from the start of the trajectory to the end of
-#'   each step.} \item{acceleration}{numeric vector, linear acceleration between
-#'   steps.} \item{accelerationTimes}{numeric vector, time from the start of
-#'   the trajectory to the end of the second step in each pair.}
+#'   each step.} \item{acceleration}{numeric vector, change in speed between
+#'   steps. Despite the name, this is not acceleration as defined by mechanics.}
+#'   \item{accelerationTimes}{numeric vector, time from the start of the
+#'   trajectory to the end of the second step in each pair.}
 #'
 #' @seealso \code{\link{TrajSpeedIntervals}} for analysing intervals of low or
 #'   high speed within the trajectory. \code{\link{TrajSmoothSG}} for smoothing
-#'   a trajectory.
+#'   a trajectory. \code{\link{TrajAcceleration}} for calculating acceleration,
+#'   and \code{\link{TrajVelocity}} for calculating velocity.
 #'
 #' @export
 TrajDerivatives <- function(trj) {
@@ -48,6 +55,86 @@ TrajDerivatives <- function(trj) {
 
   list(speed = v, speedTimes = vt, acceleration = a, accelerationTimes = at)
 }
+
+#' Acceleration of a trajectory
+#'
+#' Returns the acceleration of the trajectory approximated for each point of the
+#' trajectory using the second-order central finite differences. The trajectory
+#' must have equal step times. The function \code{\link{TrajResampleTime}} can
+#' be called to convert a trajectory to fixed step times. The first and last
+#' acceleration values are \code{NA} since acceleration cannot be calculated for
+#' them.
+#'
+#' @param trj Trajectory whose acceleration is to be calculated.
+#'
+#' @return Vector of complex numbers. The modulus (\code{Mod(a)}) is the
+#'   magnitude of the acceleration at each point, and the argument
+#'   (\code{Arg(a)}) is the direction of the acceleration. The vector has an
+#'   attribute, \code{trj}, with the trajectory as its value.
+#'
+#' @seealso \code{\link{TrajVelocity}} for calculating velocity,
+#'   \code{\link{TrajResampleTime}} to convert a trajectory to fixed step times.
+#'
+#' @examples
+#' # A function to plot acceleration as arrows (scaled in length)
+#' AccArrows <- function(acc, scale = .001, ...) {
+#'   trj <- attr(acc, "trj")
+#'   graphics::arrows(trj$x, trj$y, trj$x + Re(acc) * scale, trj$y + Im(acc) * scale, ...)
+#' }
+#'
+#' # Generate and plot a random trajectory
+#' set.seed(101)
+#' trj <- TrajGenerate(30)
+#' plot(trj)
+#'
+#' # Calculate acceleration
+#' acc <- TrajAcceleration(trj)
+#' # Plot acceleration as red arrows at each point. They need to be scaled down to
+#' # fit in the plot, and the arrowhead lengths need to be shortened to look good
+#' AccArrows(acc, scale = .001, col = "red", length = .1)
+#'
+#' @export
+TrajAcceleration <- function(trj) {
+  .checkTrajHasTime(trj)
+
+  dt <- mean(diff(trj$displacementTime))
+  ax <- stats::filter(trj$x, c(1, -2, 1)) / dt ^ 2
+  ay <- stats::filter(trj$y, c(1, -2, 1)) / dt ^ 2
+  acc <- complex(real = ax, imaginary = ay)
+  attr(acc, "trj") <- trj
+  acc
+}
+
+#' Velocity of a trajectory
+#'
+#' The velocity is approximated at each point of the trajectory using
+#' first-order central finite differences. The trajectory must have equal step
+#' times. The function \code{\link{TrajResampleTime}} can be called to convert a
+#' trajectory to fixed step times. The first and last velocity values are
+#' \code{NA} since velocity cannot be calculated for them.
+#'
+#' @param trj Trajectory whose velocity is to be calculated.
+#'
+#' @return Vector of complex numbers. The modulus (\code{Mod(v)}) is the
+#'   magnitude of the velocity at each point, i.e. the speed, and the argument
+#'   (\code{Arg(v)}) is the direction of the velocity. The vector has an
+#'   attribute, \code{trj}, with the trajectory as its value.
+#'
+#' @seealso \code{\link{TrajAcceleration}} for calculating acceleration,
+#'   \code{\link{TrajResampleTime}} to convert a trajectory to fixed step times.
+#'
+#' @export
+TrajVelocity <- function(trj) {
+  .checkTrajHasTime(trj)
+
+  dt <- mean(diff(trj$displacementTime))
+  ax <- stats::filter(trj$x, c(1, 0, -1)) / (2 * dt)
+  ay <- stats::filter(trj$y, c(1, 0, -1)) / (2 * dt)
+  vel <- complex(real = ax, imaginary = ay)
+  attr(vel, "trj") <- trj
+  vel
+}
+
 
 # Linear interpolation of interval times for TrajSpeedIntervals
 .linearInterpTimes <- function(slowerThan, fasterThan, speed, times, startFrames, startTimes, stopFrames, stopTimes) {
