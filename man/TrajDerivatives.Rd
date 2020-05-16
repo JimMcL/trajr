@@ -26,14 +26,19 @@ noise is effectively amplifed when taking derivatives.
 }
 \details{
 The value returned as \code{acceleration} is \emph{not} acceleration. In
-mechanics, acceleration is a vector. This value is a scalar quantity - change
-of speed, which is sometimes known colloquially as acceleration. See
-\code{\link{TrajAcceleration}} for an approximation of (vector) acceleration,
-and \code{\link{TrajVelocity}} for an approximation of velocity.
+mechanics, acceleration is a vector. This value is a scalar quantity: change
+of speed, which is sometimes known informally as acceleration. This value
+corresponds to the acceleration in a 1-dimensional trajectory, with the sign
+indicating the direction of acceleration relative to the current direction of
+velocity. See \code{\link{TrajAcceleration}} for an approximation of (vector)
+acceleration, and \code{\link{TrajVelocity}} for an approximation of
+velocity.
 
 Note that it is possible to obtain the duration of each step in a trajectory
-as follows: \preformatted{r <- TrajDerivatives(trj) stepLengths <- diff(c(0,
-r$speedTimes))}.
+as follows:
+
+\preformatted{r <- TrajDerivatives(trj)
+stepLengths <- diff(c(0, r$speedTimes))}
 }
 \seealso{
 \code{\link{TrajSpeedIntervals}} for analysing intervals of low or
