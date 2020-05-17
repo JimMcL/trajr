@@ -20,7 +20,8 @@ A list with components: \item{speed}{numeric vector, speed between
   trajectory to the end of the second step in each pair.}
 }
 \description{
-Calculates speed and change of speed along a trajectory over time. Noisy
+Calculates speed and change of speed along a trajectory over time. These are
+the first and second order derivatives of distance travelled over time. Noisy
 trajectories should be smoothed before being passed to this function, as
 noise is effectively amplifed when taking derivatives.
 }
@@ -37,8 +38,8 @@ velocity.
 Note that it is possible to obtain the duration of each step in a trajectory
 as follows:
 
-\preformatted{r <- TrajDerivatives(trj)
-stepLengths <- diff(c(0, r$speedTimes))}
+\preformatted{r <- TrajDerivatives(trj) stepLengths <- diff(c(0,
+r$speedTimes))}
 }
 \seealso{
 \code{\link{TrajSpeedIntervals}} for analysing intervals of low or

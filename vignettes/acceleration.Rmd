@@ -1,0 +1,48 @@
+---
+title: "Approximating Acceleration"
+author: "Jim McLean"
+date: "17/05/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(trajr)
+```
+
+## The problem
+
+Trajectories in `trajr` consist of locations sampled at discrete times. We generally make the simplifying assumption that the animal moves in a straight line at a constant velocity between locations (Fig. 1). 
+
+```{r fig.cap="_Figure 1. Assumed straight line displacements_", fig.align='center'}
+x <- c(1, 1, 1, 1, 1)
+y <- 1:5 * 8
+times <- cumsum(c(0, 8, 4, 2, 1))
+trj <- TrajFromCoords(data.frame(x, y, times), timeCol = 3)
+
+displ <- cumsum(Mod(trj$displacement))
+speed <- TrajDerivatives(trj)$speed
+
+plot(NULL, xlim = range(times), ylim = range(displ), xlab = "Time", ylab = "Distance", main = "Distance travelled")
+lines(times, displ, type = "b")
+
+```
+
+In fact, a trajectory like this would have a discontinuous first derivative (Fig. 2, black lines). Consequently, acceleration would be infinite at the jumps between steps, and 0 along each step. Since this is not a useful way to model acceleration, we instead assume that acceleration occurs for some amount of time. The method implemented in `TrajDerivatives` (Fig. 2, red lines) assumes the acceleration occurs from the start until the end of the step. The method implemented in `TrajAcceleration` (Fig. 2, blue lines) assumes the acceleration occurs from half-way through the first step in a pair, until half-way through the second step.
+
+More sophisticated techniques exist to estimate continuous displacement and speed from trajectories, but they are not implemented by `trajr`. For one such technique and a comparison with others, see:
+
+Noonan, M. J., Fleming, C. H., Akre, T. S., Drescher-Lehman, J., Gurarie, E., Harrison, A.-L., . . . Calabrese, J. M. (2019). Scale-insensitive estimation of speed and distance traveled from animal tracking data. Movement Ecology, 7(1), 35. doi:10.1186/s40462-019-0177-1
+
+
+```{r fig.cap="_Figure 2. Assumed straight line displacements_", fig.align='center'}
+plot(NULL, xlim = range(times), ylim = range(c(0, speed)), xlab = "Time", ylab = "Speed", main = "Approximating acceleration")
+for (i in seq_along(speed)) {
+  segments(times[i], speed[i], times[i + 1], speed[i], lwd = 2)
+}
+
+# Two ways to calculate acceleration
+lines(tail(times, -1), speed, type = "b", col = "red", lwd = 2)
+lines(head(times, -1) + diff(times) / 2, speed, type = "b", col = "blue", lwd = 2)
+legend("topleft", c("Constant speed", "TrajDerivatives", "TrajAcceleration"), lwd = 2, col = c("black", "red", "blue"))
+```

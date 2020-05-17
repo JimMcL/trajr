@@ -4,25 +4,45 @@
 \alias{TrajVelocity}
 \title{Velocity of a trajectory}
 \usage{
-TrajVelocity(trj)
+TrajVelocity(trj, diff = c("central", "forward", "backward"))
 }
 \arguments{
 \item{trj}{Trajectory whose velocity is to be calculated.}
+
+\item{diff}{Type of difference to be calculated, one of "central" (the
+default), "forward" or "backward".}
 }
 \value{
-Vector of complex numbers. The modulus (\code{Mod(v)}) is the
-  magnitude of the velocity at each point, i.e. the speed, and the argument
-  (\code{Arg(v)}) is the direction of the velocity. The vector has an
-  attribute, \code{trj}, with the trajectory as its value.
+A vector of complex numbers representing the velocity at each point
+  along the trajectory. The modulus (\code{Mod(v)}) is the magnitude of the
+  velocity, i.e. the speed; the argument (\code{Arg(v)}) is the direction of
+  the velocity; the real part (\code{Re(v)}) is velocity in the X direction;
+  and the imaginary part (\code{Im(v)}) is velocity in the Y direction. The
+  vector has an attribute, \code{trj}, with the trajectory as its value. If
+  \code{centralDiff} is \code{TRUE}, the first and last velocity values are
+  \code{NA} since velocity cannot be calculated for them. If
+  \code{centralDiff} is \code{FALSE}, the last value will be NA.
 }
 \description{
 The velocity is approximated at each point of the trajectory using
-first-order central finite differences. The trajectory must have equal step
-times. The function \code{\link{TrajResampleTime}} can be called to convert a
-trajectory to fixed step times. The first and last velocity values are
-\code{NA} since velocity cannot be calculated for them.
+first-order finite differences. Central, forward or backward differences can
+be used. Central differences yield a more accurate approximation if the
+velocity is smooth. As a practical guide, if velocity doesn't change much
+between steps, use central differences. If it changes substantially (and not
+just as an artifact of recording noise), then use either forward or backward
+differences.
+}
+\details{
+Intuitively, think of the central difference velocity at a point as the mean
+of the velocities of the two adjacent steps. Forward difference velocity is
+the velocity of the step starting at the point. Backward difference is the
+velocity of the step ending at the point.
 }
 \seealso{
 \code{\link{TrajAcceleration}} for calculating acceleration,
-  \code{\link{TrajResampleTime}} to convert a trajectory to fixed step times.
+  \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
+  resample a trajectory to fixed time or length steps.
+
+  Finite differences on
+  \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
 }

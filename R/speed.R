@@ -1,14 +1,24 @@
 # Functions relating to trajectory speed and acceleration
 
+#### Velocity, acceleration & speed
+
 # Internal function which just throws an error if trj doesn't contain time information
 .checkTrajHasTime <- function(trj) {
   if (!("displacementTime" %in% names(trj)))
     stop("Missing time information in trajectory. Perhaps this is a rediscretized trajectory?")
 }
 
+# Returns sums of adjacent pairs of elements. This is similar to diff(v), except
+# that elements are added rather than subtracted
+.sumPairs <- function(v) {
+  i <- head(seq_along(v), -1)
+  v[i] + v[i + 1]
+}
+
 #' Calculates trajectory speed and change of speed
 #'
-#' Calculates speed and change of speed along a trajectory over time. Noisy
+#' Calculates speed and change of speed along a trajectory over time. These are
+#' the first and second order derivatives of distance travelled over time. Noisy
 #' trajectories should be smoothed before being passed to this function, as
 #' noise is effectively amplifed when taking derivatives.
 #'
@@ -24,8 +34,8 @@
 #' Note that it is possible to obtain the duration of each step in a trajectory
 #' as follows:
 #'
-#' \preformatted{r <- TrajDerivatives(trj)
-#' stepLengths <- diff(c(0, r$speedTimes))}
+#' \preformatted{r <- TrajDerivatives(trj) stepLengths <- diff(c(0,
+#' r$speedTimes))}
 #'
 #' @param trj Trajectory whose speed and change in speed is to be calculated.
 #'
@@ -61,29 +71,36 @@ TrajDerivatives <- function(trj) {
   list(speed = v, speedTimes = vt, acceleration = a, accelerationTimes = at)
 }
 
-#' Acceleration of a trajectory
+#' Approximates the acceleration of a trajectory
 #'
-#' Returns the acceleration of the trajectory approximated for each point of the
-#' trajectory using the second-order central finite differences. The trajectory
-#' must have equal step times. The function \code{\link{TrajResampleTime}} can
-#' be called to convert a trajectory to fixed step times. The first and last
-#' acceleration values are \code{NA} since acceleration cannot be calculated for
-#' them.
+#' Returns an approximation of the acceleration of a trajectory at each point
+#' using the second-order central finite differences.
+#'
+#' `trajr` trajectories, which consist of straight line displacements between
+#' sampled locations, do not contain enough information to correctly derive
+#' velocity or acceleration. Since we have to assume a constant velocity at each
+#' step, the first derivative is discontinuous. Acceleration, therefore, is zero
+#' during each step and infinite at each change of velocity. The approximation
+#' implemented by this function assumes that acceleration occurs over a period
+#' of time: half the duration of the previous step plus half the duration of the
+#' next step.
 #'
 #' @param trj Trajectory whose acceleration is to be calculated.
 #'
 #' @return Vector of complex numbers. The modulus (\code{Mod(a)}) is the
 #'   magnitude of the acceleration at each point, and the argument
 #'   (\code{Arg(a)}) is the direction of the acceleration. The vector has an
-#'   attribute, \code{trj}, with the trajectory as its value.
+#'   attribute, \code{trj}, with the trajectory as its value. The first and last
+#'   values will always be \code{NA}, since acceleration cannot be estimated for
+#'   those points.
 #'
 #' @seealso \code{\link{TrajVelocity}} for calculating velocity,
-#'   \code{\link{TrajResampleTime}} to convert a trajectory to fixed step times.
+#'   \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
+#'   resample a trajectory to fixed time or length steps.
 #'
 #' @examples
 #' # A function to plot acceleration as arrows (scaled in length)
-#' AccArrows <- function(acc, scale = .001, ...) {
-#'   trj <- attr(acc, "trj")
+#' AccArrows <- function(acc, scale = .001, trj = attr(acc, "trj"), ...) {
 #'   graphics::arrows(trj$x, trj$y, trj$x + Re(acc) * scale, trj$y + Im(acc) * scale, ...)
 #' }
 #'
@@ -102,10 +119,24 @@ TrajDerivatives <- function(trj) {
 TrajAcceleration <- function(trj) {
   .checkTrajHasTime(trj)
 
-  dt <- mean(diff(trj$displacementTime))
-  ax <- stats::filter(trj$x, c(1, -2, 1)) / dt ^ 2
-  ay <- stats::filter(trj$y, c(1, -2, 1)) / dt ^ 2
-  acc <- complex(real = ax, imaginary = ay)
+  # Note that there's no point in calculating backward or forward differences as
+  # they provide no different information
+
+  # If we were guaranteed a constant step time, h, we could use the more elegant
+  # ax <- stats::filter(trj$x, c(1, -2, 1)) / h^2
+
+  x <- trj$x
+  y <- trj$y
+  h <- diff(trj$time)
+
+  # Calculate velocities using forward/backward diffs
+  vx <- diff(x) / h
+  # calculate acceleration from velocity and time
+  ax <- diff(vx) / .sumPairs(h / 2)
+  vy <- diff(y) / h
+  ay <- diff(vy) / .sumPairs(h / 2)
+
+  acc <- complex(real = c(NA, ax, NA), imaginary = c(NA, ay, NA))
   attr(acc, "trj") <- trj
   acc
 }
@@ -113,33 +144,79 @@ TrajAcceleration <- function(trj) {
 #' Velocity of a trajectory
 #'
 #' The velocity is approximated at each point of the trajectory using
-#' first-order central finite differences. The trajectory must have equal step
-#' times. The function \code{\link{TrajResampleTime}} can be called to convert a
-#' trajectory to fixed step times. The first and last velocity values are
-#' \code{NA} since velocity cannot be calculated for them.
+#' first-order finite differences. Central, forward or backward differences can
+#' be used. Central differences yield a more accurate approximation if the
+#' velocity is smooth. As a practical guide, if velocity doesn't change much
+#' between steps, use central differences. If it changes substantially (and not
+#' just as an artifact of recording noise), then use either forward or backward
+#' differences.
+#'
+#' Intuitively, think of the central difference velocity at a point as the mean
+#' of the velocities of the two adjacent steps. Forward difference velocity is
+#' the velocity of the step starting at the point. Backward difference is the
+#' velocity of the step ending at the point.
 #'
 #' @param trj Trajectory whose velocity is to be calculated.
+#' @param diff Type of difference to be calculated, one of "central" (the
+#'   default), "forward" or "backward".
 #'
-#' @return Vector of complex numbers. The modulus (\code{Mod(v)}) is the
-#'   magnitude of the velocity at each point, i.e. the speed, and the argument
-#'   (\code{Arg(v)}) is the direction of the velocity. The vector has an
-#'   attribute, \code{trj}, with the trajectory as its value.
+#' @return A vector of complex numbers representing the velocity at each point
+#'   along the trajectory. The modulus (\code{Mod(v)}) is the magnitude of the
+#'   velocity, i.e. the speed; the argument (\code{Arg(v)}) is the direction of
+#'   the velocity; the real part (\code{Re(v)}) is velocity in the X direction;
+#'   and the imaginary part (\code{Im(v)}) is velocity in the Y direction. The
+#'   vector has an attribute, \code{trj}, with the trajectory as its value. If
+#'   \code{centralDiff} is \code{TRUE}, the first and last velocity values are
+#'   \code{NA} since velocity cannot be calculated for them. If
+#'   \code{centralDiff} is \code{FALSE}, the last value will be NA.
 #'
 #' @seealso \code{\link{TrajAcceleration}} for calculating acceleration,
-#'   \code{\link{TrajResampleTime}} to convert a trajectory to fixed step times.
+#'   \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
+#'   resample a trajectory to fixed time or length steps.
+#'
+#'   Finite differences on
+#'   \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
 #'
 #' @export
-TrajVelocity <- function(trj) {
+TrajVelocity <- function(trj, diff = c("central", "forward", "backward")) {
   .checkTrajHasTime(trj)
+  diff <- match.arg(diff)
 
-  dt <- mean(diff(trj$displacementTime))
-  ax <- stats::filter(trj$x, c(1, 0, -1)) / (2 * dt)
-  ay <- stats::filter(trj$y, c(1, 0, -1)) / (2 * dt)
-  vel <- complex(real = ax, imaginary = ay)
+  x <- trj$x
+  y <- trj$y
+  h <- diff(trj$time)
+
+  if (diff == "central") {
+
+    # Central diffs (this the the "double-interval" central difference)
+    # Sum time (h) for each adjacent pair of steps
+    dt <- c(NA, .sumPairs(h), NA)
+    vx <- stats::filter(x, c(1, 0, -1)) / dt
+    vy <- stats::filter(y, c(1, 0, -1)) / dt
+  } else {
+
+    # Forward or backward diffs, variable step times
+    vx <- diff(x) / h
+    vy <- diff(y) / h
+    if (diff == "forward") {
+      # Forward diffs - speed at last point is unknown
+      vx <- c(vx, NA)
+      vy <- c(vy, NA)
+    } else {
+      # Backward diffs - speed at first point is unknown
+      vx <- c(NA, vx)
+      vy <- c(NA, vy)
+    }
+  }
+
+  vel <- complex(real = vx, imaginary = vy)
   attr(vel, "trj") <- trj
   vel
 }
 
+
+##########################################################################
+#### Speed intervals
 
 # Linear interpolation of interval times for TrajSpeedIntervals
 .linearInterpTimes <- function(slowerThan, fasterThan, speed, times, startFrames, startTimes, stopFrames, stopTimes) {

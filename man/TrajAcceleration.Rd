@@ -2,7 +2,7 @@
 % Please edit documentation in R/speed.R
 \name{TrajAcceleration}
 \alias{TrajAcceleration}
-\title{Acceleration of a trajectory}
+\title{Approximates the acceleration of a trajectory}
 \usage{
 TrajAcceleration(trj)
 }
@@ -13,20 +13,27 @@ TrajAcceleration(trj)
 Vector of complex numbers. The modulus (\code{Mod(a)}) is the
   magnitude of the acceleration at each point, and the argument
   (\code{Arg(a)}) is the direction of the acceleration. The vector has an
-  attribute, \code{trj}, with the trajectory as its value.
+  attribute, \code{trj}, with the trajectory as its value. The first and last
+  values will always be \code{NA}, since acceleration cannot be estimated for
+  those points.
 }
 \description{
-Returns the acceleration of the trajectory approximated for each point of the
-trajectory using the second-order central finite differences. The trajectory
-must have equal step times. The function \code{\link{TrajResampleTime}} can
-be called to convert a trajectory to fixed step times. The first and last
-acceleration values are \code{NA} since acceleration cannot be calculated for
-them.
+Returns an approximation of the acceleration of a trajectory at each point
+using the second-order central finite differences.
+}
+\details{
+`trajr` trajectories, which consist of straight line displacements between
+sampled locations, do not contain enough information to correctly derive
+velocity or acceleration. Since we have to assume a constant velocity at each
+step, the first derivative is discontinuous. Acceleration, therefore, is zero
+during each step and infinite at each change of velocity. The approximation
+implemented by this function assumes that acceleration occurs over a period
+of time: half the duration of the previous step plus half the duration of the
+next step.
 }
 \examples{
 # A function to plot acceleration as arrows (scaled in length)
-AccArrows <- function(acc, scale = .001, ...) {
-  trj <- attr(acc, "trj")
+AccArrows <- function(acc, scale = .001, trj = attr(acc, "trj"), ...) {
   graphics::arrows(trj$x, trj$y, trj$x + Re(acc) * scale, trj$y + Im(acc) * scale, ...)
 }
 
@@ -44,5 +51,6 @@ AccArrows(acc, scale = .001, col = "red", length = .1)
 }
 \seealso{
 \code{\link{TrajVelocity}} for calculating velocity,
-  \code{\link{TrajResampleTime}} to convert a trajectory to fixed step times.
+  \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
+  resample a trajectory to fixed time or length steps.
 }
