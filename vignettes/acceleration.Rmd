@@ -39,7 +39,7 @@ More sophisticated techniques exist to estimate continuous displacement and spee
 Noonan, M. J., Fleming, C. H., Akre, T. S., Drescher-Lehman, J., Gurarie, E., Harrison, A.-L., . . . Calabrese, J. M. (2019). Scale-insensitive estimation of speed and distance traveled from animal tracking data. Movement Ecology, 7(1), 35. doi:10.1186/s40462-019-0177-1
 
 
-```{r fig.cap="_Figure 2. Assumed straight line displacements_", fig.align='center'}
+```{r fig.cap="_Figure 2. Assumed straight line velocities_", fig.align='center'}
 plot(NULL, xlim = range(times), ylim = range(c(0, speed)), xlab = "Time", ylab = "Speed", main = "Approximating acceleration")
 for (i in seq_along(speed)) {
   segments(times[i], speed[i], times[i + 1], speed[i], lwd = 2)
