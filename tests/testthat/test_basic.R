@@ -96,7 +96,7 @@ test_that("Speed intervals", {
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
   expect_error(plot(intervals), NA)
-  expect_true(nrow(intervals) == 1)
+  expect_equal(nrow(intervals), 1)
 
   # 1 Interval with 1 start and no stop
   set.seed(2)
@@ -106,7 +106,7 @@ test_that("Speed intervals", {
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
   #plot(intervals)
-  expect_true(nrow(intervals) == 1)
+  expect_equal(nrow(intervals), 1)
 
   # 0 intervals
   set.seed(3)
@@ -116,7 +116,7 @@ test_that("Speed intervals", {
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
   expect_error(plot(intervals), NA)
-  expect_true(nrow(intervals) == 0)
+  expect_equal(nrow(intervals), 0)
 
   # 3 intervals
   set.seed(4)
@@ -126,7 +126,7 @@ test_that("Speed intervals", {
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
   #plot(intervals)
-  expect_true(nrow(intervals) == 3)
+  expect_equal(nrow(intervals), 3)
 
   # 3 intervals
   set.seed(4)
@@ -136,7 +136,7 @@ test_that("Speed intervals", {
   smoothed <- TrajSmoothSG(trj, 3, 101)
   intervals <- TrajSpeedIntervals(smoothed, slowerThan = slowerThan, fasterThan = fasterThan)
   expect_error(plot(intervals), NA)
-  expect_true(nrow(intervals) == 3)
+  expect_equal(nrow(intervals), 3)
 
   # 2 intervals
   set.seed(4)
@@ -145,7 +145,7 @@ test_that("Speed intervals", {
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
   #plot(intervals)
-  expect_true(nrow(intervals) == 2)
+  expect_equal(nrow(intervals), 2)
 
   # Interval wholly contained within a segment
   set.seed(4)
@@ -154,7 +154,7 @@ test_that("Speed intervals", {
   fasterThan = 107
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
   #plot(intervals)
-  expect_true(nrow(intervals) == 0)
+  expect_equal(nrow(intervals), 0)
 
   set.seed(1)
   trj <- TrajGenerate(10, random = TRUE)
@@ -162,13 +162,23 @@ test_that("Speed intervals", {
   fasterThan = 110
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
   #plot(intervals)
-  expect_true(nrow(intervals) == 2)
+  expect_equal(nrow(intervals), 2)
+
+  # Central diffs gives lower speed
+  intervals <- TrajSpeedIntervals(trj, diff = "central", slowerThan = slowerThan, fasterThan = fasterThan)
+  #plot(intervals)
+  expect_equal(nrow(intervals), 0)
 
   slowerThan = 107
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
   #plot(intervals)
-  expect_true(nrow(intervals) == 3)
+  expect_equal(nrow(intervals), 3)
+
+  # Central diffs gives lower speed
+  intervals <- TrajSpeedIntervals(trj, diff = "central", slowerThan = slowerThan, fasterThan = fasterThan)
+  #plot(intervals)
+  expect_equal(nrow(intervals), 2)
 })
 
 test_that("Emax", {

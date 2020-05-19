@@ -6,6 +6,7 @@
 * Fix bug in plot.TrajSpeedIntervals: time (x-axis) didn't handle trajectories with a non-zero starting time.
 * Added functions to assist in simulating trajectories that are bounded or vary spatially in some way. The new functions are `TrajInPolygon`, `TrajSplit`, `TrajMerge` and `TrajSplitAtFirstCrossing`.
 * Added functions to calculate velocity and acceleration: `TrajVelocity` and `TrajAcceleration`. The documentation for `TrajDerivatives` has been updated to state that the `acceleration` returned is not really acceleration, rather it is change in speed over time.
+* Added argument `diff` to `TrajSpeedIntervals` to control how speed is calculated. Default is "backward" so the function is backwards-compatible.
 
 ## trajr 1.3.0
 

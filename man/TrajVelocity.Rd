@@ -38,11 +38,23 @@ of the velocities of the two adjacent steps. Forward difference velocity is
 the velocity of the step starting at the point. Backward difference is the
 velocity of the step ending at the point.
 }
-\seealso{
-\code{\link{TrajAcceleration}} for calculating acceleration,
-  \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
-  resample a trajectory to fixed time or length steps.
+\examples{
+set.seed(11)
+trj <- TrajGenerate(100)
+# calculate velocity
+vel <- TrajVelocity(trj)
+# Obtain speed over time, with NAs removed
+speed <- na.omit(data.frame(speed = Mod(vel), time = trj$time))
 
+plot(speed ~ time, speed, type = 'l')
+
+}
+\seealso{
+\code{\link{TrajAcceleration}} for calculating acceleration;
+  \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
+  resample a trajectory to fixed time or length steps;
+  \code{\link{TrajSpeedIntervals}} for calculating when speed crosses some
+  threshold;
   Finite differences on
   \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
 }

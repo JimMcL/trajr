@@ -11,7 +11,7 @@
 # Returns sums of adjacent pairs of elements. This is similar to diff(v), except
 # that elements are added rather than subtracted
 .sumPairs <- function(v) {
-  i <- head(seq_along(v), -1)
+  i <- utils::head(seq_along(v), -1)
   v[i] + v[i + 1]
 }
 
@@ -170,12 +170,25 @@ TrajAcceleration <- function(trj) {
 #'   \code{NA} since velocity cannot be calculated for them. If
 #'   \code{centralDiff} is \code{FALSE}, the last value will be NA.
 #'
-#' @seealso \code{\link{TrajAcceleration}} for calculating acceleration,
+#' @seealso
+#' \code{\link{TrajAcceleration}} for calculating acceleration;
 #'   \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
-#'   resample a trajectory to fixed time or length steps.
-#'
+#'   resample a trajectory to fixed time or length steps;
+#'   \code{\link{TrajSpeedIntervals}} for calculating when speed crosses some
+#'   threshold;
 #'   Finite differences on
 #'   \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
+#'
+#' @examples
+#' set.seed(11)
+#' trj <- TrajGenerate(100)
+#' # calculate velocity
+#' vel <- TrajVelocity(trj)
+#'
+#' # Obtain speed over time, with NAs removed
+#' speed <- na.omit(data.frame(speed = Mod(vel), time = trj$time))
+#'
+#' plot(speed ~ time, speed, type = 'l')
 #'
 #' @export
 TrajVelocity <- function(trj, diff = c("central", "forward", "backward")) {
@@ -259,13 +272,18 @@ TrajVelocity <- function(trj, diff = c("central", "forward", "backward")) {
 #' Calculate speed time intervals
 #'
 #' Calculates and returns a list of time intervals during which speed is slower
-#' and/or faster than specified values.
+#' and/or faster than specified values. Speed is calculated by taking the
+#' modulus of velocity (\code{\link{TrajVelocity}}).
 #'
 #' @param trj Trajectory to be analysed.
 #' @param fasterThan,slowerThan If not \code{NULL}, intervals will cover time
 #'   periods where speed exceeds/is lower than this value.
 #' @param interpolateTimes If \code{TRUE}, times will be linearly interpolated
 #'   between frames.
+#' @param diff Method used to calculate speed, see \code{\link{TrajVelocity}}
+#'   for details. The default is \code{"backward"} to maintain backwards
+#'   compatibility; in general, \code{"central"} provides a more accurate
+#'   estimate of velocity.
 #'
 #' @return A data frame of class "TrajSpeedIntervals", each row is an interval,
 #'   columns are: \item{startFrame}{Indices of frames at the start of each
@@ -278,33 +296,37 @@ TrajVelocity <- function(trj, diff = c("central", "forward", "backward")) {
 #'   \item{trajectory}{Value of the \code{trj} argument.}
 #'   \item{slowerThan}{Value of the \code{slowerThan} argument.}
 #'   \item{fasterThan}{Value of the \code{fasterThan} argument.}
-#'   \item{derivs}{Value returned by calling \code{TrajDerivatives(trj)}.}
+#'   \item{speed}{Data frame with columns \code{speed} and \code{time}.}
+#'   \item{derivs}{Value returned by calling \code{TrajDerivatives(trj)}.
+#'   Provided for backwards-compatibility; use of \code{speed} is now preferred.}
 #'
-#' @seealso \code{\link{TrajDerivatives}} for calculating trajectory speed and
-#'   acceleration, \code{\link{plot.TrajSpeedIntervals}} for plotting speed over
-#'   time with intervals highlighted.
+#' @seealso \code{\link{TrajVelocity}} for calculating trajectory velocity,
+#'   \code{\link{plot.TrajSpeedIntervals}} for plotting speed over time with
+#'   intervals highlighted.
 #'
 #' @examples
 #' # Plot speed, highlighting intervals where speed drops below 50 units/sec
 #' set.seed(4)
 #' trj <- TrajGenerate(200, random = TRUE)
 #' smoothed <- TrajSmoothSG(trj, 3, 101)
-#' intervals <- TrajSpeedIntervals(smoothed, slowerThan = 50, fasterThan = NULL)
+#' intervals <- TrajSpeedIntervals(smoothed, diff = "central", slowerThan = 50, fasterThan = NULL)
 #' plot(intervals)
 #'
 #' # Report the duration of the longest period of low speed
 #' cat(sprintf("Duration of the longest low-speed interval was %g secs\n", max(intervals$duration)))
 #'
 #' @export
-TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interpolateTimes = TRUE) {
+TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interpolateTimes = TRUE, diff = c("backward", "central", "forward")) {
   if (is.null(fasterThan) && is.null(slowerThan)) {
     stop("Parameters fasterThan and slowerThan are both NULL, one must be specified")
   }
+  diff <- match.arg(diff)
 
   # Calculate trajectory speeds
-  derivs <- TrajDerivatives(trj)
-  speed <- derivs$speed
-  times <- derivs$speedTimes
+  vel <- TrajVelocity(trj, diff = diff)
+  df <- stats::na.omit(data.frame(speed = Mod(vel), time = trj$time))
+  speed <- df$speed
+  times <- df$time
 
   # Calculate for each point whether it is within an interval
   flags <- rep(TRUE, length(speed))
@@ -346,7 +368,8 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interp
   # Record some attributes
   attr(result, "slowerThan") <- slowerThan
   attr(result, "fasterThan") <- fasterThan
-  attr(result, "derivs") <- derivs
+  attr(result, "speed") <- df
+  attr(result, "derivs") <- TrajDerivatives(trj) # This is only here for backwards compatibility
   attr(result, "trajectory") <- trj
 
   # Give it a class
@@ -379,9 +402,8 @@ plot.TrajSpeedIntervals <- function(x,
                                     ylab = sprintf("Speed (%s/%s)", TrajGetUnits(attr(x, "trajectory")), TrajGetTimeUnits(attr(x, "trajectory"))),
                                     ...) {
   trj <- attr(x, "trajectory")
-  derivs <- attr(x, "derivs")
-  speed <- derivs$speed
-  graphics::plot(x = derivs$speedTimes + trj$time[1], y = speed, type = 'l', xlab = xlab, ylab = ylab, ...)
+  df <- attr(x, "speed")
+  graphics::plot(x = df$time + trj$time[1], y = df$speed, type = 'l', xlab = xlab, ylab = ylab, ...)
   graphics::abline(h = attr(x, "slowerThan"), col = slowerThanColour)
   graphics::abline(h = attr(x, "fasterThan"), col = fasterThanColour)
   if (nrow(x) > 0) {

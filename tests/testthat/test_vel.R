@@ -128,3 +128,15 @@ test_that("Variable steps acc", {
   # Acceleration should be (diffs in speed) / (diffs in times of step centres)
   expect_equal(as.numeric(Im(acc)), c(1, 2, 4) / c(6, 3, 1.5))
 })
+
+test_that("velocity & speed", {
+  set.seed(5)
+  trj <- TrajGenerate()
+  # Compare speed from TrajDerivatives & TrajVelocity
+  drv <- TrajDerivatives(trj)
+  vel <- TrajVelocity(trj, diff = "backward")
+  vspeed <- data.frame(speed = Mod(vel), speedTimes = trj$time)
+  vspeed <- na.omit(vspeed)
+  expect_equal(drv$speed, vspeed$speed)
+  expect_equal(drv$speedTimes, vspeed$speedTimes)
+})

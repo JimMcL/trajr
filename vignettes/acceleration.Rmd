@@ -3,6 +3,10 @@ title: "Approximating Acceleration"
 author: "Jim McLean"
 date: "17/05/2020"
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{Approximating acceleration}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
