@@ -139,4 +139,20 @@ test_that("velocity & speed", {
   vspeed <- na.omit(vspeed)
   expect_equal(drv$speed, vspeed$speed)
   expect_equal(drv$speedTimes, vspeed$speedTimes)
+
+  # Try a different, log trajectory
+  trj <- TrajGenerate(n = 10000, linearErrorDist = rcauchy)
+  drv <- TrajDerivatives(trj)
+  vel <- TrajVelocity(trj, diff = "backward")
+  vspeed <- na.omit(data.frame(speed = Mod(vel), speedTimes = trj$time))
+  expect_equal(drv$speed, vspeed$speed)
+  expect_equal(drv$speedTimes, vspeed$speedTimes)
+
+  trj <- TrajGenerate(50000, angularErrorDist = function(n) runif(n, -pi, pi))
+  drv <- TrajDerivatives(trj)
+  vel <- TrajVelocity(trj, diff = "backward")
+  vspeed <- na.omit(data.frame(speed = Mod(vel), speedTimes = trj$time))
+  expect_equal(drv$speed, vspeed$speed)
+  expect_equal(drv$speedTimes, vspeed$speedTimes)
+
 })
