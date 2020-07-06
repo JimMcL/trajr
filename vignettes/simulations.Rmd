@@ -232,7 +232,7 @@ polygon(boundary, border = "brown", lwd = 2)
 
 ```
 
-Creed & Miller (1990) used a hourglass shaped arena to test for active wall following, i.e. an animal deliberately stays next to the wall while walking. We can use the same shaped arena and a simulated trajectory to see whether random movement (i.e. not actively wall-following) can look like wall-following.
+Creed & Miller (1990) used an hourglass shaped arena to test for active wall following, i.e. an animal deliberately stays next to the wall while walking. We can use the same shaped arena and a simulated trajectory to see whether random movement (i.e. not actively wall-following) can look like wall-following.
 
 ```{r, fig.cap="_Figure 3. Trajectory constrained to an hourglass arena_"}
 # Build an hourglass-shaped arena similar to Creed & Miller, (1990)

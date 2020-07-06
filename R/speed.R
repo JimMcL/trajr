@@ -22,14 +22,14 @@
 #' trajectories should be smoothed before being passed to this function, as
 #' noise is effectively amplifed when taking derivatives.
 #'
-#' The value returned as \code{acceleration} is \emph{not} acceleration. In
-#' mechanics, acceleration is a vector. This value is a scalar quantity: change
-#' of speed, which is sometimes known informally as acceleration. This value
-#' corresponds to the acceleration in a 1-dimensional trajectory, with the sign
-#' indicating the direction of acceleration relative to the current direction of
-#' velocity. See \code{\link{TrajAcceleration}} for an approximation of (vector)
-#' acceleration, and \code{\link{TrajVelocity}} for an approximation of
-#' velocity.
+#' The value returned as \code{acceleration} is \emph{not} technically
+#' acceleration. In mechanics, acceleration is a vector. This value is a scalar
+#' quantity: change of speed, which is sometimes known informally as
+#' acceleration. This value corresponds to the acceleration in a 1-dimensional
+#' trajectory, with the sign indicating the direction of acceleration relative
+#' to the current direction of velocity. See \code{\link{TrajAcceleration}} for
+#' an approximation of (vector) acceleration, and \code{\link{TrajVelocity}} for
+#' an approximation of velocity.
 #'
 #' Note that it is possible to obtain the duration of each step in a trajectory
 #' as follows:
@@ -166,18 +166,16 @@ TrajAcceleration <- function(trj) {
 #'   the velocity; the real part (\code{Re(v)}) is velocity in the X direction;
 #'   and the imaginary part (\code{Im(v)}) is velocity in the Y direction. The
 #'   vector has an attribute, \code{trj}, with the trajectory as its value. If
-#'   \code{centralDiff} is \code{TRUE}, the first and last velocity values are
-#'   \code{NA} since velocity cannot be calculated for them. If
-#'   \code{centralDiff} is \code{FALSE}, the last value will be NA.
+#'   \code{diff} is \code{"central"}, the first and last velocity values are
+#'   \code{NA} since velocity cannot be calculated for them. If \code{diff} is
+#'   \code{"forward"}, the last value will be NA, and if \code{diff} is
+#'   \code{"backward"}, the first value will be NA.
 #'
-#' @seealso
-#' \code{\link{TrajAcceleration}} for calculating acceleration;
-#'   \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
-#'   resample a trajectory to fixed time or length steps;
-#'   \code{\link{TrajSpeedIntervals}} for calculating when speed crosses some
-#'   threshold;
-#'   Finite differences on
-#'   \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
+#' @seealso \code{\link{TrajAcceleration}} for calculating acceleration;
+#' \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to resample
+#' a trajectory to fixed time or length steps; \code{\link{TrajSpeedIntervals}}
+#' for calculating when speed crosses some threshold; Finite differences on
+#' \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
 #'
 #' @examples
 #' set.seed(11)
@@ -324,7 +322,7 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interp
 
   # Calculate trajectory speeds
   vel <- TrajVelocity(trj, diff = diff)
-  df <- stats::na.omit(data.frame(speed = Mod(vel), time = trj$time))
+  df <- stats::na.omit(data.frame(speed = Mod(vel), time = trj$time - trj$time[1]))
   speed <- df$speed
   times <- df$time
 

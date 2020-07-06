@@ -19,9 +19,10 @@ A vector of complex numbers representing the velocity at each point
   the velocity; the real part (\code{Re(v)}) is velocity in the X direction;
   and the imaginary part (\code{Im(v)}) is velocity in the Y direction. The
   vector has an attribute, \code{trj}, with the trajectory as its value. If
-  \code{centralDiff} is \code{TRUE}, the first and last velocity values are
-  \code{NA} since velocity cannot be calculated for them. If
-  \code{centralDiff} is \code{FALSE}, the last value will be NA.
+  \code{diff} is \code{"central"}, the first and last velocity values are
+  \code{NA} since velocity cannot be calculated for them. If \code{diff} is
+  \code{"forward"}, the last value will be NA, and if \code{diff} is
+  \code{"backward"}, the first value will be NA.
 }
 \description{
 The velocity is approximated at each point of the trajectory using
@@ -43,6 +44,7 @@ set.seed(11)
 trj <- TrajGenerate(100)
 # calculate velocity
 vel <- TrajVelocity(trj)
+
 # Obtain speed over time, with NAs removed
 speed <- na.omit(data.frame(speed = Mod(vel), time = trj$time))
 
@@ -51,10 +53,8 @@ plot(speed ~ time, speed, type = 'l')
 }
 \seealso{
 \code{\link{TrajAcceleration}} for calculating acceleration;
-  \code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to
-  resample a trajectory to fixed time or length steps;
-  \code{\link{TrajSpeedIntervals}} for calculating when speed crosses some
-  threshold;
-  Finite differences on
-  \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
+\code{\link{TrajResampleTime}} and \code{\link{TrajRediscretize}} to resample
+a trajectory to fixed time or length steps; \code{\link{TrajSpeedIntervals}}
+for calculating when speed crosses some threshold; Finite differences on
+\href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
 }

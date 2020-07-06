@@ -35,7 +35,7 @@ A data frame of class "TrajSpeedIntervals", each row is an interval,
   \item{fasterThan}{Value of the \code{fasterThan} argument.}
   \item{speed}{Data frame with columns \code{speed} and \code{time}.}
   \item{derivs}{Value returned by calling \code{TrajDerivatives(trj)}.
-  Provided for backwards-compatibility; \code{speed} is now preferred.}
+  Provided for backwards-compatibility; use of \code{speed} is now preferred.}
 }
 \description{
 Calculates and returns a list of time intervals during which speed is slower
