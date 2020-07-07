@@ -386,7 +386,7 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interp
 #'   plotted at the "slower than" or "faster than" speed. Specify \code{NULL} to
 #'   prevent the line from being plotted.
 #' @param highlightColor Colour of the highlight rectangles.
-#' @param xlab,ylab plotting parameters with useful defaults.
+#' @param xlab,ylab,type Plotting parameters with useful defaults.
 #' @param ... Additional arguments are passed to \code{\link[graphics]{plot}}.
 #'
 #' @seealso \code{\link{TrajSpeedIntervals}}
@@ -398,10 +398,11 @@ plot.TrajSpeedIntervals <- function(x,
                                     highlightColor = "#0000FF1E",
                                     xlab = sprintf("Time (%s)", TrajGetTimeUnits(attr(x, "trajectory"))),
                                     ylab = sprintf("Speed (%s/%s)", TrajGetUnits(attr(x, "trajectory")), TrajGetTimeUnits(attr(x, "trajectory"))),
+                                    type = "l",
                                     ...) {
   trj <- attr(x, "trajectory")
   df <- attr(x, "speed")
-  graphics::plot(x = df$time + trj$time[1], y = df$speed, type = 'l', xlab = xlab, ylab = ylab, ...)
+  graphics::plot(x = df$time + trj$time[1], y = df$speed, type = type, xlab = xlab, ylab = ylab, ...)
   graphics::abline(h = attr(x, "slowerThan"), col = slowerThanColour)
   graphics::abline(h = attr(x, "fasterThan"), col = fasterThanColour)
   if (nrow(x) > 0) {

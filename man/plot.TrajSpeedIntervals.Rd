@@ -8,7 +8,7 @@
   fasterThanColour = "green", highlightColor = "#0000FF1E",
   xlab = sprintf("Time (\%s)", TrajGetTimeUnits(attr(x, "trajectory"))),
   ylab = sprintf("Speed (\%s/\%s)", TrajGetUnits(attr(x, "trajectory")),
-  TrajGetTimeUnits(attr(x, "trajectory"))), ...)
+  TrajGetTimeUnits(attr(x, "trajectory"))), type = "l", ...)
 }
 \arguments{
 \item{x}{An object of class "SpeedIntervals", as created by
@@ -20,7 +20,7 @@ prevent the line from being plotted.}
 
 \item{highlightColor}{Colour of the highlight rectangles.}
 
-\item{xlab, ylab}{plotting parameters with useful defaults.}
+\item{xlab, ylab, type}{Plotting parameters with useful defaults.}
 
 \item{...}{Additional arguments are passed to \code{\link[graphics]{plot}}.}
 }
