@@ -144,7 +144,6 @@ test_that("Speed intervals", {
   slowerThan = 92
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
   expect_equal(nrow(intervals), 2)
 
   # Interval wholly contained within a segment
@@ -153,7 +152,6 @@ test_that("Speed intervals", {
   slowerThan = 110
   fasterThan = 107
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
   expect_equal(nrow(intervals), 0)
 
   set.seed(1)
@@ -161,24 +159,33 @@ test_that("Speed intervals", {
   slowerThan = NULL
   fasterThan = 110
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
   expect_equal(nrow(intervals), 2)
 
   # Central diffs gives lower speed
   intervals <- TrajSpeedIntervals(trj, diff = "central", slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
   expect_equal(nrow(intervals), 0)
 
   slowerThan = 107
   fasterThan = NULL
   intervals <- TrajSpeedIntervals(trj, slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
   expect_equal(nrow(intervals), 3)
 
   # Central diffs gives lower speed
   intervals <- TrajSpeedIntervals(trj, diff = "central", slowerThan = slowerThan, fasterThan = fasterThan)
-  #plot(intervals)
   expect_equal(nrow(intervals), 2)
+
+  # Entire trajectory is a single interval
+  slowerThan = NULL
+  fasterThan = 50
+  intervals <- TrajSpeedIntervals(trj, diff = "central", slowerThan = slowerThan, fasterThan = fasterThan)
+  expect_equal(nrow(intervals), 1)
+
+  # No intervals
+  slowerThan = 50
+  fasterThan = NULL
+  intervals <- TrajSpeedIntervals(trj, diff = "central", slowerThan = slowerThan, fasterThan = fasterThan)
+  #plot(intervals)
+  expect_equal(nrow(intervals), 0)
 })
 
 test_that("Emax", {

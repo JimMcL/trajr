@@ -339,7 +339,7 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interp
   stopFrames <- which(changes == -1)
   startFrames <- which(changes == 1)
 
-  # Handle situation where interval begins or ends outside of trajectory
+  # Handle special cases: situation where interval begins or ends outside of trajectory
   if (length(startFrames) > 0 || length(stopFrames) > 0) {
     # Assume interval started at beginning of trajectory, since we don't know what happened before that
     if (length(stopFrames) > 0 && (length(startFrames) == 0 || stopFrames[1] < startFrames[1]))
@@ -347,6 +347,11 @@ TrajSpeedIntervals <- function(trj, fasterThan = NULL, slowerThan = NULL, interp
     # Similarly, assume that interval can't extend past end of trajectory
     if (length(stopFrames) == 0 || startFrames[length(startFrames)] > stopFrames[length(stopFrames)])
       stopFrames <- c(stopFrames, length(speed))
+
+  } else if (all(flags) && length(flags) > 0) {
+    # The entire trajectory is an interval
+    startFrames <- 1
+    stopFrames <- length(speed)
   }
 
   stopTimes <- times[stopFrames]
