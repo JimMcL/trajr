@@ -31,12 +31,6 @@
 #' an approximation of (vector) acceleration, and \code{\link{TrajVelocity}} for
 #' an approximation of velocity.
 #'
-#' Note that it is possible to obtain the duration of each step in a trajectory
-#' as follows:
-#'
-#' \preformatted{r <- TrajDerivatives(trj) stepLengths <- diff(c(0,
-#' r$speedTimes))}
-#'
 #' @param trj Trajectory whose speed and change in speed is to be calculated.
 #'
 #' @return A list with components: \item{speed}{numeric vector, speed between

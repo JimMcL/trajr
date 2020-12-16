@@ -164,7 +164,7 @@ legend("topright", c("Original", "Rediscretized"), col = c("black", "red"),
        lwd = 2, inset = c(0.01, 0.02))
 ```
 
-The function `TrajResampleTime` linearly interpolates points along a trajectory to create a new trajectory with fixed step time intervals. The functions `TrajVelocity` and `TrajAcceleration` require constant step time trajectories as input. 
+The function `TrajResampleTime` linearly interpolates points along a trajectory to create a new trajectory with fixed step time intervals. 
 
 ```{r resample, fig.width=6, fig.height=4, fig.cap="_Resampling of trajectory with step duration  $1$ hour._", echo=-1:-2}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
@@ -225,7 +225,7 @@ Once you have obtained a correctly scaled `Trajectory` object, you may call vari
 
 ### Analysing speed
 
-The `TrajDerivatives` function calculates speed and change in speed along a `Trajectory`. If the trajectory is noisy, it should be smoothed before the derivatives are calculated (see [Smoothing trajectories](#smoothing-trajectories), but take note of the caveats described there). The functions `TrajVelocity` and `TrajAcceleration` estimate velocity and acceleration as vectors at each point along a trajectory.
+The functions `TrajVelocity` and `TrajAcceleration` estimate velocity and acceleration as vectors at each point along a trajectory. Velocity is calculated using first-order finite differences, and acceleration uses second-order finite differences. The `TrajDerivatives` function calculates speed and change in speed along a `Trajectory`. If the trajectory is noisy, it should be smoothed before the derivatives are calculated (see [Smoothing trajectories](#smoothing-trajectories), but take note of the caveats described there). 
 
 ```{r speed, fig.cap="_Speed and acceleration over time._", fig.width=6, fig.height=4, echo=-1:-2}
 set.seed(1)
@@ -238,7 +238,7 @@ smoothed <- TrajSmoothSG(trj, 3, 101)
 # Calculate speed and acceleration
 derivs <- TrajDerivatives(smoothed)
 
-# Plot acceleration and speed
+# Plot change-in-speed and speed
 plot(derivs$acceleration ~ derivs$accelerationTimes, type = 'l', col = 'red', 
      yaxt = 'n',
      xlab = 'Time (s)',
