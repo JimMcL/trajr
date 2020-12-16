@@ -9,11 +9,11 @@ Update version number and date in DESCRIPTION file. See https://semver.org/
 
 Update NEWS.md
 
+Update session info in README.md: devtools::session_info()
+
 Commit and push all changes
 
 Build source package
-
-Update session info in README.md: devtools::session_info(), commit and push
 
 Run (possibly from RStudio terminal window): cd ..; R CMD check --as-cran trajr_x.y.z.b.tar.gz
 Perhaps add --no-manual in case of error: pdflatex is not available
