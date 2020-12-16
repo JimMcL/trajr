@@ -1,6 +1,6 @@
 # Changes to the `trajr` package
 
-## trajr 1.3.0.9000
+## trajr 1.4.0
 
 * Allow the creation of trajectories with 0 points in `TrajFromCoords`.
 * Fixed bug in TrajSpeedIntervals: no intervals were being returned if the entire trajectory qualified as an interval.
