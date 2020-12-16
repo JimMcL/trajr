@@ -4,11 +4,17 @@
 \alias{TrajGenerate}
 \title{Generate a random trajectory}
 \usage{
-TrajGenerate(n = 1000, random = TRUE, stepLength = 2,
-  angularErrorSd = 0.5, angularErrorDist = function(n) stats::rnorm(n,
-  sd = angularErrorSd), linearErrorSd = 0.2,
+TrajGenerate(
+  n = 1000,
+  random = TRUE,
+  stepLength = 2,
+  angularErrorSd = 0.5,
+  angularErrorDist = function(n) stats::rnorm(n, sd = angularErrorSd),
+  linearErrorSd = 0.2,
   linearErrorDist = function(n) stats::rnorm(n, sd = linearErrorSd),
-  fps = 50, ...)
+  fps = 50,
+  ...
+)
 }
 \arguments{
 \item{n}{Number of steps in the trajectory.}

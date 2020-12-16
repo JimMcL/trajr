@@ -4,8 +4,12 @@
 \alias{TrajExpectedSquareDisplacement}
 \title{Trajectory expected square displacement}
 \usage{
-TrajExpectedSquareDisplacement(trj, n = nrow(trj), eqn1 = TRUE,
-  compass.direction = NULL)
+TrajExpectedSquareDisplacement(
+  trj,
+  n = nrow(trj),
+  eqn1 = TRUE,
+  compass.direction = NULL
+)
 }
 \arguments{
 \item{trj}{A Trajectory.}

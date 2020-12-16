@@ -4,8 +4,15 @@
 \alias{TrajFromCoords}
 \title{Create a Trajectory Object}
 \usage{
-TrajFromCoords(track, xCol = 1, yCol = 2, timeCol = NULL, fps = 50,
-  spatialUnits = "m", timeUnits = "s")
+TrajFromCoords(
+  track,
+  xCol = 1,
+  yCol = 2,
+  timeCol = NULL,
+  fps = 50,
+  spatialUnits = "m",
+  timeUnits = "s"
+)
 }
 \arguments{
 \item{track}{data frame containing cartesian coordinates and optionally times

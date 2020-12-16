@@ -4,8 +4,12 @@
 \alias{TrajsMergeStats}
 \title{Merge trajectory characteristics}
 \usage{
-TrajsMergeStats(trjs, statsFn, progressBar = c("none", "text", "win",
-  "tk"), ...)
+TrajsMergeStats(
+  trjs,
+  statsFn,
+  progressBar = c("none", "text", "win", "tk"),
+  ...
+)
 }
 \arguments{
 \item{trjs}{List of trajectories to be characterised.}

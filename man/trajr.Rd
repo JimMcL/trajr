@@ -3,7 +3,6 @@
 \docType{package}
 \name{trajr}
 \alias{trajr}
-\alias{trajr-package}
 \title{trajr: trajectory analysis in R}
 \description{
 A toolkit for the statistical analysis of 2-dimensional animal trajectories.

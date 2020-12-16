@@ -4,8 +4,13 @@
 \alias{TrajSpeedIntervals}
 \title{Calculate speed time intervals}
 \usage{
-TrajSpeedIntervals(trj, fasterThan = NULL, slowerThan = NULL,
-  interpolateTimes = TRUE, diff = c("backward", "central", "forward"))
+TrajSpeedIntervals(
+  trj,
+  fasterThan = NULL,
+  slowerThan = NULL,
+  interpolateTimes = TRUE,
+  diff = c("backward", "central", "forward")
+)
 }
 \arguments{
 \item{trj}{Trajectory to be analysed.}
@@ -51,7 +56,7 @@ intervals <- TrajSpeedIntervals(smoothed, diff = "central", slowerThan = 50, fas
 plot(intervals)
 
 # Report the duration of the longest period of low speed
-cat(sprintf("Duration of the longest low-speed interval was \%g secs\\n", max(intervals$duration)))
+cat(sprintf("Duration of the longest low-speed interval was \%g secs\n", max(intervals$duration)))
 
 }
 \seealso{

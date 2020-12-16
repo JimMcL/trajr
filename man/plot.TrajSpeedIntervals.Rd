@@ -4,11 +4,17 @@
 \alias{plot.TrajSpeedIntervals}
 \title{Plot method for trajectory speed intervals}
 \usage{
-\method{plot}{TrajSpeedIntervals}(x, slowerThanColour = "red",
-  fasterThanColour = "green", highlightColor = "#0000FF1E",
+\method{plot}{TrajSpeedIntervals}(
+  x,
+  slowerThanColour = "red",
+  fasterThanColour = "green",
+  highlightColor = "#0000FF1E",
   xlab = sprintf("Time (\%s)", TrajGetTimeUnits(attr(x, "trajectory"))),
   ylab = sprintf("Speed (\%s/\%s)", TrajGetUnits(attr(x, "trajectory")),
-  TrajGetTimeUnits(attr(x, "trajectory"))), type = "l", ...)
+    TrajGetTimeUnits(attr(x, "trajectory"))),
+  type = "l",
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class "SpeedIntervals", as created by

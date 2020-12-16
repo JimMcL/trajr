@@ -4,13 +4,21 @@
 \alias{plot.Trajectory}
 \title{Plot method for trajectories}
 \usage{
-\method{plot}{Trajectory}(x, add = FALSE, draw.start.pt = TRUE,
-  start.pt.cex = 0.8, start.pt.pch = 16, start.pt.col = "black",
-  turning.angles = NULL, xlim = grDevices::extendrange(x$x),
+\method{plot}{Trajectory}(
+  x,
+  add = FALSE,
+  draw.start.pt = TRUE,
+  start.pt.cex = 0.8,
+  start.pt.pch = 16,
+  start.pt.col = "black",
+  turning.angles = NULL,
+  xlim = grDevices::extendrange(x$x),
   ylim = grDevices::extendrange(x$y),
-  xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)",
-  TrajGetUnits(x))), ylab = ifelse(is.null(TrajGetUnits(x)), "y",
-  sprintf("y (\%s)", TrajGetUnits(x))), asp = 1, ...)
+  xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)", TrajGetUnits(x))),
+  ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (\%s)", TrajGetUnits(x))),
+  asp = 1,
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}

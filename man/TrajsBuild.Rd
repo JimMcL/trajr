@@ -4,11 +4,21 @@
 \alias{TrajsBuild}
 \title{Construct multiple trajectories}
 \usage{
-TrajsBuild(fileNames, fps = NULL, scale = NULL, spatialUnits = NULL,
-  timeUnits = NULL, csvStruct = list(x = 1, y = 2, time = NULL),
-  smoothP = 3, smoothN = 41, translateToOrigin = FALSE,
-  rootDir = NULL, csvReadFn = function(filename, ...)
-  utils::read.csv(filename, stringsAsFactors = FALSE, ...), ...)
+TrajsBuild(
+  fileNames,
+  fps = NULL,
+  scale = NULL,
+  spatialUnits = NULL,
+  timeUnits = NULL,
+  csvStruct = list(x = 1, y = 2, time = NULL),
+  smoothP = 3,
+  smoothN = 41,
+  translateToOrigin = FALSE,
+  rootDir = NULL,
+  csvReadFn = function(filename, ...) utils::read.csv(filename, stringsAsFactors =
+    FALSE, ...),
+  ...
+)
 }
 \arguments{
 \item{fileNames}{Vector of the names of CSV files containing trajectory

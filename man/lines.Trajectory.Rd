@@ -4,9 +4,15 @@
 \alias{lines.Trajectory}
 \title{Add Trajectory lines to a plot}
 \usage{
-\method{lines}{Trajectory}(x, draw.start.pt = TRUE, start.pt.cex = 0.8,
-  start.pt.pch = 16, start.pt.col = "black", turning.angles = NULL,
-  ...)
+\method{lines}{Trajectory}(
+  x,
+  draw.start.pt = TRUE,
+  start.pt.cex = 0.8,
+  start.pt.pch = 16,
+  start.pt.col = "black",
+  turning.angles = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class "Trajectory", the trajectory to be plotted.}

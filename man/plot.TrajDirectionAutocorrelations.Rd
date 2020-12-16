@@ -4,9 +4,14 @@
 \alias{plot.TrajDirectionAutocorrelations}
 \title{Plot method for direction autocorrelation}
 \usage{
-\method{plot}{TrajDirectionAutocorrelations}(x, firstMinWindowSize = 10,
-  type = "l", ylab = expression("C(" * Delta * s * ")"),
-  xlab = expression(Delta * s), ...)
+\method{plot}{TrajDirectionAutocorrelations}(
+  x,
+  firstMinWindowSize = 10,
+  type = "l",
+  ylab = expression("C(" * Delta * s * ")"),
+  xlab = expression(Delta * s),
+  ...
+)
 }
 \arguments{
 \item{x}{Trajectory to be plotted.}
