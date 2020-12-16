@@ -38,46 +38,49 @@ The best way to start is to read [our paper](https://doi.org/10.1111/eth.12739) 
 ## Environment
 <!-- Output from devtools::session_info() -->
 ```
-- Session info -----------------------------------------------------------------------------------------------------
+- Session info --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  setting  value                       
- version  R version 3.5.2 (2018-12-20)
- os       Windows >= 8 x64            
+ version  R version 4.0.2 (2020-06-22)
+ os       Windows 10 x64              
  system   x86_64, mingw32             
  ui       RStudio                     
  language (EN)                        
  collate  English_Australia.1252      
  ctype    English_Australia.1252      
  tz       Australia/Sydney            
- date     2019-06-09                  
+ date     2020-12-16                  
 
-- Packages ---------------------------------------------------------------------------------------------------------
+- Packages ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  package     * version date       lib source        
- assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.5.2)
- backports     1.1.3   2018-12-14 [1] CRAN (R 3.5.2)
- callr         3.1.1   2018-12-21 [1] CRAN (R 3.5.2)
- cli           1.1.0   2019-03-19 [1] CRAN (R 3.5.3)
- crayon        1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
- desc          1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
- devtools      2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
- digest        0.6.18  2018-10-10 [1] CRAN (R 3.5.1)
- fs            1.2.6   2018-08-23 [1] CRAN (R 3.5.1)
- glue          1.3.1   2019-03-12 [1] CRAN (R 3.5.3)
- magrittr      1.5     2014-11-22 [1] CRAN (R 3.5.1)
- memoise       1.1.0   2017-04-21 [1] CRAN (R 3.5.2)
- pkgbuild      1.0.2   2018-10-16 [1] CRAN (R 3.5.1)
- pkgload       1.0.2   2018-10-29 [1] CRAN (R 3.5.1)
- prettyunits   1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
- processx      3.2.1   2018-12-05 [1] CRAN (R 3.5.2)
- ps            1.3.0   2018-12-21 [1] CRAN (R 3.5.2)
- R6            2.4.0   2019-02-14 [1] CRAN (R 3.5.3)
- Rcpp          1.0.1   2019-03-17 [1] CRAN (R 3.5.3)
- remotes       2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
- rlang         0.3.2   2019-03-21 [1] CRAN (R 3.5.2)
- rprojroot     1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
- rstudioapi    0.9.0   2019-01-09 [1] CRAN (R 3.5.2)
- sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
- testthat      2.0.1   2018-10-13 [1] CRAN (R 3.5.1)
- usethis       1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
- withr         2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
- yaml          2.2.0   2018-07-25 [1] CRAN (R 3.5.1)
+ assertthat    0.2.1   2019-03-21 [1] CRAN (R 4.0.2)
+ backports     1.1.7   2020-05-13 [1] CRAN (R 4.0.0)
+ callr         3.4.3   2020-03-28 [1] CRAN (R 4.0.2)
+ cli           2.0.2   2020-02-28 [1] CRAN (R 4.0.2)
+ crayon        1.3.4   2017-09-16 [1] CRAN (R 4.0.2)
+ desc          1.2.0   2018-05-01 [1] CRAN (R 4.0.2)
+ devtools      2.3.0   2020-04-10 [1] CRAN (R 4.0.2)
+ digest        0.6.25  2020-02-23 [1] CRAN (R 4.0.2)
+ ellipsis      0.3.1   2020-05-15 [1] CRAN (R 4.0.2)
+ fansi         0.4.1   2020-01-08 [1] CRAN (R 4.0.2)
+ fs            1.4.2   2020-06-30 [1] CRAN (R 4.0.2)
+ glue          1.4.1   2020-05-13 [1] CRAN (R 4.0.2)
+ magrittr      1.5     2014-11-22 [1] CRAN (R 4.0.2)
+ memoise       1.1.0   2017-04-21 [1] CRAN (R 4.0.2)
+ packrat       0.5.0   2018-11-14 [1] CRAN (R 4.0.2)
+ pkgbuild      1.0.8   2020-05-07 [1] CRAN (R 4.0.2)
+ pkgload       1.1.0   2020-05-29 [1] CRAN (R 4.0.2)
+ prettyunits   1.1.1   2020-01-24 [1] CRAN (R 4.0.2)
+ processx      3.4.3   2020-07-05 [1] CRAN (R 4.0.2)
+ ps            1.3.3   2020-05-08 [1] CRAN (R 4.0.2)
+ R6            2.4.1   2019-11-12 [1] CRAN (R 4.0.2)
+ remotes       2.1.1   2020-02-15 [1] CRAN (R 4.0.2)
+ rlang         0.4.7   2020-07-09 [1] CRAN (R 4.0.2)
+ rprojroot     1.3-2   2018-01-03 [1] CRAN (R 4.0.2)
+ rstudioapi    0.11    2020-02-07 [1] CRAN (R 4.0.2)
+ sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 4.0.2)
+ testthat      2.3.2   2020-03-02 [1] CRAN (R 4.0.2)
+ tinytex       0.24    2020-06-20 [1] CRAN (R 4.0.2)
+ usethis       1.6.1   2020-04-29 [1] CRAN (R 4.0.2)
+ withr         2.2.0   2020-04-20 [1] CRAN (R 4.0.2)
+ xfun          0.15    2020-06-21 [1] CRAN (R 4.0.2)
  ```
