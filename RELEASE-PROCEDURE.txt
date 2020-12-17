@@ -3,8 +3,6 @@ Release procedure
 
 Check that all exported functions have been mentioned in the vignette by running check-vignette.sh (from bash). This may require editing to convert to UNIX line endings.
 
-Run devtools::check_win_release() and wait for the result
-
 Update version number and date in DESCRIPTION file. See https://semver.org/
 
 Update NEWS.md
@@ -13,10 +11,12 @@ Update session info in README.md: devtools::session_info()
 
 Commit and push all changes
 
-Build source package
+Build source package (creates ../trajr_x.y.z.b.tar.gz)
 
 Run (possibly from RStudio terminal window): cd ..; R CMD check --as-cran trajr_x.y.z.b.tar.gz
 Perhaps add --no-manual in case of error: pdflatex is not available
+
+Run devtools::check_win_release() and wait for the result
 
 Check that travis-ci build completed successfully with no issues (https://travis-ci.org/JimMcL/trajr)
 
