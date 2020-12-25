@@ -1,5 +1,7 @@
 # Changes to the `trajr` package
 
+## trajr 1.4.0.9000
+
 ## trajr 1.4.0
 
 * Allow the creation of trajectories with 0 points in `TrajFromCoords`.
