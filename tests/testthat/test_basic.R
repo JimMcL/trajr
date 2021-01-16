@@ -240,8 +240,14 @@ test_that("Directional change", {
   trj <- TrajGenerate()
   expect_equal(TrajDirectionalChange(trj), .bookCalc(trj))
 
-  #microbenchmark(TrajDirectionalChange(trj), .bookCalc(trj), times = 1000)
+  # csvFile <- "../testdata/test-dc.tsv"
+  # expect_true(file.exists(csvFile))
+  # data <- read.table(csvFile)
+  # names(data) <- c("time(s)", "x", "y", "immobile")
+  # trj <- TrajFromCoords(data, xCol = "x", yCol = "y", timeCol = "time(s)", spatialUnits = "pixels")
+  # expect_equal(TrajDirectionalChange(trj), .bookCalc(trj))
 
+  #microbenchmark(TrajDirectionalChange(trj), .bookCalc(trj), times = 1000)
 })
 
 test_that("Reverse", {
@@ -652,4 +658,22 @@ test_that("Empty trajectory", {
   expect_equal(nrow(trj), 0)
   trj <- TrajFromCoords(data.frame(0, 0))
   expect_equal(nrow(trj), 1)
+})
+
+test_that("Turning angles", {
+  set.seed(1)
+  nsteps <- 10000
+  trj <- TrajGenerate(nsteps)
+  expect_equal(nrow(trj), nsteps + 1)
+  expect_equal(length(TrajAngles(trj)), nsteps - 1)
+  expect_equal(length(TrajAngles(trj, compass.direction = 0)), nsteps)
+
+  # # Now add in some 0-length segments
+  idx <- sort(sample(seq_len(nsteps + 1), round(nsteps * 1.5), replace = T))
+  trj <- TrajFromCoords(trj[idx, ])
+  nsteps <- nrow(trj) - 1
+  expect_equal(nrow(trj), nsteps + 1)
+  expect_equal(length(TrajAngles(trj)), nsteps - 1)
+  expect_equal(length(TrajAngles(trj, compass.direction = 0)), nsteps)
+
 })

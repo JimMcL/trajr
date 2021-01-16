@@ -148,6 +148,11 @@ TrajMeanVelocity <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #'   to the previous step angle.
 #'
 #' @return Step angles in radians, normalised so that \code{-pi < angle <= pi}.
+#'   If \code{compass.direction} is \code{NULL} (the default), the returned
+#'   vector will have length \code{nrow(trj) - 2}, i.e. one angle for every pair
+#'   of adjacent segments. If \code{compass.direction} is not \code{NULL}, the
+#'   returned vector will have length \code{nrow(trj) - 1}, i.e. one angle for
+#'   every segment.
 #'
 #' @seealso \code{\link{TrajStepLengths}},
 #'   \code{\link{TrajMeanVectorOfTurningAngles}}
