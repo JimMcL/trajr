@@ -12,7 +12,7 @@ Trajectory Analysis in R
 
 An R package for analysing 2-dimensional animal trajectories, which represent the movements of animals through space and time. It provides functions to easily calculate various quantitative measures of trajectories such as speed and straightness or tortuosity. It also provides a range of other trajectory operations such as resampling to fixed step lengths (_rediscretization_), determining turning angles and step lengths, and so on. If you use `trajr` in your research, please cite [McLean, D. J., & Skowron Volponi, M. A. (2018). trajr: An R package for characterisation of animal trajectories. Ethology, 124(6), 440-448. https://doi.org/10.1111/eth.12739](https://doi.org/10.1111/eth.12739). 
 
-`trajr` does not provide functionality to create trajectories; it operates on existing trajectories which are sequences of `(x, y, time)` coordinates. It does, however, provide some functionality to generate random trajectories for simulation or testing of analyses.
+`trajr` does not provide functionality to create trajectories; it operates on existing trajectories that are sequences of `(x, y, time)` coordinates. It does, however, provide some functionality to generate random or constrained trajectories for simulations or for testing of analyses.
 
 Refer to [NEWS.md](NEWS.md) for a list of changes in each version. The article [trajr: An R package for characterisation of animal trajectories](https://doi.org/10.1111/eth.12739) described `trajr` version 1.0.0. Please refer to [NEWS.md](NEWS.md) for a brief summary of what has changed since the article was written.
 
@@ -33,7 +33,9 @@ Unfortunately, installing vignettes can be time-consuming.
 
 ## Using trajr
 
-The best way to start is to read [our paper](https://doi.org/10.1111/eth.12739) and the package vignette. After installation from CRAN (or from github including vignettes), the vignette can be accessed by running `browseVignettes(package = "trajr")`. The vignette for the CRAN version is available on CRAN at https://cran.r-project.org/web/packages/trajr/vignettes/trajr-vignette.html.
+The best way to start is to read [our paper](https://doi.org/10.1111/eth.12739) and the package vignette. After installation from CRAN (or from github including vignettes), the vignette can be accessed by running `browseVignettes(package = "trajr")`. The vignette for the CRAN version is available on CRAN at https://cran.r-project.org/web/packages/trajr/vignettes/trajr-vignette.html. 
+
+A vignette demonstrating trajectory simulation is available online at https://cran.r-project.org/web/packages/trajr/vignettes/simulations.html. 
 
 ## Environment
 <!-- Output from devtools::session_info() -->

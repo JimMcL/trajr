@@ -1,7 +1,5 @@
 ---
-title: "Simulations"
-author: "Jim McLean"
-date: "17/04/2020"
+title: "Trajectory simulation in trajr"
 output: html_document
 vignette: >
   %\VignetteIndexEntry{Simulating trajectories}
@@ -125,8 +123,8 @@ To implement the behaviour of not walking through walls, we must define the rule
 1. Generate a random trajectory that starts inside the boundary (Fig 1A). 
 2. Find the first point in the trajectory, `o`, that lies outside the boundary. Let's name the last point inside the boundary `i` (Fig 1B).
 3. Split the trajectory into two at `o`: `t1` ends at `i` and lies wholly within the boundary; `t2` starts at `o`, so by definition, `t2` starts outside the boundary (Fig 1C). The function `TrajSplitAtFirstCrossing` performs steps 2 & 3.
-4. Determine the minimal rotation of `o` about `i` such that `o` lies within the boundary.
-5. Rotate the entire section `t2` by the angle (Fig 1D).
+4. Determine the minimal rotation $\alpha$ of `o` about `i` such that `o` lies within the boundary.
+5. Rotate the entire section `t2` by $\alpha$ (Fig 1D).
 6. Go back to step 2 and repeat until all parts of the trajectory lie within the boundary.
 7. Merge all the parts back into a single trajectory (Fig 1F). The function `TrajMerge` performs this operation.
 

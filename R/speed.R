@@ -193,7 +193,7 @@ TrajVelocity <- function(trj, diff = c("central", "forward", "backward")) {
 
   if (diff == "central") {
 
-    # Central diffs (this the the "double-interval" central difference)
+    # Central diffs (this is the "double-interval" central difference)
     # Sum time (h) for each adjacent pair of steps
     dt <- c(NA, .sumPairs(h), NA)
     vx <- stats::filter(x, c(1, 0, -1)) / dt
