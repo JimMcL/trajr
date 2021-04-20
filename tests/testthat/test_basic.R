@@ -93,8 +93,9 @@ test_that("Creation ignores unimportant NAs", {
   expect_equal(nrow(trj), 1)
 
   # Silently ignore leading or trailing NAs
-  trj <- TrajFromCoords(data.frame(c(0, 1, 2, 3, NA), c(NA, 1, 2, 3, 4), c(NA, "a", NA, "c", NA)))
+  trj <- TrajFromCoords(data.frame(c(0, 1, 2, 3, NA), c(NA, 1, 2, 3, 4), other = c(NA, "a", NA, "c", NA)))
   expect_equal(nrow(trj), 3)
+  testthat::expect_true(all.equal(trj$other, c("a", NA, "c")))
 
   # Report error if NA is in the middle of the trajectory
   expect_error(TrajFromCoords(data.frame(c(0, 1, 2), c(0, NA, 2), c(NA, 1, NA))),
