@@ -3,6 +3,7 @@
 ## trajr 1.4.0.9000
 
 * Fix documentation of `TrajDirectionalChange` and `TrajAngles`. The documentation incorrectly stated that the number of angles returned was number of points - 1. It now states that the number of angles is number of points - 2 (which is number of segments - 1).
+* Fix bug in TrajFromCoords that incorrectly treated NA values in columns other than coordinates or time as an error.
 
 ## trajr 1.4.0
 

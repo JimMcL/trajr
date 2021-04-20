@@ -76,7 +76,7 @@ test_that("Trajectory creation", {
 
   corr <- TrajDirectionAutocorrelations(rd)
   # Check it can be plotted without an error
-  expect_error(plot(corr, type='l'), NA)
+  expect_error(plot(corr, type = 'l'), NA)
   mn <- TrajDAFindFirstMinimum(corr, 10)
   # points(mn["deltaS"], mn["C"], pch = 16, col = "red", lwd = 2)
   # points(mn["deltaS"], mn["C"], col = "black", lwd = 2)
@@ -85,6 +85,32 @@ test_that("Trajectory creation", {
   # points(mx["deltaS"], mx["C"], col = "black", lwd = 2)
 
 })
+
+test_that("Creation ignores unimportant NAs", {
+
+  # Silently ignore NAs in other columns
+  trj <- TrajFromCoords(data.frame(0, 0, NA))
+  expect_equal(nrow(trj), 1)
+
+  # Silently ignore leading or trailing NAs
+  trj <- TrajFromCoords(data.frame(c(0, 1, 2, 3, NA), c(NA, 1, 2, 3, 4), c(NA, "a", NA, "c", NA)))
+  expect_equal(nrow(trj), 3)
+
+  # Report error if NA is in the middle of the trajectory
+  expect_error(TrajFromCoords(data.frame(c(0, 1, 2), c(0, NA, 2), c(NA, 1, NA))),
+               "Trajectory contains missing coordinate or time values, first row with NA is 2")
+
+  # Complain about NA in time
+  expect_error(TrajFromCoords(data.frame(c(0, 1, 2, 3, 4), c(0, 1, 2, 3, 4), c(NA, "a", NA, "c", NA)), timeCol = 3),
+               "Trajectory contains missing coordinate or time values, first row with NA is 3")
+  # Skip leading/trailing NAs in time
+  trj <- TrajFromCoords(data.frame(c(0, 1, 2, 3, 4), c(0, 1, 2, 3, 4), c(NA, 1, 2, 3, NA)), timeCol = 3)
+  expect_equal(nrow(trj), 3)
+  trj <- TrajFromCoords(data.frame(c(0, 1, 2, 3, 4), c(0, 1, 2, 3, 4), c(0, 1, 2, 3, 4)), timeCol = 3)
+  expect_equal(nrow(trj), 5)
+})
+
+
 
 test_that("Speed intervals", {
 

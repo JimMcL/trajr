@@ -38,8 +38,8 @@ An object with class "\code{Trajectory}", which is a data.frame with
   the following components: \item{x}{X coordinates of trajectory points.}
   \item{y}{Y coordinates of trajectory points.} \item{time}{Time (in
   \code{timeUnits}) for each point. if \code{timeCol} is specified, values
-  are \code{track[,timeCol]}, otherwise values are calculated from \code{fps}.}
-  \item{displacementTime}{Relative frame/observation times, with
+  are \code{track[,timeCol]}, otherwise values are calculated from
+  \code{fps}.} \item{displacementTime}{Relative frame/observation times, with
   frame/observation 1 at time \code{0}.} \item{polar}{Coordinates represented
   as complex numbers, to simplify working with segment angles.}
   \item{displacement}{Displacement vectors (represented as complex numbers)
@@ -48,7 +48,10 @@ An object with class "\code{Trajectory}", which is a data.frame with
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
 2-dimensional cartesian coordinates, times and some metadata. The coordinates
-are sometimes referred to as "relocations".
+are sometimes referred to as "relocations". Rows containing \code{NA}
+coordinate or time values at the start or end of the trajectory are
+discarded. \code{NA} coordinates or times in the middle of the trajectory
+generate an error.
 }
 \details{
 If \code{timeCol} is specified, \code{track[,timeCol]} is expected to contain
