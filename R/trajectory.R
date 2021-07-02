@@ -185,7 +185,7 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
 #' @export
 TrajScale <- function(trj, scale, units, yScale = scale) {
   trj$x <- trj$x * scale
-  trj$y <- trj$y * scale
+  trj$y <- trj$y * yScale
 
   # Save units
   attr(trj, .TRAJ_UNITS) <- units

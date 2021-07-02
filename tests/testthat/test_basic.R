@@ -49,6 +49,15 @@ test_that("Trajectory creation", {
   expect_equal(range(scaled$x), xRange * scale)
   expect_equal(range(scaled$y), yRange * scale)
 
+  # Test different x & y scales
+  yScale <- scale * 0.8
+  scaledXY <- TrajScale(trj, scale, "m", yScale)
+  #lines(scaledXY, col = "red")
+  expect_false(is.null(scaledXY))
+  expect_equal(nrow(trj), nrow(scaledXY))
+  expect_equal(range(scaledXY$x), xRange * scale)
+  expect_equal(range(scaledXY$y), yRange * yScale)
+
   # Duration
   expect_equal(TrajDuration(trj), (nrow(trj) - 1) / 850)
   # Velocity
