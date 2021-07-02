@@ -16,6 +16,9 @@
   ylim = grDevices::extendrange(x$y),
   xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)", TrajGetUnits(x))),
   ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (\%s)", TrajGetUnits(x))),
+  ann = par("ann"),
+  axes = TRUE,
+  frame.plot = axes,
   asp = 1,
   ...
 )
@@ -39,9 +42,9 @@ drawing the start point dot.}
 angles. \code{directed} assumes errors are relative to the first recorded
 step angle. \code{random} assumes errors are relative to the previous step.}
 
-\item{xlim, ylim, xlab, ylab, asp}{plotting parameters with useful defaults.}
+\item{xlim, ylim, xlab, ylab, asp, ann, axes, frame.plot}{plotting parameters with useful defaults.}
 
-\item{...}{Additional arguments are passed to \code{\link[graphics]{plot}}.}
+\item{...}{Additional arguments are passed to both \code{\link[graphics]{plot}} and \code{\link[graphics]{lines}}.}
 }
 \description{
 The \code{plot} method for Trajectory objects.

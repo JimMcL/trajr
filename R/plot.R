@@ -78,8 +78,8 @@
 #' @param turning.angles If \code{random} or \code{directed}, draws step turning
 #'   angles. \code{directed} assumes errors are relative to the first recorded
 #'   step angle. \code{random} assumes errors are relative to the previous step.
-#' @param xlim,ylim,xlab,ylab,asp plotting parameters with useful defaults.
-#' @param ... Additional arguments are passed to \code{\link[graphics]{plot}}.
+#' @param xlim,ylim,xlab,ylab,asp,ann,axes,frame.plot plotting parameters with useful defaults.
+#' @param ... Additional arguments are passed to both \code{\link[graphics]{plot}} and \code{\link[graphics]{lines}}.
 #'
 #' @seealso \code{\link{TrajFromCoords}}
 #' @examples
@@ -96,9 +96,11 @@ plot.Trajectory <- function(x, add = FALSE,
                             xlim = grDevices::extendrange(x$x), ylim = grDevices::extendrange(x$y),
                             xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (%s)", TrajGetUnits(x))),
                             ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (%s)", TrajGetUnits(x))),
+                            ann = par("ann"), axes = TRUE, frame.plot = axes,
                             asp = 1, ...) {
   if (!add) {
-    graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp, ...)
+    graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp,
+                   ann = ann, axes = axes, frame.plot = frame.plot, ...)
   }
   graphics::lines(x, draw.start.pt = draw.start.pt,
                   start.pt.cex = start.pt.cex, start.pt.pch = start.pt.pch, start.pt.col = start.pt.col,
