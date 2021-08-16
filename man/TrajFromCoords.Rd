@@ -68,6 +68,9 @@ lat != 1° lon}. To create a trajectory from positions in latitude and
 longitude, it is first necessary to transform the positions to a suitable
 spatial projection such as UTM (possibly by using \code{spTransform} from the
 \code{rgdal} package).
+
+Leading and trailing rows with \code{NA} coordinate values are discarded.
+\code{NA} coordinate values within a trajectory generate an error.
 }
 \examples{
 

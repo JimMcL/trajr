@@ -74,6 +74,9 @@
 #' spatial projection such as UTM (possibly by using \code{spTransform} from the
 #' \code{rgdal} package).
 #'
+#' Leading and trailing rows with \code{NA} coordinate values are discarded.
+#' \code{NA} coordinate values within a trajectory generate an error.
+#'
 #' @param track data frame containing cartesian coordinates and optionally times
 #'   for the points in the trajectory.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
