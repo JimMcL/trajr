@@ -13,7 +13,7 @@
   meanStepLength <- mean(TrajStepLengths(x))
   segLen <- 0.8 * meanStepLength
   textDisplacement <- 0.3 * meanStepLength
-  labels <- parse(text= paste("Delta[", 1:n, "]", sep=""))
+  labels <- parse(text = paste("Delta[", 1:n, "]", sep=""))
 
   if (tolower(turning.angles) == "directed") {
     # Plot angles which represent angular errors, which reset at each step
