@@ -162,6 +162,40 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
   trj
 }
 
+#' Create a trajectory from a subset of another
+#'
+#' Creates a trajectory from a subset of the points in another trajectory,
+#' preserving metadata and all columns in the original trajectory.
+#'
+#' Note that removing points from a trajectory that does not contain a time
+#' column will change the timing of the points, and hence change velocity etc.
+#'
+#' @param trj Trajectory to extract points and metadata from.
+#' @param idx Indices of the points in \code{trj} to retain in the new
+#'   trajectory.
+#'
+#' @return A new trajectory which is the same as \code{trj} except with a subset
+#'   of points.
+#'
+#' @examples
+#' \dontrun{
+#' # Create a trajectory (trj2) by removing all zero-length
+#' # segments from another trajectory (trj). Keep all points
+#' # that are different from their preceding point, and also
+#' # keep the start point
+#' trj2 <- TrajFromTrjPoints(trj, c(1, which(Mod(trj$displacement) != 0)))
+#' }
+#'
+#' @export
+TrajFromTrjPoints <- function(trj, idx) {
+  TrajFromCoords(trj[idx, ],
+                 xCol = "x", yCol = "y", timeCol = "time",
+                 fps = TrajGetFPS(trj),
+                 spatialUnits = TrajGetUnits(trj),
+                 timeUnits = TrajGetTimeUnits(trj))
+
+}
+
 #' Scale a trajectory
 #'
 #' Scales the cartesian coordinates in a trajectory, for example, to convert

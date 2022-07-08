@@ -712,4 +712,27 @@ test_that("Turning angles", {
   expect_equal(length(TrajAngles(trj)), nsteps - 1)
   expect_equal(length(TrajAngles(trj, compass.direction = 0)), nsteps)
 
+  # Check that zero length segments return an angle of NA
+  testdf = data.frame(x = c(1,1,2,3,4,5,5,5,5,6,7), y = c(1,2,3,3,4,3,3,3,3,2,2))
+  trj = TrajFromCoords(testdf)
+  angles <- TrajAngles(trj)
+  # Any angle before or after a zero segment should be NA. There are 3
+  # contiguous zero segments in this trajectory, so there should be 4 NAs
+  expect_equal(which(is.na(angles)), c(5, 6, 7, 8))
+})
+
+test_that("TrajFromTrjPoints", {
+  # Check that the documented method for creating a trajectory without NA angles
+  # works
+  testdf = data.frame(tc = 1:11, y = c(1,2,3,3,4,3,3,3,3,2,2), x = c(1,1,2,3,4,5,5,5,5,6,7))
+  trj = TrajFromCoords(testdf, xCol = "x", yCol = "y", timeCol = "tc", fps = 20, timeUnits = "hours", spatialUnits = "km")
+  trj2 <- TrajFromTrjPoints(trj, c(1, which(Mod(trj$displacement) != 0)))
+  expect_equal(TrajLength(trj2), TrajLength(trj))
+  # There should be no NA angles in trj2
+  expect_true(any(is.na(TrajAngles(trj))))
+  expect_false(any(is.na(TrajAngles(trj2))))
+  expect_equal(TrajGetUnits(trj2), TrajGetUnits(trj))
+  expect_equal(TrajGetFPS(trj2), TrajGetFPS(trj))
+  expect_equal(TrajGetTimeUnits(trj2), TrajGetTimeUnits(trj))
+  expect_equal(trj2$displacementTime[nrow(trj2)], trj$displacementTime[nrow(trj)])
 })

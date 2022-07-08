@@ -10,8 +10,8 @@ TrajRotate(trj, angle = 0, origin = c(0, 0), relative = TRUE)
 \item{trj}{The trajectory to be rotated.}
 
 \item{angle}{The angle of rotation in radians. Either the first and last
-points in the rotated trajectory (\code{relative = TRUE}), or else the
-angle be rotated (\code{relative = FALSE}).}
+points in the rotated trajectory (when \code{relative = TRUE}), or else the
+angle be rotated (when \code{relative = FALSE}).}
 
 \item{origin}{Trajectory is rotated about this point.}
 

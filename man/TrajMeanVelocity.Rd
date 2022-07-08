@@ -18,7 +18,7 @@ Numeric duration of the trajectory, in time units.
 }
 \description{
 Calculates the mean or net velocity of a trajectory (or a portion of a
-trajectory). Theisis the velocity from the start point to the end point,
+trajectory). This is the velocity from the start point to the end point,
 ignoring the path that was taken.
 }
 \seealso{

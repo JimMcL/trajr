@@ -34,6 +34,14 @@ is incorrect to treat them as linear quantities. In particular, do not
 calculate arithmetic means or standard deviations of turning angles. See
 Batschelet, (1981) for a detailed explanation and techniques for dealing with
 circular quantities.
+
+The turning angle before and after every zero-length segment will be
+\code{NA}, since the angle of a zero-length segment is undefined. This
+behaviour began in \code{trajr} version 1.5.0 (or development version
+1.4.0.9000). Prior to this fix, the angle of a zero-length segment was
+assumed to be 0, which led to incorrect turning angles being returned. One
+approach to dealing with zero-length segments is to simply remove them from
+the trajectory. See \code{\link{TrajFromTrjPoints}} for a means to achieve this.
 }
 \references{
 Batschelet, E. (1981). Circular statistics in biology. ACADEMIC PRESS, 111
@@ -41,5 +49,6 @@ FIFTH AVE., NEW YORK, NY 10003, 1981, 388.
 }
 \seealso{
 \code{\link{TrajStepLengths}},
-  \code{\link{TrajMeanVectorOfTurningAngles}}
+  \code{\link{TrajMeanVectorOfTurningAngles}},
+  \code{\link{TrajFromTrjPoints}}
 }
