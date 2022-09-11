@@ -27,8 +27,8 @@ noise is effectively amplifed when taking derivatives.
 }
 \details{
 The value returned as \code{acceleration} is \emph{not} technically
-acceleration. In mechanics, acceleration is a vector. This value is a scalar
-quantity: change of speed, which is sometimes known informally as
+acceleration. In mechanics, acceleration is a vector. The returned value is a
+scalar quantity: change of speed, which is sometimes known informally as
 acceleration. This value corresponds to the acceleration in a 1-dimensional
 trajectory, with the sign indicating the direction of acceleration relative
 to the current direction of velocity. See \code{\link{TrajAcceleration}} for

@@ -16,7 +16,7 @@
   ylim = grDevices::extendrange(x$y),
   xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (\%s)", TrajGetUnits(x))),
   ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (\%s)", TrajGetUnits(x))),
-  ann = par("ann"),
+  ann = graphics::par("ann"),
   axes = TRUE,
   frame.plot = axes,
   asp = 1,

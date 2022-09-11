@@ -77,6 +77,7 @@ TrajStepLengths <- function(trj) {
 #' @param trj Trajectory whose distance is to be calculated.
 #' @param startIndex Index of the starting point.
 #' @param endIndex Index of the ending point.
+#'
 #' @return Numeric distance from the start to the end of the trajectory.
 #'
 #' @export
@@ -92,6 +93,7 @@ TrajDistance <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' @param trj Trajectory whose length is to be calculated.
 #' @param startIndex Index of the starting point.
 #' @param endIndex Index of the ending point.
+#'
 #' @return Numeric length of the trajectory.
 #'
 #' @seealso \code{\link{TrajStepLengths}}
@@ -109,6 +111,7 @@ TrajLength <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' @param trj Trajectory whose duration is to be calculated.
 #' @param startIndex Index of the starting point.
 #' @param endIndex Index of the ending point.
+#'
 #' @return Numeric duration of the trajectory, in time units.
 #'
 #' @seealso \code{\link{TrajGetTimeUnits}}
@@ -127,6 +130,7 @@ TrajDuration <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' @param trj Trajectory whose duration is to be calculated.
 #' @param startIndex Index of the starting point.
 #' @param endIndex Index of the ending point.
+#'
 #' @return Numeric duration of the trajectory, in time units.
 #'
 #' @seealso \code{\link{TrajGetTimeUnits}}

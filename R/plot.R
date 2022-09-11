@@ -96,7 +96,7 @@ plot.Trajectory <- function(x, add = FALSE,
                             xlim = grDevices::extendrange(x$x), ylim = grDevices::extendrange(x$y),
                             xlab = ifelse(is.null(TrajGetUnits(x)), "x", sprintf("x (%s)", TrajGetUnits(x))),
                             ylab = ifelse(is.null(TrajGetUnits(x)), "y", sprintf("y (%s)", TrajGetUnits(x))),
-                            ann = par("ann"), axes = TRUE, frame.plot = axes,
+                            ann = graphics::par("ann"), axes = TRUE, frame.plot = axes,
                             asp = 1, ...) {
   if (!add) {
     graphics::plot(NULL, xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab, asp = asp,

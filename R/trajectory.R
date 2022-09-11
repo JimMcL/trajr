@@ -7,12 +7,14 @@
 .TRAJ_TIME_UNITS <- 'timeUnits'
 .TRAJ_UNITS <- 'units'
 .TRAJ_CLASS <- "Trajectory"
+.TRAJ_3D_CLASS <- "Trajectory3D"
 
 # ---- Private functions ----
 
 # Must be called whenever the cartesian coordinates of a trajectory are
 # modified. Fills in polar coordinates and displacement.
-.fillInTraj <- function(trj) {
+.fillInTraj <- function(trj, dim = c("2D", "3D")) {
+  dim <- match.arg(dim)
   # Get polar coordinates
   trj$polar <- complex(real = trj$x, imaginary = trj$y)
 
@@ -23,17 +25,19 @@
   else
     trj$displacement <- numeric()
 
-  # Give it a special class
-  if (class(trj)[1] != .TRAJ_CLASS)
-    class(trj) <- c(.TRAJ_CLASS, class(trj))
+  # Give it a special class. Firstly ensure it is a 2d trajectory
+  if (!inherits(trj, .TRAJ_CLASS))
+      class(trj) <- c(.TRAJ_CLASS, class(trj))
+  # If requested, also ensure it is a 3d trajectory
+  if (dim == "3D" && !inherits(trj, .TRAJ_3D_CLASS))
+      class(trj) <- c(.TRAJ_3D_CLASS, class(trj))
 
   trj
 }
 
-.checkCoords <- function(coords) {
+.checkCoords <- function(coords, cols = c("x", "y", "time")) {
   # Remove NA values at the start or end of the coordinates
   for (startIdx in 1:nrow(coords)) {
-    cols <- c("x", "y", "time")
     if (!anyNA(coords[startIdx, cols])) break
   }
   for (endIdx in nrow(coords):1) {
@@ -47,6 +51,21 @@
   }
   coords
 }
+
+# Renames a column in a data frame, given either the original column name or its
+# index. Throws an exception if the specified column doesn't exist
+.renameCol <- function(oldName, newName, df) {
+  if (is.numeric(oldName)) {
+    names(df)[oldName] <- newName
+  } else {
+    if (!(oldName %in% names(df)))
+      stop(sprintf("Missing column '%s'", oldName))
+    if (newName != oldName)
+    names(df)[names(df) == oldName] <- newName
+  }
+  df
+}
+
 
 # ---- Trajectory creation and modification ----
 
@@ -65,7 +84,7 @@
 #' the index of the point; in other words, sampling at constant time intervals
 #' is assumed. Time values require conversion if they are not numeric. It may be
 #' possible to use `strptime` for this purpose, or \code{\link{TrajConvertTime}}
-#' can be used to convert mutliple field time values.
+#' can be used to convert multiple field time values.
 #'
 #' \code{x} and \code{y} must be square units. Longitude and latitude are not
 #' suitable for use as \code{x} and \code{y} values, since in general, \code{1°
@@ -105,10 +124,12 @@
 #' coords <- data.frame(x = c(1, 1.5, 2, 2.5, 3, 4),
 #'                      y = c(0, 0, 1, 1, 2, 1),
 #'                      times = c(0, 1, 2, 3, 4, 5))
-#' trj <- TrajFromCoords(coords)
+#' trj <- TrajFromCoords(coords, timeCol = "times")
 #'
 #' par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 #' plot(trj)
+#'
+#' @seealso \code{\link{TrajsBuild}}
 #'
 #' @export
 TrajFromCoords <- function(track, xCol = 1, yCol = 2,
@@ -118,20 +139,10 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
   trj <- track
 
   # Ensure column names are as expected
-  renm <- function(col, name) {
-    if (is.numeric(col)) {
-      names(trj)[col] <- name
-    } else {
-      if (!(col %in% names(trj)))
-        stop(sprintf("Missing column '%s'", col))
-      names(trj)[names(trj) == col] <- name
-    }
-    trj
-  }
-  trj <- renm(xCol, 'x')
-  trj <- renm(yCol, 'y')
+  trj <- .renameCol(xCol, 'x', trj)
+  trj <- .renameCol(yCol, 'y', trj)
   if (!is.null(timeCol))
-    trj <- renm(timeCol, 'time')
+    trj <- .renameCol(timeCol, 'time', trj)
 
   # Allocate times if they aren't already known
   if (!('time' %in% names(trj))) {
@@ -141,7 +152,7 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
     trj$time <- (seq_len(nrow(trj)) - 1) / fps
   }
 
-  # Check coordinates are valid
+  # Check coordinates are valid and remove leading/trailing NAs
   trj <- .checkCoords(trj)
 
   # Get times associated with displacements, with the first point at time 0,
