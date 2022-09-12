@@ -130,6 +130,8 @@ Traj3DLength <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
 #' Returns the lengths of each step in a 3-dimensional trajectory (or part of a trajectory).
 #'
 #' @param trj3d Trajectory to query.
+#' @param startIndex Index of the starting point.
+#' @param endIndex Index of the ending point.
 #'
 #' @return Vector of step lengths. The vector will have length \code{1 - TrajGetNCoords(trj3d)}.
 #'
@@ -234,7 +236,7 @@ Traj3DSmoothSG <- function(trj3d, p = 3, n = p + 3 - p %% 2, ...) {
   .fillInTraj(trj3d, "3D")
 }
 
-#' Resample a 3D trajectory to a constant time interval.
+#' Resample a 3D trajectory to a constant time interval
 #'
 #' Constructs a new 3-dimensional trajectory by resampling the input trajectory
 #' to a fixed time interval. Points are linearly interpolated along the
@@ -382,3 +384,4 @@ Traj3DRediscretize <- function(trj3d, R) {
   #.fillInTraj(rt, "3D")
   Traj3DFromCoords(rt, spatialUnits = TrajGetUnits(trj3d))
 }
+

@@ -25,7 +25,6 @@ RoxygenNote: 7.1.2
 Suggests: knitr,
     rmarkdown,
     testthat,
-    BH,
     readr,
     tcltk,
     sp,

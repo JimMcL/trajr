@@ -1,7 +1,7 @@
 # Trajectory basic query functions
 
-#' Substitute for the R base function `Arg(z)` that treats the argument of zero
-#' as undefined. The base R function returns 0.
+# Substitute for the R base function `Arg(z)` that treats the argument of zero
+# as undefined. The base R function returns 0.
 TrajArg <- function(z) {
   ifelse(Mod(z) == 0,
          NA,
@@ -160,7 +160,7 @@ TrajMeanVelocity <- function(trj, startIndex = 1, endIndex = nrow(trj)) {
 #' approach to dealing with zero-length segments is to simply remove them from
 #' the trajectory. See \code{\link{TrajFromTrjPoints}} for a means to achieve this.
 #'
-#' @param trj the trajectory whose whose angles are to be calculated.
+#' @param trj the trajectory whose angles are to be calculated.
 #' @param lag Angles between every lag'th segment are calculated. Only applies
 #'   to non-directed walks, i.e. \code{compass.direction} is \code{NULL}.
 #' @param compass.direction If not \code{NULL}, step angles are calculated

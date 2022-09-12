@@ -96,3 +96,28 @@ test_that("3d rediscretization", {
   expect_lt(abs(Traj3DDistance(r) - Traj3DDistance(tr)), 1.1)
   #plot3dTrj(tr); plot3dTrj(r, add = T, col = 2, points = T)
 })
+
+##### TODO
+# test_that("Mean vector", {
+#   track <- data.frame(x = c(0, 1, 1),
+#                       y = c(0, 0, 1),
+#                       z = c(0, 0, 0))
+#   t3 <- Traj3DFromCoords(track)
+#   mv <- Traj3DMeanVectorOfTurningAngles(t3)
+#   mv2 <- TrajMeanVectorOfTurningAngles(t3)
+#   expect_equal(norm(as.matrix(mv), type = "2"), Mod(mv2))
+#
+#   track <- data.frame(x = c(0, 1, 1, 1, 3),
+#                       y = c(0, 0, 1, 2, 4),
+#                       z = c(0, 0, 0, 0, 0))
+#   t3 <- Traj3DFromCoords(track)
+#   mv <- Traj3DMeanVectorOfTurningAngles(t3)
+#   mv2 <- TrajMeanVectorOfTurningAngles(t3)
+#   expect_equal(norm(as.matrix(mv), type = "2"), Mod(mv2))
+#
+#   track <- data.frame(x = c(0, 1, 1, 1),
+#                       y = c(0, 0, 1, 1),
+#                       z = c(0, 0, 0, 1))
+#   t3 <- Traj3DFromCoords(track)
+#   mv <- Traj3DMeanVectorOfTurningAngles(t3)
+# })

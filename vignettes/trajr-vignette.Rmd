@@ -59,6 +59,8 @@ Once the `trajr` package has been installed and loaded, you have access to the s
 
 `Trajr` works with trajectories, where a trajectory is a simplification of a real path travelled by an animal, and is a set of 2-dimensional spatial coordinates with a third temporal dimension. A trajectory can also be thought of as a series of steps, each comprised of a length (L~i~), a turning angle ($\Delta$~i~), and a time. While trajectories have been modelled in various ways, `trajr` works with two theoretical models: _correlated random walks_ in which the turning angle of each step is the direction of the previous step ± some error; and _directed walks_, or compass-based navigation, in which the angular errors at each step are added to the "ideal" or compass direction. `Trajr` generally assumes correlated random walks, but provides some support for directed walks.
 
+As of version 1.5.0, `trajr` provides limited functionality for characterising 3-dimensional trajectories. See the section [Three dimensional trajectories] below.
+
 ```{r randomWalk, echo=FALSE, fig.height=4, fig.width=6, fig.cap="_A correlated random walk with 5 steps. The direction of step $i$ is the direction of step $(i - 1) + \\Delta$~i~._"}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 # Generate and plot a short random trajectory
@@ -573,6 +575,36 @@ mtext("d)", 3, -1.3, adj = .05)
 ```
 
 `trajr` provides limited assistance for building more sophisticated heterogeneous trajectories. Functions exist for splitting (`TrajSplit`) and merging (`TrajMerge`) trajectories, for detecting when trajectories cross polygon boundaries (`TrajInPolygon`) and splitting a trajectory at a polygon crossing (`TrajSplitAtFirstCrossing`). 
+
+## Three dimensional trajectories
+
+As of version 1.5.0, `trajr` provides limited functionality for characterising 3-dimensional trajectories. All functions that operate on 3-dimensional trajectories are prefixed with `Traj3D`. A 3D trajectory created by `Traj3DFromCoords` is a 2D trajectory with an additional `z` column, which allows additional functionality. You can call any of the 2D `trajr` functions with a 3D trajectory, however, they will simply ignore the 3rd dimension, so that is probably not what you want. Any `trajr` functions that manipulate or return metadata will work as expected, e.g. `TrajGetUnits`, `TrajGetNCoords`, `TrajGetFPS`, `TrajGetTimeUnits`. Similarly `TrajDuration` works correctly as it does not use spatial data.
+
+Functionality for 3D trajectory characterisation is limited to a small set of functions. Each of the 3D functions is equivalent to a 2D function with the same name but prefix `Traj`. 
+
+```{r echo=FALSE, results='asis', fig.align='left'}
+kable(data.frame(`Function` = c("`Traj3DFromCoords`", "`Traj3DLength`", "`Traj3DDistance`", "`Traj3DStraightness`",
+                                "`Traj3DRediscretize`", "`Traj3DResampleTime`", "`Traj3DSmoothSG`", "`Traj3DStepLengths`"), 
+                 Description = c("Creates a 3D Trajectory Object",
+                                 "Return the length along a 3D trajectory",
+                                 "Returns the distance between the start and end points of a 3D trajectory",
+                                 "Returns the straightness of a 3D trajectory (distance / length)",
+                                 "Resamples a 3D trajectory to a constant step length",
+                                 "Resample a 3D trajectory to a constant time interval",
+                                 "Smooths a 3D trajectory using a Savitzky-Golay filter",
+                                 "Returns a vector of step lengths of a 3D trajectory"
+                 )))
+
+```
+
+Plotting a 3D trajectory using `plot` will simply plot the x and y dimensions, ignoring the z dimension. If you wish to plot a 3D representation of a trajectory, use a package such as `RGL`. 
+
+    t3 <- Traj3DFromCoords(...)
+    # Plot the 3D line
+    plot3d(t3$x, t3$y, t3$z, type = 'l', lwd = 2)
+    # Mark the start of the trajectory
+    plot3d(t3$x[1], t3$y[1], t3$z[1], add = T, type = 's', size = 0.8)
+
 
 ## Performance
 

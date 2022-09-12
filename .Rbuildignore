@@ -9,3 +9,6 @@
 ^vignettes/junk.Rmd$
 ^vignettes/Ninas comments.docx$
 ^Response.*.txt$
+^doc$
+^Meta$
+^Data 3d$

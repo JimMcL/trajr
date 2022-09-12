@@ -7,7 +7,7 @@
 TrajAngles(trj, lag = 1, compass.direction = NULL)
 }
 \arguments{
-\item{trj}{the trajectory whose whose angles are to be calculated.}
+\item{trj}{the trajectory whose angles are to be calculated.}
 
 \item{lag}{Angles between every lag'th segment are calculated. Only applies
 to non-directed walks, i.e. \code{compass.direction} is \code{NULL}.}

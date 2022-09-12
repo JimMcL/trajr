@@ -8,6 +8,10 @@ Traj3DStepLengths(trj3d, startIndex = 1, endIndex = nrow(trj3d))
 }
 \arguments{
 \item{trj3d}{Trajectory to query.}
+
+\item{startIndex}{Index of the starting point.}
+
+\item{endIndex}{Index of the ending point.}
 }
 \value{
 Vector of step lengths. The vector will have length \code{1 - TrajGetNCoords(trj3d)}.
