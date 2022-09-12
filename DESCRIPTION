@@ -22,12 +22,14 @@ Imports:
     plotrix,
     grDevices
 RoxygenNote: 7.1.2
-Suggests: knitr,
+Suggests: 
+    knitr,
     rmarkdown,
     testthat,
     readr,
     tcltk,
     sp,
-    MASS
+    MASS,
+    covr
 VignetteBuilder: knitr
 BuildVignettes: true

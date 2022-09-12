@@ -201,7 +201,8 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajTranslate`", "`TrajReverse
                                 "`TrajLength`", "`TrajDistance`", 
                                 "`TrajDuration`", "`TrajMeanVelocity`", "`TrajAngles`",
                                 "`TrajMeanVectorOfTurningAngles`",
-                                "`TrajExpectedSquareDisplacement`"), 
+                                "`TrajExpectedSquareDisplacement`",
+                                "`TrajFromTrjPoints`"), 
                  Description = c("Rotates a trajectory",
                                  "Translates a trajectory",
                                  "Reverses a trajectory",
@@ -216,7 +217,8 @@ kable(data.frame(`Function` = c("`TrajRotate`", "`TrajTranslate`", "`TrajReverse
                                  "Returns the mean velocity vector of the trajectory (or a portion)",
                                  "Returns the turning angles (radians) of a trajectory",
                                  "Returns the mean vector of the turning angles",
-                                 "Returns the expected square displacement of a correlated random walk")))
+                                 "Returns the expected square displacement of a correlated random walk",
+                                 "Creates a trajectory from a subset of the points in another trajectory")))
 
 ```
 

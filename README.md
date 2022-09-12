@@ -1,9 +1,12 @@
 # trajr
 
-[![Travis-CI Build Status](https://travis-ci.org/JimMcL/trajr.svg?branch=master)](https://travis-ci.org/JimMcL/trajr)
-[![codecov](https://codecov.io/gh/JimMcL/trajr/branch/master/graph/badge.svg)](https://codecov.io/gh/JimMcL/trajr)
+<!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/trajr)](https://cran.r-project.org/package=trajr)
 ![CRAN download count](https://cranlogs.r-pkg.org/badges/trajr)
+[![R-CMD-check](https://github.com/JimMcL/trajr/workflows/R-CMD-check/badge.svg)](https://github.com/JimMcL/trajr/actions)
+[![Codecov test coverage](https://codecov.io/gh/JimMcL/trajr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/JimMcL/trajr?branch=master)
+<!-- badges: end -->
+
 <!-- To display total CRAN downloads, use
 https://cranlogs.r-pkg.org/badges/grand-total/trajr
 -->

@@ -18,7 +18,7 @@ Perhaps add --no-manual in case of error: pdflatex is not available
 
 Run devtools::check_win_release() and wait for the result
 
-Check that travis-ci build completed successfully with no issues (https://travis-ci.org/JimMcL/trajr)
+Check CI github action results (CMD check and coverage) by clicking on the badges in the github README
 
 Upload ../trajr_x.y.z.tar.gz to CRAN (https://cran.r-project.org/). Use the ‘Optional comment’ field on the webform (and not a separate email) to explain how the feedback on previous submission(s) has been addressed.
 
