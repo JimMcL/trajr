@@ -2,7 +2,7 @@
 % Please edit documentation in R/3D.R
 \name{Traj3DResampleTime}
 \alias{Traj3DResampleTime}
-\title{Resample a 3D trajectory to a constant time interval.}
+\title{Resample a 3D trajectory to a constant time interval}
 \usage{
 Traj3DResampleTime(trj3d, stepTime, newFps = NULL)
 }

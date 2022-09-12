@@ -597,11 +597,12 @@ kable(data.frame(`Function` = c("`Traj3DFromCoords`", "`Traj3DLength`", "`Traj3D
 
 ```
 
-Plotting a 3D trajectory using `plot` will simply plot the x and y dimensions, ignoring the z dimension. If you wish to plot a 3D representation of a trajectory, use a package such as `RGL`. 
+Plotting a 3D trajectory using `plot` will simply plot the x and y dimensions, ignoring the z dimension. If you wish to plot a 3D representation of a trajectory, use a package such as `rgl`. 
 
+    library(rgl)
     t3 <- Traj3DFromCoords(...)
     # Plot the 3D line
-    plot3d(t3$x, t3$y, t3$z, type = 'l', lwd = 2)
+    plot3d(t3$x, t3$y, t3$z, type = 'l', lwd = 2, xlim = range(t3$x))
     # Mark the start of the trajectory
     plot3d(t3$x[1], t3$y[1], t3$z[1], add = T, type = 's', size = 0.8)
 
