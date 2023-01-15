@@ -33,6 +33,23 @@ prevent the line from being plotted.}
 \description{
 Plots speed over time, with intervals of fast and/or slow speed highlighted.
 }
+\examples{
+# Display speed intervals with custom x-axis labels
+
+# Generate and smooth a trajectory
+set.seed(3)
+trj <- TrajSmoothSG(TrajGenerate(120, fps = 0.5))
+# Get speed intervals to be plotted
+si <- TrajSpeedIntervals(trj, slowerThan = 0.9, diff = "central")
+# Plot, but don't label x axis
+plot(si, xlab = "Time (min:sec)", xaxt = "n")
+# Work out where x-axis tick marks should be
+speeds <- attr(si, "speed") # data frame containing speed over time
+p <- pretty(speeds$time)
+# Draw x-sxis ticks and labels with custom formatting
+axis(1, p, sprintf("\%d:\%02d", p \%/\% 60, p \%\% 60))
+
+}
 \seealso{
 \code{\link{TrajSpeedIntervals}}
 }
