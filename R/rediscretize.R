@@ -87,6 +87,10 @@
 #'
 #' @export
 TrajRediscretize <- function(trj, R) {
+  if (R <= 0) {
+    stop("Step length must be > 0")
+  }
+
   rt <- .TrajRediscretizePoints(trj, R)
 
   # Sanity check

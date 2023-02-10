@@ -78,6 +78,8 @@ test_that("Trajectory creation", {
 
   # Rediscretization
   rd <- TrajRediscretize(smoothed, .001)
+  expect_error(TrajRediscretize(smoothed, 0))
+  expect_error(TrajRediscretize(smoothed, -0.001))
   #plot(rd)
 
   expect_true(TrajStraightness(smoothed) < 1)
@@ -658,6 +660,8 @@ test_that("Resampling", {
   # This isn't TRUE, since resampled te is straighter than trj
   #expect_true(trjL - TrajLength(td) < 2)
   # plotTwoTrjs(trj, te)
+  expect_error(TrajResampleTime(trj, 0))
+  expect_error(TrajResampleTime(trj, -0.5))
 })
 
 test_that("Invalid parameter detection", {

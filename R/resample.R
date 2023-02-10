@@ -28,6 +28,9 @@
 #'
 #' @export
 TrajResampleTime <- function(trj, stepTime, newFps = NULL) {
+  if (stepTime <= 0) {
+    stop("stepTime must be > 0")
+  }
   # Determine times of new points
   times <- seq(from = min(trj$time), to = max(trj$time), by = stepTime)
 
