@@ -516,7 +516,8 @@ customPcaPlot <- function(x, xlabs, xcols, choices = 1L:2L, ycol = "#ff2222aa", 
 
 # Here we are operating on the statistics from the previous example
 
-# Get rid of NAs in stats because prcomp can't handle them.
+# The PCA function, prcomp, can't handle NAs, so replace NAs with a "neutral" value 
+# and create a new column that flags which trajectories had an NA value.
 # First fix min_deltaS, and add an extra column which flags non-periodic trajectories
 pcaStats <- TrajsStatsReplaceNAs(stats, "min_deltaS", 
                                  replacementValue = 2 * max(stats$min_deltaS, na.rm = TRUE),
