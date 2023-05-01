@@ -12,9 +12,9 @@
 \item{draw.start.pt}{If TRUE, draws a dot at the start point of the
 trajectory.}
 
-\item{turning.angles}{If \code{random} or \code{directed}, draws step turning
-angles. \code{directed} assumes errors are relative to the first recorded
-step angle. \code{random} assumes errors are relative to the previous step.}
+\item{turning.angles}{If \code{"random"} or \code{"directed"}, draws step turning
+angles. \code{"directed"} assumes errors are relative to the first recorded
+step angle. \code{"random"} assumes errors are relative to the previous step.}
 
 \item{...}{Additional arguments are passed to \code{\link[graphics]{points}}.}
 }

@@ -38,9 +38,9 @@ drawing the start point dot.}
 
 \item{start.pt.col}{Colour to apply when drawing the start point dot.}
 
-\item{turning.angles}{If \code{random} or \code{directed}, draws step turning
-angles. \code{directed} assumes errors are relative to the first recorded
-step angle. \code{random} assumes errors are relative to the previous step.}
+\item{turning.angles}{If \code{"random"} or \code{"directed"}, draws step turning
+angles. \code{"directed"} assumes errors are relative to the first recorded
+step angle. \code{"random"} assumes errors are relative to the previous step.}
 
 \item{xlim, ylim, xlab, ylab, asp, ann, axes, frame.plot}{plotting parameters with useful defaults.}
 
