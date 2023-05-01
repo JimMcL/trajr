@@ -23,7 +23,7 @@ A list with components: \item{speed}{numeric vector, speed between
 Calculates speed and change of speed along a trajectory over time. These are
 the first and second order derivatives of distance travelled over time. Noisy
 trajectories should be smoothed before being passed to this function, as
-noise is effectively amplifed when taking derivatives.
+noise is effectively amplified when taking derivatives.
 }
 \details{
 The value returned as \code{acceleration} is \emph{not} technically

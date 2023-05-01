@@ -16,7 +16,8 @@ TrajSpeedIntervals(
 \item{trj}{Trajectory to be analysed.}
 
 \item{fasterThan, slowerThan}{If not \code{NULL}, intervals will cover time
-periods where speed exceeds/is lower than this value.}
+periods where speed exceeds/is lower than this value. At least one of
+\code{fasterThan}, or \code{slowerThan} must be specified.}
 
 \item{interpolateTimes}{If \code{TRUE}, times will be linearly interpolated
 between frames.}

@@ -20,7 +20,7 @@
 #' Calculates speed and change of speed along a trajectory over time. These are
 #' the first and second order derivatives of distance travelled over time. Noisy
 #' trajectories should be smoothed before being passed to this function, as
-#' noise is effectively amplifed when taking derivatives.
+#' noise is effectively amplified when taking derivatives.
 #'
 #' The value returned as \code{acceleration} is \emph{not} technically
 #' acceleration. In mechanics, acceleration is a vector. The returned value is a
@@ -269,7 +269,8 @@ TrajVelocity <- function(trj, diff = c("central", "forward", "backward")) {
 #'
 #' @param trj Trajectory to be analysed.
 #' @param fasterThan,slowerThan If not \code{NULL}, intervals will cover time
-#'   periods where speed exceeds/is lower than this value.
+#'   periods where speed exceeds/is lower than this value. At least one of
+#'   \code{fasterThan}, or \code{slowerThan} must be specified.
 #' @param interpolateTimes If \code{TRUE}, times will be linearly interpolated
 #'   between frames.
 #' @param diff Method used to calculate speed, see \code{\link{TrajVelocity}}

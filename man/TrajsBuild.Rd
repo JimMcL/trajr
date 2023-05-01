@@ -15,8 +15,8 @@ TrajsBuild(
   smoothN = 41,
   translateToOrigin = FALSE,
   rootDir = NULL,
-  csvReadFn = function(filename, ...) utils::read.csv(filename, stringsAsFactors =
-    FALSE, ...),
+  csvReadFn = function(filename, ...) utils::read.csv(filename, stringsAsFactors = FALSE,
+    ...),
   ...
 )
 }
