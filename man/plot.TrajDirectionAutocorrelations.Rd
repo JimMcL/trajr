@@ -24,8 +24,8 @@ calculate the first local minimum, which is then plotted as a point.}
 \item{...}{Additional arguments passed to \code{\link{plot}}.}
 }
 \description{
-The \code{plot} method for \code{TrajDirectionAutocorrelations} objects.
+The \code{plot} method for \code{\link{TrajDirectionAutocorrelations}} objects.
 Plots the direction autocorrelation function as returned by a call to
-\code{link{TrajDirectionAutocorrelations}}, with a optional dot at the first
+\code{TrajDirectionAutocorrelations}, with a optional dot at the first
 local minimum.
 }

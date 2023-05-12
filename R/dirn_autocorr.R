@@ -86,7 +86,8 @@ TrajDirectionAutocorrelations <- function(trj, deltaSMax = round(nrow(trj) / 4))
       t <- trj[offset:nrow(trj),]
       cos(TrajAngles(t, deltaS))
     })
-    mean(unlist(c))
+    # Zero-length segments have angle NA, so ignore them
+    mean(unlist(c), na.rm = TRUE)
   }
 
   r <- data.frame(deltaS = deltaSs,
@@ -160,9 +161,9 @@ TrajDAFindFirstMaximum <- function(corr, windowSize = 10) {
 
 #' Plot method for direction autocorrelation
 #'
-#' The \code{plot} method for \code{TrajDirectionAutocorrelations} objects.
+#' The \code{plot} method for \code{\link{TrajDirectionAutocorrelations}} objects.
 #' Plots the direction autocorrelation function as returned by a call to
-#' \code{link{TrajDirectionAutocorrelations}}, with a optional dot at the first
+#' \code{TrajDirectionAutocorrelations}, with a optional dot at the first
 #' local minimum.
 #'
 #' @param x Trajectory to be plotted.

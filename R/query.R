@@ -263,8 +263,8 @@ TrajExpectedSquareDisplacement <- function(trj, n = nrow(trj), eqn1 = TRUE, comp
   ta <- TrajAngles(trj, compass.direction = compass.direction)
   l <- mean(sl)
   l2 <- mean(sl ^ 2)
-  c <- mean(cos(ta))
-  s <- mean(sin(ta))
+  c <- mean(cos(ta), na.rm = TRUE)
+  s <- mean(sin(ta), na.rm = TRUE)
   s2 <- s^2
 
   if (eqn1) {

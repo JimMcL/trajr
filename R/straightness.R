@@ -199,7 +199,7 @@ TrajSinuosity2 <- function(trj, compass.direction = NULL) {
   # Coefficient of variation of step length
   b <- stats::sd(stepLengths) / p
   # Mean cosine of turning angles = length of mean vector of angles
-  c <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)))
+  c <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)), na.rm = TRUE)
   # Same calculation but a bit slower
   #c <- Mod(TrajMeanVectorOfTurningAngles(trj, compass.direction = compass.direction))
 
@@ -235,7 +235,7 @@ TrajSinuosity2 <- function(trj, compass.direction = NULL) {
 TrajEmax <- function(trj, eMaxB = FALSE, compass.direction = NULL) {
 
   # E(cos(angles)) = mean(cos(angles))
-  b <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)))
+  b <- mean(cos(TrajAngles(trj, compass.direction = compass.direction)), na.rm = TRUE)
 
   # If it's E max b, multiply by mean step length
   f <- ifelse(eMaxB, mean(TrajStepLengths(trj)), 1)
