@@ -80,6 +80,7 @@ test_that("Trajectory creation", {
   rd <- TrajRediscretize(smoothed, .001)
   expect_error(TrajRediscretize(smoothed, 0))
   expect_error(TrajRediscretize(smoothed, -0.001))
+  expect_error(TrajRediscretize(smoothed, 0.2))
   #plot(rd)
 
   expect_true(TrajStraightness(smoothed) < 1)
@@ -756,4 +757,8 @@ test_that("Rediscretization with simulated speed", {
   # Change in speed roughly 0
   acc <- mean(TrajDerivatives(rd)$acceleration, na.rm = TRUE)
   expect_equal(acc, 0)
+
+  # Test that simulation without time throws exception
+  rd2 <- TrajRediscretize(trj, 2, simConstantSpeed = FALSE)
+  expect_error(TrajRediscretize(rd2, 4, simConstantSpeed = TRUE))
 })
