@@ -25,6 +25,9 @@
   else
     trj$displacement <- numeric()
 
+  # Fill in number of frames
+  attr(trj, .TRAJ_NFRAMES) <- nrow(trj)
+
   # Give it a special class. Firstly ensure it is a 2d trajectory
   if (!inherits(trj, .TRAJ_CLASS))
       class(trj) <- c(.TRAJ_CLASS, class(trj))
@@ -159,8 +162,6 @@ TrajFromCoords <- function(track, xCol = 1, yCol = 2,
   # i.e. time at each point in displacement, not time between points
   trj$displacementTime <- trj$time - trj$time[1]
 
-  # Save number of frames
-  attr(trj, .TRAJ_NFRAMES) <- nrow(trj)
   # Save frame rate
   attr(trj, .TRAJ_FPS) <- fps
   # Save spatial units

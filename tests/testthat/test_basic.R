@@ -740,3 +740,20 @@ test_that("TrajFromTrjPoints", {
   expect_equal(TrajGetTimeUnits(trj2), TrajGetTimeUnits(trj))
   expect_equal(trj2$displacementTime[nrow(trj2)], trj$displacementTime[nrow(trj)])
 })
+
+
+test_that("Rediscretization with simulated speed", {
+  trj <- TrajGenerate()
+  rd <- TrajRediscretize(trj, 2, simConstantSpeed = TRUE)
+  # plot(trj, lwd = 3)
+  # lines(rd, col = 2)
+  # Start times should be equal
+  expect_equal(rd$time[1], trj$time[1])
+  # Average speed should be similar
+  rdSp <- mean(Mod(TrajVelocity(rd)), na.rm = TRUE)
+  trjSp <- mean(Mod(TrajVelocity(trj)), na.rm = TRUE)
+  expect_lt(abs(log(rdSp / trjSp)), log(1.02))
+  # Change in speed roughly 0
+  acc <- mean(TrajDerivatives(rd)$acceleration, na.rm = TRUE)
+  expect_equal(acc, 0)
+})

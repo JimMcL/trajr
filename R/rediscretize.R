@@ -74,19 +74,29 @@
 #'
 #' Constructs a new trajectory by resampling the input trajectory to a fixed
 #' step (or segment) length. Timing of frames is lost, so speed and acceleration
-#' cannot be calculated on a rediscretized trajectory.
+#' cannot be calculated on a rediscretized trajectory. However, a constant speed
+#' may be applied to the rediscretized trajectory (\code{simConstantSpeed =
+#' TRUE}), in which case the returned trajectory will have (almost) constant
+#' speed, with average speed approximately equal to the average speed of
+#' \code{trj}.
 #'
 #' Based on the appendix in Bovet and Benhamou, (1988).
 #'
 #' @param trj The trajectory to be resampled.
 #' @param R rediscretization step length, in the spatial units of \code{trj}.
+#' @param simConstantSpeed If TRUE, speeds are interpolated along the new
+#'   trajectory so that average speed is approximately the same as that of
+#'   \code{trj}.
+#'
 #' @return A new trajectory with a constant segment length which follows
 #'   \code{trj}.
 #'
-#' @references Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
+#' @references Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals'
+#'   movements using a correlated random walk model. Journal of Theoretical
+#'   Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
 #'
 #' @export
-TrajRediscretize <- function(trj, R) {
+TrajRediscretize <- function(trj, R, simConstantSpeed = FALSE) {
   if (R <= 0) {
     stop("Step length must be > 0")
   }
@@ -101,6 +111,30 @@ TrajRediscretize <- function(trj, R) {
   # Convert from complex to cartesian coords
   rt <- data.frame(x = Re(rt), y = Im(rt))
 
+  # Spatial units are the same as in the original trajectory
+  attr(rt, .TRAJ_UNITS) <- TrajGetUnits(trj)
+
   # Fill in other track stuff
-  .fillInTraj(rt)
+  rt <- .fillInTraj(rt)
+
+  # Optionally simulate a fixed speed trajectory with the same average speed as the original trajectory
+  if (simConstantSpeed) {
+    if (!"time" %in% names(trj))
+      stop("Unable to simulate constant speed: missing time column in original trajectory")
+
+    # Fill in displacementTime and time so that average speed is close to that of trj
+    avgSpeed <- TrajLength(trj) / TrajDuration(trj)
+    newDuration <- TrajLength(rt) / avgSpeed
+
+    rt$displacementTime <- seq(0, newDuration, length.out = nrow(rt))
+    rt$time <- rt$displacementTime + trj$time[1]
+
+    # Infer a frame rate
+    attr(rt, .TRAJ_FPS) <- mean(diff(rt$time))
+
+    # Copy original time units
+    attr(rt, .TRAJ_TIME_UNITS) <- TrajGetTimeUnits(trj)
+  }
+
+  rt
 }

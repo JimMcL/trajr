@@ -4,12 +4,16 @@
 \alias{TrajRediscretize}
 \title{Resample a trajectory to a constant step length}
 \usage{
-TrajRediscretize(trj, R)
+TrajRediscretize(trj, R, simConstantSpeed = FALSE)
 }
 \arguments{
 \item{trj}{The trajectory to be resampled.}
 
 \item{R}{rediscretization step length, in the spatial units of \code{trj}.}
+
+\item{simConstantSpeed}{If TRUE, speeds are interpolated along the new
+trajectory so that average speed is approximately the same as that of
+\code{trj}.}
 }
 \value{
 A new trajectory with a constant segment length which follows
@@ -18,11 +22,17 @@ A new trajectory with a constant segment length which follows
 \description{
 Constructs a new trajectory by resampling the input trajectory to a fixed
 step (or segment) length. Timing of frames is lost, so speed and acceleration
-cannot be calculated on a rediscretized trajectory.
+cannot be calculated on a rediscretized trajectory. However, a constant speed
+may be applied to the rediscretized trajectory (\code{simConstantSpeed =
+TRUE}), in which case the returned trajectory will have (almost) constant
+speed, with average speed approximately equal to the average speed of
+\code{trj}.
 }
 \details{
 Based on the appendix in Bovet and Benhamou, (1988).
 }
 \references{
-Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals' movements using a correlated random walk model. Journal of Theoretical Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
+Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals'
+  movements using a correlated random walk model. Journal of Theoretical
+  Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
 }
