@@ -72,13 +72,14 @@
 
 #' Resample a trajectory to a constant step length
 #'
-#' Constructs a new trajectory by resampling the input trajectory to a fixed
-#' step (or segment) length. Timing of frames is lost, so speed and acceleration
-#' cannot be calculated on a rediscretized trajectory. However, a constant speed
-#' may be applied to the rediscretized trajectory (\code{simConstantSpeed =
-#' TRUE}), in which case the returned trajectory will have (almost) constant
-#' speed, with average speed approximately equal to the average speed of
-#' \code{trj}.
+#' Constructs a new trajectory by resampling the input trajectory to a
+#' fixed step (or segment) length. By default, timing of frames is
+#' lost, so speed and acceleration cannot be calculated on a
+#' rediscretized trajectory. However, a constant speed may be applied
+#' to the rediscretized trajectory (\code{simConstantSpeed = TRUE}),
+#' in which case the returned trajectory will have (almost) constant
+#' speed, with average speed approximately equal to the average speed
+#' of \code{trj}.
 #'
 #' Based on the appendix in Bovet and Benhamou, (1988).
 #'

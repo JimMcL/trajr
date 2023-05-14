@@ -11,6 +11,7 @@ gen3dPts <- function(n = 100) {
   pts
 }
 
+#library(rgl)
 plot3dTrj <- function(t3, add = FALSE, col = 1, points = FALSE) {
   plot3d(t3$x, t3$y, t3$z, add = add, col = col, type = 'l', lwd = 2)
   if (points)
@@ -97,6 +98,25 @@ test_that("3d rediscretization", {
   #plot3dTrj(tr); plot3dTrj(r, add = T, col = 2, points = T)
 })
 
+test_that("rediscretize with speed", {
+  pts <- gen3dPts(100)
+  tr <- Traj3DFromCoords(pts, zCol = "z", timeCol = "time")
+
+  rd <- Traj3DRediscretize(tr, 2, simConstantSpeed = TRUE)
+  #plot3dTrj(tr); plot3dTrj(rd, add = T, col = 2, points = T)
+  # Start times should be equal
+  expect_equal(rd$time[1], tr$time[1])
+  # Average speed should be similar
+  rdSp <- Traj3DLength(rd) / TrajDuration(rd)
+  trjSp <- Traj3DLength(tr) / TrajDuration(tr)
+  expect_lt(abs(log(rdSp / trjSp)), log(1.02))
+
+  # Test that simulation without time throws exception
+  rd2 <- Traj3DRediscretize(tr, 2, simConstantSpeed = FALSE)
+  expect_error(Traj3DRediscretize(rd2, 4, simConstantSpeed = TRUE))
+
+})
+
 ##### TODO
 # test_that("Mean vector", {
 #   track <- data.frame(x = c(0, 1, 1),
@@ -121,3 +141,4 @@ test_that("3d rediscretization", {
 #   t3 <- Traj3DFromCoords(track)
 #   mv <- Traj3DMeanVectorOfTurningAngles(t3)
 # })
+
