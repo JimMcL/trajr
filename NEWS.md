@@ -10,7 +10,7 @@
 * Fix bug in `TrajFromCoords` that incorrectly treated NA values in columns other than coordinates or time as an error.
 * Fix bug in `TrajScale`; `yScale` was being ignored.
 * Add some more named parameters to `plot.Trajectory` to avoid passing them to graphics::lines. 
-* Add arg `simConstantSpeed` to `TrajRediscretize`.
+* Add arg `simConstantSpeed` to `TrajRediscretize` and `Traj3DRediscretize`.
 
 ## trajr 1.4.0
 

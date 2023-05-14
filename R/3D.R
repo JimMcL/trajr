@@ -1,20 +1,5 @@
 # 3-dimensional trajectories
 
-# ############################################################################
-# Email response:
-#
-# There seems to be a problem in this data set; the DateTimeStamp
-# has a lower temporal resolution than the positioning data, i.e. there are
-# multiple positions per second, but the time is only recorded to the nearest
-# second
-#
-# In your email, you suggested using the columns Latitude, Longitude and
-# ElevationASL_m, however you should use X and Y rather than Latitude, Longitude
-# for 2 reasons. 1) Latitude and Longitude are not rectangular coordinates (i.e.
-# 1 degree of latitude is not the same distance as 1 degree of longitude). 2)
-# Latitude and Longitude are in different units than the Z value, so are
-# incompatible.
-# ############################################################################
 
 # ---- Trajectory creation and modification ----
 
@@ -351,9 +336,13 @@ Traj3DResampleTime <- function(trj3d, stepTime, newFps = NULL) {
 #' Resample a 3D trajectory to a constant step length
 #'
 #' Constructs a new 3-dimensional trajectory by resampling the input
-#' 3-dimensional trajectory to a fixed step (or segment) length. Timing of frames
-#' is lost, so speed and acceleration cannot be calculated on a rediscretized
-#' trajectory.
+#' 3-dimensional trajectory to a fixed step (or segment) length. By
+#' default, timing of frames is lost, so speed and acceleration cannot
+#' be calculated on a rediscretized trajectory. However, a constant
+#' speed may be applied to the rediscretized trajectory
+#' (\code{simConstantSpeed = TRUE}), in which case the returned
+#' trajectory will have (almost) constant speed, with average speed
+#' approximately equal to the average speed of \code{trj3d}.
 #'
 #' Unfortunately this operation is slow for large trajectories.
 #'
@@ -362,6 +351,10 @@ Traj3DResampleTime <- function(trj3d, stepTime, newFps = NULL) {
 #'
 #' @param trj3d The 3-dimensional trajectory to be resampled.
 #' @param R rediscretization step length, in the spatial units of \code{trj}.
+#' @param simConstantSpeed If TRUE, speeds are interpolated along the new
+#'   trajectory so that average speed is approximately the same as that of
+#'   \code{trj3d}.
+#'
 #' @return A new 3-dimensional trajectory with a constant segment length which
 #'   follows \code{trj3d}.
 #'
@@ -371,7 +364,7 @@ Traj3DResampleTime <- function(trj3d, stepTime, newFps = NULL) {
 #'   Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
 #'
 #' @export
-Traj3DRediscretize <- function(trj3d, R) {
+Traj3DRediscretize <- function(trj3d, R, simConstantSpeed = FALSE) {
   rt <- .Traj3DRediscretizePoints(trj3d, R)
 
   # Sanity check
@@ -382,6 +375,31 @@ Traj3DRediscretize <- function(trj3d, R) {
   # Fill in other track stuff
   rownames(rt) <- NULL
   #.fillInTraj(rt, "3D")
-  Traj3DFromCoords(rt, spatialUnits = TrajGetUnits(trj3d))
+  rt <- Traj3DFromCoords(rt, zCol = "z", spatialUnits = TrajGetUnits(trj3d))
+
+  # Remove time columns
+  rt$time <- NULL
+  rt$displacementTime <- NULL
+
+  # Optionally simulate a fixed speed trajectory with the same average speed as the original trajectory
+  if (simConstantSpeed) {
+    if (!"time" %in% names(trj3d))
+      stop("Unable to simulate constant speed: missing time column in original trajectory")
+
+    # Fill in displacementTime and time so that average speed is close to that of trj3d
+    avgSpeed <- Traj3DLength(trj3d) / TrajDuration(trj3d)
+    newDuration <- Traj3DLength(rt) / avgSpeed
+
+    rt$displacementTime <- seq(0, newDuration, length.out = nrow(rt))
+    rt$time <- rt$displacementTime + trj3d$time[1]
+
+    # Infer a frame rate
+    attr(rt, .TRAJ_FPS) <- mean(diff(rt$time))
+
+    # Copy original time units
+    attr(rt, .TRAJ_TIME_UNITS) <- TrajGetTimeUnits(trj3d)
+  }
+
+  rt
 }
 
