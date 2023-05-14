@@ -44,6 +44,8 @@ An object with class "\code{Trajectory}", which is a data.frame with
   as complex numbers, to simplify working with segment angles.}
   \item{displacement}{Displacement vectors (represented as complex numbers)
   between each pair of consecutive points.}
+
+  In addition, any other columns \code{coords} are include in the data frame.
 }
 \description{
 \code{TrajFromCoords} creates a new trajectory object from a set of
@@ -71,6 +73,11 @@ spatial projection such as UTM (possibly by using \code{spTransform} from the
 
 Leading and trailing rows with \code{NA} coordinate values are discarded.
 \code{NA} coordinate values within a trajectory generate an error.
+
+Since columns in \code{coords} are preserved in the returned trajectory, if
+\code{coords} contains an \code{x} or \code{y} column which is not identified
+by \code{xCol} or \code{yCal} respectively, an error will occur. This is to
+prevent columns being inadvertently overwritten.
 }
 \examples{
 

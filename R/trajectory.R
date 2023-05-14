@@ -58,6 +58,13 @@
 # Renames a column in a data frame, given either the original column name or its
 # index. Throws an exception if the specified column doesn't exist
 .renameCol <- function(oldName, newName, df) {
+  # Check if we are overwriting a column
+  on <- ifelse(is.numeric(oldName), names(df)[oldName], oldName)
+  if (on != newName && newName %in% names(df)) {
+    stop(sprintf("Renaming column \"%s\" to \"%s\" will overwrite existing column \"%s\"",
+                 on, newName, newName))
+  }
+
   if (is.numeric(oldName)) {
     names(df)[oldName] <- newName
   } else {
@@ -99,6 +106,11 @@
 #' Leading and trailing rows with \code{NA} coordinate values are discarded.
 #' \code{NA} coordinate values within a trajectory generate an error.
 #'
+#' Since columns in \code{coords} are preserved in the returned trajectory, if
+#' \code{coords} contains an \code{x} or \code{y} column which is not identified
+#' by \code{xCol} or \code{yCal} respectively, an error will occur. This is to
+#' prevent columns being inadvertently overwritten.
+#'
 #' @param track data frame containing cartesian coordinates and optionally times
 #'   for the points in the trajectory.
 #' @param xCol Name or index of the \code{x} column in \code{track} (default 1).
@@ -121,6 +133,8 @@
 #'   as complex numbers, to simplify working with segment angles.}
 #'   \item{displacement}{Displacement vectors (represented as complex numbers)
 #'   between each pair of consecutive points.}
+#'
+#'   In addition, any other columns \code{coords} are include in the data frame.
 #'
 #' @examples
 #'

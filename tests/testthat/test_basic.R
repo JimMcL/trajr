@@ -762,3 +762,18 @@ test_that("Rediscretization with simulated speed", {
   rd2 <- TrajRediscretize(trj, 2, simConstantSpeed = FALSE)
   expect_error(TrajRediscretize(rd2, 4, simConstantSpeed = TRUE))
 })
+
+test_that("column overwriting check", {
+  n <- 10
+  df <- data.frame(realX = cumsum(rnorm(n)), realY = cumsum(rnorm(n)), x = rnorm(n), y = rnorm(n))
+  trj <- TrajFromCoords(df, "x", "y")
+  expect_equal(trj$x, df$x)
+  expect_equal(trj$y, df$y)
+  trj <- TrajFromCoords(df, 3, 4)
+  expect_equal(trj$x, df$x)
+  expect_equal(trj$y, df$y)
+  # Should throw an error because columns x and y will be overwritten
+  expect_error(TrajFromCoords(df))
+  expect_error(TrajFromCoords(df, 1, 2))
+  expect_error(TrajFromCoords(df, "realX", "realY"))
+})
