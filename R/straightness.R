@@ -47,7 +47,7 @@ TrajMeanVectorOfTurningAngles <- function(trj, compass.direction = NULL) {
   # r <- sqrt(sum(cos(angles)) ^ 2 + sum(sin(angles)) ^ 2) / length(angles)
   # complex(modulus = r, argument = phi)
 
-  mean(complex(modulus = 1, argument = angles))
+  mean(complex(modulus = 1, argument = angles), na.rm = TRUE)
 }
 
 #' Straightness of a Trajectory
@@ -165,7 +165,7 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #' @export
 TrajSinuosity <- function(trj, compass.direction = NULL) {
   segLen <- mean(TrajStepLengths(trj))
-  1.18 * stats::sd(TrajAngles(trj, compass.direction = compass.direction)) / sqrt(segLen)
+  1.18 * stats::sd(TrajAngles(trj, compass.direction = compass.direction), na.rm = TRUE) / sqrt(segLen)
 }
 
 #' Sinuosity of a trajectory

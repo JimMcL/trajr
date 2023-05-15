@@ -393,7 +393,7 @@ test_that("Convenience", {
   expect_equal(TrajGetTimeUnits(trjs[[2]]), "s")
 
   # Trajectories should start at origin
-  expect_true(!any(sapply(trjs, function (t) c(t$x[1], t$y[1])) == 0))
+  expect_true(!any(sapply(trjs, function(t) c(t$x[1], t$y[1])) == 0))
 
   # Define a function which calculates some statistics
   # of interest for a single trajectory
@@ -430,8 +430,13 @@ test_that("Convenience", {
 
   # Test translating to the origin
   trjs <- TrajsBuild(tracks$file, translateToOrigin = TRUE, scale = .220 / 720, spatialUnits = "m", timeUnits = "s", csvStruct = csvStruct, rootDir = "..", csvReadFn = .MreadPoints)
-  expect_true(all(sapply(trjs, function (t) c(t$x[1], t$y[1])) == 0))
+  expect_true(all(sapply(trjs, function(t) c(t$x[1], t$y[1])) == 0))
 
+  # Check that check.names works as expected
+  stats <- TrajsMergeStats(trjs, function(trj) list(`Mean speed` = 0, `Speed (sd)` = 0), check.names = FALSE)
+  expect_equal(names(stats), c("Mean.speed", "Speed..sd."))
+  stats <- TrajsMergeStats(trjs, function(trj) list(`Mean speed` = 0, `Speed (sd)` = 0), check.names = FALSE)
+  expect_equal(names(stats), c("Mean speed", "Speed (sd)"))
 })
 
 test_that("Convenience-multi", {

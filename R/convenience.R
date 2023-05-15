@@ -224,6 +224,8 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #'   \code{"win"} or \code{"tk"} respectively. The default is no progressbar
 #'   (value \code{"none"}). The \code{"win"} progressbar is only available on
 #'   Windows.
+#' @param check.names Passed to \code{as.data.frame}. Set to \code{FALSE} if
+#'   statistic names are not syntactically valid variable names.
 #' @param ... Additional arguments passed to \code{statsFn}.
 #'
 #' @examples
@@ -264,7 +266,7 @@ TrajsBuild <- function(fileNames, fps = NULL, scale = NULL,
 #' }
 #'
 #' @export
-TrajsMergeStats <- function(trjs, statsFn, progressBar = c("none", "text", "win", "tk"), ...) {
+TrajsMergeStats <- function(trjs, statsFn, progressBar = c("none", "text", "win", "tk"), check.names = TRUE, ...) {
   # TODO rename this function? perhaps TrajsCombineIndices (or TrajsRBindStats) would be more meaningful
 
   # Setup the progress bar
@@ -290,7 +292,8 @@ TrajsMergeStats <- function(trjs, statsFn, progressBar = c("none", "text", "win"
         nc <- length(row)
       else if (nc != length(row))
         stop(sprintf("Statistics for trajectory %d contains %d values, but expected %d", nrow(result), length(row), nc))
-      result <- rbind(result, row, stringsAsFactors = FALSE)
+      dfrow <- as.data.frame(row, stringsAsFactors = FALSE, check.names = check.names)
+      result <- rbind(result, dfrow)
     }
     result
   },

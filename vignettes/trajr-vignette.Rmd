@@ -466,7 +466,7 @@ characteriseTrajectory <- function(trj) {
   sd_speed <- sd(derivs$speed)
 
   # Measures of straightness
-  sinuosity <- TrajSinuosity(trj)
+  sinuosity <- TrajSinuosity2(trj)
   resampled <- TrajRediscretize(trj, .001)
   Emax <- TrajEmax(resampled)
 

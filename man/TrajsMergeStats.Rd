@@ -8,6 +8,7 @@ TrajsMergeStats(
   trjs,
   statsFn,
   progressBar = c("none", "text", "win", "tk"),
+  check.names = TRUE,
   ...
 )
 }
@@ -24,6 +25,9 @@ console, by using \code{winProgressBar} or
 \code{"win"} or \code{"tk"} respectively. The default is no progressbar
 (value \code{"none"}). The \code{"win"} progressbar is only available on
 Windows.}
+
+\item{check.names}{Passed to \code{as.data.frame}. Set to \code{FALSE} if
+statistic names are not syntactically valid variable names.}
 
 \item{...}{Additional arguments passed to \code{statsFn}.}
 }
