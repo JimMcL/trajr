@@ -131,7 +131,7 @@ TrajRediscretize <- function(trj, R, simConstantSpeed = FALSE) {
     rt$time <- rt$displacementTime + trj$time[1]
 
     # Infer a frame rate
-    attr(rt, .TRAJ_FPS) <- mean(diff(rt$time))
+    attr(rt, .TRAJ_FPS) <- 1 / mean(diff(rt$time))
 
     # Copy original time units
     attr(rt, .TRAJ_TIME_UNITS) <- TrajGetTimeUnits(trj)

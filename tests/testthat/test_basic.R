@@ -754,6 +754,8 @@ test_that("Rediscretization with simulated speed", {
   rdSp <- mean(Mod(TrajVelocity(rd)), na.rm = TRUE)
   trjSp <- mean(Mod(TrajVelocity(trj)), na.rm = TRUE)
   expect_lt(abs(log(rdSp / trjSp)), log(1.02))
+  # FPS should be similar
+  expect_equal(TrajGetFPS(rd), TrajGetFPS(trj), tolerance = 0.1)
   # Change in speed roughly 0
   acc <- mean(TrajDerivatives(rd)$acceleration, na.rm = TRUE)
   expect_equal(acc, 0)
