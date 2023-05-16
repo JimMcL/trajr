@@ -433,7 +433,7 @@ test_that("Convenience", {
   expect_true(all(sapply(trjs, function(t) c(t$x[1], t$y[1])) == 0))
 
   # Check that check.names works as expected
-  stats <- TrajsMergeStats(trjs, function(trj) list(`Mean speed` = 0, `Speed (sd)` = 0), check.names = FALSE)
+  stats <- TrajsMergeStats(trjs, function(trj) list(`Mean speed` = 0, `Speed (sd)` = 0), check.names = TRUE)
   expect_equal(names(stats), c("Mean.speed", "Speed..sd."))
   stats <- TrajsMergeStats(trjs, function(trj) list(`Mean speed` = 0, `Speed (sd)` = 0), check.names = FALSE)
   expect_equal(names(stats), c("Mean speed", "Speed (sd)"))
