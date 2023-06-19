@@ -130,7 +130,9 @@
 #'   are \code{track[,timeCol]}, otherwise values are calculated from
 #'   \code{fps}.} \item{displacementTime}{Relative frame/observation times, with
 #'   frame/observation 1 at time \code{0}.} \item{polar}{Coordinates represented
-#'   as complex numbers, to simplify working with segment angles.}
+#'   as complex numbers, to simplify working with segment angles. Beware when
+#'   using complex numbers in R; \code{Arg(0+0i)} should be undefined but
+#'   actually returns \code{0}.}
 #'   \item{displacement}{Displacement vectors (represented as complex numbers)
 #'   between each pair of consecutive points.}
 #'
