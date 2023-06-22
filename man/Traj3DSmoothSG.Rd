@@ -30,5 +30,5 @@ acceleration, it may be advisable to fill in the gaps before smoothing,
 possibly by calling \code{Traj3DResampleTime}.
 }
 \seealso{
-\code{\link[signal]{sgolayfilt}}, \code{\link{TrajSmoothSG}}
+\code{\link{Traj3DFromCoords}}, \code{\link[signal]{sgolayfilt}}, \code{\link{TrajSmoothSG}}
 }

@@ -20,5 +20,5 @@ Vector of step lengths. The vector will have length \code{1 - TrajGetNCoords(trj
 Returns the lengths of each step in a 3-dimensional trajectory (or part of a trajectory).
 }
 \seealso{
-\code{\link{Traj3DLength}}, \code{\link{TrajStepLengths}}
+\code{\link{Traj3DFromCoords}}, \code{\link{Traj3DLength}}, \code{\link{TrajStepLengths}}
 }

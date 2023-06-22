@@ -87,5 +87,9 @@ Leading and trailing rows with \code{NA} coordinate values are discarded.
 \code{NA} coordinate values within a trajectory generate an error.
 }
 \seealso{
-\code{\link{TrajFromCoords}}
+\code{\link{Traj3DLength}}, \code{\link{Traj3DStepLengths}},
+  \code{\link{Traj3DDistance}}, \code{\link{Traj3DStraightness}},
+  \code{\link{Traj3DSmoothSG}}, \code{\link{Traj3DResampleTime}},
+  \code{\link{Traj3DRediscretize}}, \code{\link{TrajFromCoords}} for creating
+  2-dimensional trajectories
 }

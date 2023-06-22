@@ -21,3 +21,6 @@ Calculates the distance between the start and end of a 3-dimensional trajectory 
 portion of a trajectory). Also called the diffusion distance, net distance,
 displacement, or bee-line from start to finish.
 }
+\seealso{
+\code{\link{Traj3DFromCoords}}
+}

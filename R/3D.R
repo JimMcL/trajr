@@ -65,7 +65,11 @@
 #'   complex numbers) between each pair of consecutive points. Note that the z
 #'   dimension is not represented.}
 #'
-#' @seealso \code{\link{TrajFromCoords}}
+#' @seealso \code{\link{Traj3DLength}}, \code{\link{Traj3DStepLengths}},
+#'   \code{\link{Traj3DDistance}}, \code{\link{Traj3DStraightness}},
+#'   \code{\link{Traj3DSmoothSG}}, \code{\link{Traj3DResampleTime}},
+#'   \code{\link{Traj3DRediscretize}}, \code{\link{TrajFromCoords}} for creating
+#'   2-dimensional trajectories
 #'
 #' @export
 Traj3DFromCoords <- function(track, xCol = 1, yCol = 2, zCol = 3,
@@ -100,7 +104,7 @@ Traj3DFromCoords <- function(track, xCol = 1, yCol = 2, zCol = 3,
 #'
 #' @return Numeric length of the trajectory.
 #'
-#' @seealso \code{\link{Traj3DStepLengths}}, \code{\link{TrajLength}}
+#' @seealso \code{\link{Traj3DFromCoords}}, \code{\link{Traj3DStepLengths}}, \code{\link{TrajLength}}
 #'
 #' @export
 Traj3DLength <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
@@ -120,7 +124,7 @@ Traj3DLength <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
 #'
 #' @return Vector of step lengths. The vector will have length \code{1 - TrajGetNCoords(trj3d)}.
 #'
-#' @seealso \code{\link{Traj3DLength}}, \code{\link{TrajStepLengths}}
+#' @seealso \code{\link{Traj3DFromCoords}}, \code{\link{Traj3DLength}}, \code{\link{TrajStepLengths}}
 #'
 #' @export
 Traj3DStepLengths <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
@@ -142,6 +146,8 @@ Traj3DStepLengths <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
 #'
 #' @return Numeric distance from the start to the end of the trajectory.
 #'
+#' @seealso \code{\link{Traj3DFromCoords}}
+#'
 #' @export
 Traj3DDistance <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
   # Restrict to the rows and columns we are interested in
@@ -151,9 +157,9 @@ Traj3DDistance <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
 
 #' Straightness of a 3D Trajectory
 #'
-#' Calculates the straightness index of a 3-dimensional trajectory, \eqn{D / L}, where
-#' \code{D} is the beeline distance between the first and last points in the
-#' trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
+#' Calculates the straightness index of a 3-dimensional trajectory, \eqn{D / L},
+#' where \code{D} is the beeline distance between the first and last points in
+#' the trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
 #' Benhamou (2004) considers the straightness index to be a reliable measure of
 #' the efficiency of a directed walk, but inapplicable to random trajectories.
 #' The straightness index of a random walk tends towards zero as the number of
@@ -172,9 +178,10 @@ Traj3DDistance <- function(trj3d, startIndex = 1, endIndex = nrow(trj3d)) {
 #' @return The straightness index of \code{trj}, which is a value between 0
 #'   (infinitely tortuous) to 1 (a straight line).
 #'
-#' @seealso \code{\link{Traj3DDistance}} for trajectory distance (or
-#'   displacement), and \code{\link{Traj3DLength}} for trajectory path length,
-#'   \code{\link{Traj3DStraightness}} for the straightness of a 2D trajectory.
+#' @seealso \code{\link{Traj3DFromCoords}}, \code{\link{Traj3DDistance}} for
+#'   trajectory distance (or displacement), and \code{\link{Traj3DLength}} for
+#'   trajectory path length, \code{\link{Traj3DStraightness}} for the
+#'   straightness of a 2D trajectory.
 #'
 #' @references
 #'
@@ -207,7 +214,7 @@ Traj3DStraightness <- function(trj3d) {
 #'   \code{\link[signal]{sgolayfilt}}.
 #' @return A new trajectory which is a smoothed version of the input trajectory.
 #'
-#' @seealso \code{\link[signal]{sgolayfilt}}, \code{\link{TrajSmoothSG}}
+#' @seealso \code{\link{Traj3DFromCoords}}, \code{\link[signal]{sgolayfilt}}, \code{\link{TrajSmoothSG}}
 #'
 #' @export
 Traj3DSmoothSG <- function(trj3d, p = 3, n = p + 3 - p %% 2, ...) {
@@ -237,7 +244,7 @@ Traj3DSmoothSG <- function(trj3d, p = 3, n = p + 3 - p %% 2, ...) {
 #'   step. Points in the new trajectory are calculated by linearly interpolating
 #'   along \code{trj3d}.
 #'
-#' @seealso \code{\link{TrajResampleTime}}
+#' @seealso \code{\link{Traj3DFromCoords}}, \code{\link{TrajResampleTime}}
 #'
 #' @export
 Traj3DResampleTime <- function(trj3d, stepTime, newFps = NULL) {
@@ -358,7 +365,8 @@ Traj3DResampleTime <- function(trj3d, stepTime, newFps = NULL) {
 #' @return A new 3-dimensional trajectory with a constant segment length which
 #'   follows \code{trj3d}.
 #'
-#' @seealso \code{\link{TrajRediscretize}}
+#' @seealso \code{\link{Traj3DFromCoords}}, \code{\link{TrajRediscretize}}
+#'
 #' @references Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals'
 #'   movements using a correlated random walk model. Journal of Theoretical
 #'   Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9

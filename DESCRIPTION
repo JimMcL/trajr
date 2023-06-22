@@ -1,14 +1,15 @@
 Package: trajr
 Type: Package
 Title: Animal Trajectory Analysis
-Version: 1.4.0.9000
-Date: 2020-12-17
+Version: 1.5.0
+Date: 2023-06-22
 Authors@R: person("Jim", "McLean", email = "jim_mclean@optusnet.com.au",
     role = c("aut", "cre"))
 Description: A toolbox to assist with statistical analysis of 2-dimensional animal trajectories.
     It provides simple access to algorithms for calculating and assessing a variety of 
     characteristics such as speed and acceleration, as well as multiple measures of 
-    straightness or tortuosity. McLean & Skowron Volponi (2018) <doi:10.1111/eth.12739>.
+    straightness or tortuosity. McLean & Skowron Volponi (2018) <doi:10.1111/eth.12739>. 
+    Provides limited support for 3-dimensional trajectories.
 License: MIT + file LICENSE
 URL: https://github.com/JimMcL/trajr
 BugReports: https://github.com/JimMcL/trajr/issues

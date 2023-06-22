@@ -41,5 +41,5 @@ Bovet, P., & Benhamou, S. (1988). Spatial analysis of animals'
   Biology, 131(4), 419-433. doi:10.1016/S0022-5193(88)80038-9
 }
 \seealso{
-\code{\link{TrajRediscretize}}
+\code{\link{Traj3DFromCoords}}, \code{\link{TrajRediscretize}}
 }

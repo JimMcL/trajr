@@ -14,9 +14,9 @@ The straightness index of \code{trj}, which is a value between 0
   (infinitely tortuous) to 1 (a straight line).
 }
 \description{
-Calculates the straightness index of a 3-dimensional trajectory, \eqn{D / L}, where
-\code{D} is the beeline distance between the first and last points in the
-trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
+Calculates the straightness index of a 3-dimensional trajectory, \eqn{D / L},
+where \code{D} is the beeline distance between the first and last points in
+the trajectory,and \code{L} is the path length travelled (Batschelet, 1981).
 Benhamou (2004) considers the straightness index to be a reliable measure of
 the efficiency of a directed walk, but inapplicable to random trajectories.
 The straightness index of a random walk tends towards zero as the number of
@@ -41,7 +41,8 @@ path. Journal of Theoretical Biology, 229(2), 209-220.
 doi:10.1016/j.jtbi.2004.03.016
 }
 \seealso{
-\code{\link{Traj3DDistance}} for trajectory distance (or
-  displacement), and \code{\link{Traj3DLength}} for trajectory path length,
-  \code{\link{Traj3DStraightness}} for the straightness of a 2D trajectory.
+\code{\link{Traj3DFromCoords}}, \code{\link{Traj3DDistance}} for
+  trajectory distance (or displacement), and \code{\link{Traj3DLength}} for
+  trajectory path length, \code{\link{Traj3DStraightness}} for the
+  straightness of a 2D trajectory.
 }

@@ -26,5 +26,5 @@ to a fixed time interval. Points are linearly interpolated along the
 trajectory. Spatial and time units are preserved.
 }
 \seealso{
-\code{\link{TrajResampleTime}}
+\code{\link{Traj3DFromCoords}}, \code{\link{TrajResampleTime}}
 }

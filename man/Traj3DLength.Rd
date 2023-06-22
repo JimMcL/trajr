@@ -21,5 +21,5 @@ Calculates the cumulative length of a 3-dimensional trajectory, or a portion
 of a trajectory. The length is the total distance travelled along the trajectory.
 }
 \seealso{
-\code{\link{Traj3DStepLengths}}, \code{\link{TrajLength}}
+\code{\link{Traj3DFromCoords}}, \code{\link{Traj3DStepLengths}}, \code{\link{TrajLength}}
 }
