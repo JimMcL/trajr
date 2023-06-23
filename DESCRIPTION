@@ -14,7 +14,6 @@ License: MIT + file LICENSE
 URL: https://github.com/JimMcL/trajr
 BugReports: https://github.com/JimMcL/trajr/issues
 Encoding: UTF-8
-LazyData: true
 Imports:
     signal,
     utils,

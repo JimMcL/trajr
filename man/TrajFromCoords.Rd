@@ -93,5 +93,5 @@ plot(trj)
 
 }
 \seealso{
-\code{\link{TrajsBuild}}
+\code{\link{TrajsBuild}}, \code{\link{Traj3DFromCoords}}
 }

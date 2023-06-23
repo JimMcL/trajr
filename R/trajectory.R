@@ -148,7 +148,7 @@
 #' par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 #' plot(trj)
 #'
-#' @seealso \code{\link{TrajsBuild}}
+#' @seealso \code{\link{TrajsBuild}}, \code{\link{Traj3DFromCoords}}
 #'
 #' @export
 TrajFromCoords <- function(track, xCol = 1, yCol = 2,

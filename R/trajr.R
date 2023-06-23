@@ -8,7 +8,8 @@
 #' coordinates. It can be used to calculate characteristics such as velocity and
 #' acceleration, as well as various measures of straightness or tortuosity. It
 #' also provides various convenience functions to assist with operating on
-#' multiple trajectories.
+#' multiple trajectories. \code{trajr} provides some functionality for operating
+#' on 3-dimensional trajectories (see \code{\link{Traj3DFromCoords}}).
 #'
 #' Trajr does not perform object tracking from videos, it operates on existing
 #' arrays of coordinates.
@@ -16,9 +17,10 @@
 #' @section Trajectory creation:
 #'
 #'   Most \code{trajr} functions operate on a \code{Trajectory} object.
-#'   \code{Trajectory}s are created by calling \code{\link{TrajFromCoords}}. The
-#'   function \code{\link{TrajsBuild}} allows you to create multiple
-#'   \code{Trajectory}s by reading their coordinates from files.
+#'   \code{Trajectory}s are created by calling \code{\link{TrajFromCoords}} or
+#'   \code{\link{Traj3DFromCoords}}. The function \code{\link{TrajsBuild}}
+#'   allows you to create multiple \code{Trajectory}s by reading their
+#'   coordinates from files.
 #'
 #'   Typically, trajectories require smoothing to remove high frequency noise;
 #'   see \code{\link{TrajSmoothSG}}. Some methods require trajectories which
@@ -48,8 +50,8 @@
 #'   trajectories, such as \code{\link{TrajScale}}, \code{\link{TrajReverse}},
 #'   \code{\link{TrajTranslate}}, and \code{\link{TrajRotate}}.
 #'
-#'   \code{Trajr} also provides the capability to plot a \code{Trajectory}
-#'   and the results of some analyses.
+#'   \code{Trajr} also provides the capability to plot a \code{Trajectory} and
+#'   the results of some analyses.
 #'
 #' @docType package
 #' @name trajr
