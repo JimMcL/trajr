@@ -5,7 +5,7 @@ vers = paste('R package version', meta$Version)
 bibentry(
      bibtype = "Article",
      header = "To cite the 'trajr' package in publications use:",
-     textVersion = "McLean, D. J., & Skowron Volponi, M. A. (2018). trajr: An R package for characterisation of animal trajectories. Ethology, 124(6), 440-448. https://doi.org/10.1111/eth.12739",
+     textVersion = "McLean, D. J., & Skowron Volponi, M. A. (2018). trajr: An R package for characterisation of animal trajectories. Ethology, 124(6), 440-448. doi:10.1111/eth.12739",
      title = "trajr: An R package for characterisation of animal trajectories",
      author = as.person("Donald James McLean and Marta A. Skowron Volponi"),
      year = 2018,
@@ -13,7 +13,6 @@ bibentry(
      volume = 124,
      number = 6,
      doi = "10.1111/eth.12739",
-     url = "https://onlinelibrary.wiley.com/doi/abs/10.1111/eth.12739",
      key = "doi:10.1111/eth.12739"
    )
 
