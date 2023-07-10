@@ -146,7 +146,8 @@ legend("topright", c("Original", "Smoothed"), lwd = c(1, 2), lty = c(1, 1), col 
 
 `trajr` provides functions to resample a trajectory to a fixed step length or a fixed step time.
 
-Some functions require a `Trajectory` with a fixed step length. The process of resampling a trajectory to a fixed step length is called _rediscretization_. The function `TrajRediscretize` implements trajectory resampling using the algorithm described by Bovet & Benhamou (1988). There are no clear guidelines for choosing a suitable step length for rediscretization: too small a step length leads to oversampling, leading to high autocorrelation between steps and high variability; too large a step length results in undersampling and loss of information. See Turchin (1998) section 5.2.2 for a discussion.
+Some functions require a `Trajectory` with a fixed step length. The process of resampling a trajectory to a fixed step length is called _rediscretization_. The function `TrajRediscretize` implements trajectory resampling using the algorithm described by Bovet & Benhamou (1988). There are no clear guidelines for choosing a suitable step length for rediscretization: too small a step length leads to oversampling, leading to high autocorrelation between steps and high variability; too large a step length results in undersampling and loss of information. See Turchin (1998) section 5.2.2 for a discussion. By default, rediscretization discards time (and hence speed) information, however setting `simConstantSpeed = TRUE` simulates a constant speed trajectory with (approximately) the same duration (and hence average speed) as the original trajectory.
+
 ```{r rediscretize, fig.width=6, fig.height=4, fig.cap="_Rediscretization of trajectory with $\\mu_{L} = 2$ to step length $1$._", echo=-1:-2}
 par(mar = c(4, 4, 0.5, 0.5) + 0.1)
 set.seed(2)
