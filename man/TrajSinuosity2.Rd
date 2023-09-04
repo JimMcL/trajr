@@ -21,8 +21,9 @@ distributions, and does not require a constant step length.
 }
 \details{
 This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
-b^2)]^-0.5} where \eqn{c} is the mean cosine of turning angles, and \eqn{b}
-is the coefficient of variation of the step length.
+b^2)]^{-0.5}} where \eqn{p} is the mean step length, \eqn{c} is the mean
+cosine of turning angles, and \eqn{b} is the coefficient of variation of
+the step length.
 }
 \references{
 Benhamou, S. (2004). How to reliably estimate the tortuosity of an animal's
