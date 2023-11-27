@@ -5,7 +5,7 @@ Version: 1.5.0
 Date: 2023-06-22
 Authors@R: person("Jim", "McLean", email = "jim_mclean@optusnet.com.au",
     role = c("aut", "cre"))
-Description: A toolbox to assist with statistical analysis of 2-dimensional animal trajectories.
+Description: A toolbox to assist with statistical analysis of animal trajectories.
     It provides simple access to algorithms for calculating and assessing a variety of 
     characteristics such as speed and acceleration, as well as multiple measures of 
     straightness or tortuosity. Some support is provided for 3-dimensional trajectories. 
