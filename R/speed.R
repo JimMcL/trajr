@@ -125,9 +125,9 @@ TrajAcceleration <- function(trj) {
 
   # Calculate velocities using forward/backward diffs
   vx <- diff(x) / h
+  vy <- diff(y) / h
   # calculate acceleration from velocity and time
   ax <- diff(vx) / .sumPairs(h / 2)
-  vy <- diff(y) / h
   ay <- diff(vy) / .sumPairs(h / 2)
 
   acc <- complex(real = c(NA, ax, NA), imaginary = c(NA, ay, NA))
