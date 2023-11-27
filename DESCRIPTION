@@ -1,7 +1,7 @@
 Package: trajr
 Type: Package
 Title: Animal Trajectory Analysis
-Version: 1.5.0
+Version: 1.5.1
 Date: 2023-06-22
 Authors@R: person("Jim", "McLean", email = "jim_mclean@optusnet.com.au",
     role = c("aut", "cre"))
