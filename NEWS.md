@@ -1,5 +1,9 @@
 # Changes to the `trajr` package
 
+## trajr 1.5.0.9000
+
+* Minor documentation changes: mention 3D in package overview and use new roxygen method to generate package documentation (https://github.com/r-lib/roxygen2/issues/1491).
+
 ## trajr 1.5.0
 
 * Added some basic 3D trajectory functionality; see `Traj3DFromCoords` and all functions prefixed with `Traj3D`.
