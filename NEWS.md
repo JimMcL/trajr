@@ -1,13 +1,13 @@
 # Changes to the `trajr` package
 
-## trajr 1.5.0.9000
+## trajr 1.5.1
 
 * Minor documentation changes: mention 3D in package overview and use new roxygen method to generate package documentation (https://github.com/r-lib/roxygen2/issues/1491).
 
 ## trajr 1.5.0
 
 * Added some basic 3D trajectory functionality; see `Traj3DFromCoords` and all functions prefixed with `Traj3D`.
-* `TrajAngles` now returns `NA` for the angles before and after zero-length segments. Thanks to Valentin Baumann for identifying this bug. This change could potential cause problems with existing code, but such a problem would indicate a problem with the old analysis. The bug occurred because in base R, `Arg(0) == 0`, which is not correct. Various function that take means of TrajAngles now remove NA values.
+* `TrajAngles` now returns `NA` for the angles before and after zero-length segments. Thanks to Valentin Baumann for identifying this bug. This change could potential cause problems with existing code, but such a problem would indicate a problem with the old analysis. The bug occurred because in base R, `Arg(0) == 0`, which is not correct. Various functions that take means of TrajAngles now remove NA values.
 * Added function `TrajFromTrjPoints` to simplify operations such as removing zero-length segments from a trajectory.
 * Fix documentation of `TrajDirectionalChange` and `TrajAngles`. The documentation incorrectly stated that the number of angles returned was number of points - 1. It now states that the number of angles is number of points - 2 (which is number of segments - 1).
 * Fix bug in `TrajFromCoords` that incorrectly treated NA values in columns other than coordinates or time as an error.
