@@ -20,8 +20,9 @@ Bovet & Benhamou (1988), which is suitable for a wider range of turning angle
 distributions, and does not require a constant step length.
 }
 \details{
-This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
-b^2)]^{-0.5}} where \eqn{p} is the mean step length, \eqn{c} is the mean
+This function implements equation 8 from Benhamou (2004):
+\deqn{S = 2[p(\frac{1 + c}{1 - c} + b^2)]^{-0.5}}
+where \eqn{p} is the mean step length, \eqn{c} is the mean
 cosine of turning angles, and \eqn{b} is the coefficient of variation of
 the step length.
 }

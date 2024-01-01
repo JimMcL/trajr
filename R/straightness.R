@@ -135,7 +135,7 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #' Sinuosity of a trajectory
 #'
 #' Calculates the sinuosity of a (constant step length) trajectory as defined by
-#' Bovet & Benhamou (1988), which is: \eqn{S = 1.18\sigma / \sqrt q} where
+#' Bovet & Benhamou (1988), eqn 2, which is: \eqn{S = 1.18\sigma / \sqrt q} where
 #' \eqn{\sigma} is the standard deviation of the step turning angles and \eqn{q}
 #' is the mean step length. A corrected sinuosity index is available as the
 #' function \code{\link{TrajSinuosity2}} which handles a wider range of
@@ -151,9 +151,9 @@ TrajDirectionalChange <- function(trj, nFrames = 1) {
 #'   Otherwise, a random walk is assumed.
 #' @return The sinuosity of \code{trj}.
 #'
-#' @seealso \code{\link{TrajAngles}} for the turning angles in a trajectory,
-#'   \code{\link{TrajStepLengths}} for the step lengths,
-#'   \code{\link{TrajSinuosity2}} for a corrected version of sinuosity, and
+#' @seealso \code{\link{TrajSinuosity2}} for a corrected version of sinuosity,
+#'   \code{\link{TrajAngles}} for the turning angles in a trajectory,
+#'   \code{\link{TrajStepLengths}} for the step lengths, and
 #'   \code{\link{TrajRediscretize}} for resampling to a constant step length.
 #'
 #' @references
@@ -175,8 +175,9 @@ TrajSinuosity <- function(trj, compass.direction = NULL) {
 #' Bovet & Benhamou (1988), which is suitable for a wider range of turning angle
 #' distributions, and does not require a constant step length.
 #'
-#' This function implements the formula \deqn{S = 2[p(((1 + c)/(1 - c)) +
-#' b^2)]^{-0.5}} where \eqn{p} is the mean step length, \eqn{c} is the mean
+#' This function implements equation 8 from Benhamou (2004):
+#' \deqn{S = 2[p(\frac{1 + c}{1 - c} + b^2)]^{-0.5}}
+#' where \eqn{p} is the mean step length, \eqn{c} is the mean
 #' cosine of turning angles, and \eqn{b} is the coefficient of variation of
 #' the step length.
 #'
