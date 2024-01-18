@@ -411,3 +411,213 @@ Traj3DRediscretize <- function(trj3d, R, simConstantSpeed = FALSE) {
   rt
 }
 
+############################################################################################
+
+#' Approximates the acceleration of a 3-dimensional trajectory
+#'
+#' Returns an approximation of the acceleration of a trajectory at each point
+#' using the second-order central \href{https://en.wikipedia.org/wiki/Finite_difference}{finite
+#' differences}.
+#'
+#' \code{trajr} trajectories, which consist of straight line displacements
+#' between sampled locations, do not contain enough information to correctly
+#' derive velocity or acceleration. Since we have to assume a constant velocity
+#' at each step, the first derivative is discontinuous. Acceleration, therefore,
+#' is zero during each step and infinite at each change of velocity. The
+#' approximation implemented by this function assumes that acceleration occurs
+#' over a period of time: half the duration of the previous step plus half the
+#' duration of the next step.
+#'
+#' The function \code{\link{Traj3DSpeed}}, despite its name, can be used to
+#' calculate the magnitude of the acceleration vectors returned by this function.
+#'
+#' @param trj3d 3-dimensional trajectory whose acceleration is to be calculated.
+#'
+#' @return Numeric matrix of 3D acceleration vectors. Each row represents the
+#'   acceleration at a point in the trajectory. Columns are named "`x`", "`y`"
+#'   and "`z`". The vector has an attribute, \code{trj}, with the trajectory as
+#'   its value. The first and last values will always be \code{NA}, since
+#'   acceleration cannot be estimated for those points.
+#'
+#' @seealso \code{\link{Traj3DVelocity}} for calculating velocity,
+#'   \code{\link{Traj3DResampleTime}} and \code{\link{Traj3DRediscretize}} to
+#'   resample a trajectory to fixed time or length steps.
+#'
+#' @examples
+#' \dontrun{
+#' library(rgl)
+#'
+#' # Plot a trajectory and its acceleration in 3D, using the rgl package
+#'
+#' # Function to add acceleration vectors as arrows to a 3D trajectory plot
+#' Acc3DArrows <- function(acc, scale = 0.0001, trj3d = attr(acc, "trj3d"), ...) {
+#'     cols <- c("x", "y", "z")
+#'     sapply(seq_len(nrow(t3) - 2) + 1, function(r) {
+#'            arrow3d(t3[r, cols], t3[r, cols] + acc[r, ] * scale, type = "extrusion", ...)
+#'     })
+#' }
+#' plot3d(trj3d$x, trj3d$y, trj3d$z, type = 'l')
+#' Acc3DArrows(Traj3DAcceleration(trj3d), col = 2)
+#' }
+#'
+#' @export
+Traj3DAcceleration <- function(trj3d) {
+  .checkTrajHasTime(trj3d)
+
+  # Note that there's no point in calculating backward or forward differences as
+  # they provide no different information
+
+  # If we were guaranteed a constant step time, h, we could use the more elegant
+  # ax <- stats::filter(trj$x, c(1, -2, 1)) / h^2
+
+  x <- trj3d$x
+  y <- trj3d$y
+  z <- trj3d$z
+  h <- diff(trj3d$time)
+
+  # Calculate velocities using forward/backward diffs
+  vx <- diff(x) / h
+  vy <- diff(y) / h
+  vz <- diff(z) / h
+  # calculate acceleration from velocity and time
+  h_2 <- .sumPairs(h / 2)
+  ax <- diff(vx) / h_2
+  ay <- diff(vy) / h_2
+  az <- diff(vz) / h_2
+
+  acc <- rbind(c(NA, NA, NA),
+               cbind(ax, ay, az),
+               c(NA, NA, NA))
+  attr(acc, "trj3d") <- trj3d
+  acc
+}
+
+
+#' Velocity of a trajectory
+#'
+#' The velocity, as a 3-dimensional vector, is approximated at each point of the
+#' trajectory using first-order finite differences. Central, forward or backward
+#' differences can be used. Central differences yield a more accurate
+#' approximation if the velocity is smooth. As a practical guide, if velocity
+#' doesn't change much between steps, use central differences. If it changes
+#' substantially (and not just as an artifact of recording noise), then use
+#' either forward or backward differences.
+#'
+#' Intuitively, think of the central difference velocity at a point as the mean
+#' of the velocities of the two adjacent steps. Forward difference velocity is
+#' the velocity of the step starting at the point. Backward difference is the
+#' velocity of the step ending at the point.
+#'
+#' Speed (i.e. the magnitude of the velocity) can be derived from velocity by
+#' calling \code{\link{Traj3DSpeed}}.
+#'
+#' @param trj3d 3-dimensional trajectory whose velocity is to be calculated.
+#' @param diff Type of difference to be calculated, one of "central" (the
+#'   default), "forward" or "backward".
+#'
+#' @return A numeric matrix. Each row represents the 3D velocity vector at each
+#'   point along the trajectory, with `x`, `y` and `z` columns. If \code{diff}
+#'   is \code{"central"}, the first and last velocity values will be \code{NA}
+#'   since velocity cannot be calculated for them. If \code{diff} is
+#'   \code{"forward"}, the last value will be NA, and if \code{diff} is
+#'   \code{"backward"}, the first value will be NA.
+#'
+#' @seealso \code{\link{Traj3DSpeed}} for calculating scalar speed, which is the
+#'   magnitude of the velocity vector at each step;
+#'   \code{\link{Traj3DResampleTime}} and \code{\link{Traj3DRediscretize}} to
+#'   resample a trajectory to fixed time or length steps; Finite differences on
+#'   \href{https://en.wikipedia.org/wiki/Finite_difference}{Wikipedia}.
+#'
+#' @export
+Traj3DVelocity <- function(trj3d, diff = c("central", "forward", "backward")) {
+  .checkTrajHasTime(trj3d)
+  diff <- match.arg(diff)
+
+  x <- trj3d$x
+  y <- trj3d$y
+  z <- trj3d$z
+  h <- diff(trj3d$time)
+
+  if (diff == "central") {
+
+    # Central diffs (this is the "double-interval" central difference)
+    # Sum time (h) for each adjacent pair of steps
+    dt <- c(NA, .sumPairs(h), NA)
+    vx <- stats::filter(x, c(1, 0, -1)) / dt
+    vy <- stats::filter(y, c(1, 0, -1)) / dt
+    vz <- stats::filter(z, c(1, 0, -1)) / dt
+  } else {
+
+    # Forward or backward diffs, variable step times
+    vx <- diff(x) / h
+    vy <- diff(y) / h
+    vz <- diff(z) / h
+    if (diff == "forward") {
+      # Forward diffs - speed at last point is unknown
+      vx <- c(vx, NA)
+      vy <- c(vy, NA)
+      vz <- c(vz, NA)
+    } else {
+      # Backward diffs - speed at first point is unknown
+      vx <- c(NA, vx)
+      vy <- c(NA, vy)
+      vz <- c(NA, vz)
+    }
+  }
+
+  vel <- cbind(vx = vx, vy = vy, vz = vz)
+  attr(vel, "trj3d") <- trj3d
+  vel
+}
+
+#' Speed along a 3-dimensional trajectory
+#'
+#' Speed is calculated as the magnitude of velocity. The returned speed will
+#' contain leading and/or trailing `NA` values, depending on the type of
+#' differences used to calculate velocity.
+#'
+#' If the trajectory has constant time steps, then the average speed of the
+#' trajectory is `mean(Traj3DSpeed(Traj3DVelocity(trj)), na.rm = TRUE)`. A
+#' trajectory can be resampled by \code{\link{Traj3DResampleTime}} so that it
+#' has constant time steps.
+#'
+#' This function is implemented to simply interpret each row of a matrix as a 3D
+#' vector, and return their lengths. Accordingly, this function can also be used
+#' to calculate the magnitude of acceleration as returned by
+#' \code{\link{Traj3DAcceleration}}.
+#'
+#' @param vel Velocity of a 3-dimensional trajectory, as returned by
+#'   \code{\link{Traj3DVelocity}}.
+#'
+#' @returns Numeric vector with speed at each point along the trajectory.
+#'
+#' @seealso \code{\link{Traj3DVelocity}} to calculate the 3D velocity,
+#'   \code{\link{Traj3DAcceleration}} to calculate the 3D acceleration,
+#'   \code{\link{Traj3DLength}}, \code{\link{TrajDuration}},
+#'   \code{\link{Traj3DResampleTime}}
+#'
+#' @examples
+#' \dontrun{
+#' # Get the velocity along the trajectory
+#' speed <- Traj3DSpeed(Traj3DVelocity(trj3d))
+#'
+#' # Alternative method to calculate mean speed of a portion of a trajectory
+#' si <- 10
+#' ei <- 400
+#' # Mean speed is displacement divided by time
+#' speedMean <- Traj3DLength(trj3d, startIndex = si, endIndex = ei) /
+#'                 TrajDuration(trj3d, startIndex = si, endIndex = ei)
+#' }
+#'
+#' @export
+Traj3DSpeed <- function(vel) {
+  # This is faster than using dist or norm.
+  # See https://stackoverflow.com/a/63763823 to explain scaling (it prevents overflow)
+  apply(X = vel, MARGIN = 1, FUN = function(x) {
+    mx <- max(abs(x))
+    if (!is.na(mx) && mx == 0)
+      0
+    else
+      mx * sqrt(sum((x / mx)^2))
+  })
+}

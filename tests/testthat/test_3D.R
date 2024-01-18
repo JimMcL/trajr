@@ -12,12 +12,17 @@ gen3dPts <- function(n = 100) {
 }
 
 #library(rgl)
-plot3dTrj <- function(t3, add = FALSE, col = 1, points = FALSE) {
+plot3dTrj <- function(t3, add = FALSE, col = 1, points = FALSE, acc = FALSE) {
   plot3d(t3$x, t3$y, t3$z, add = add, col = col, type = 'l', lwd = 2)
   if (points)
     plot3d(t3$x, t3$y, t3$z, add = T, col = col, type = 's', size = 0.6)
   else
     plot3d(t3$x[1], t3$y[1], t3$z[1], add = T, col = col, type = 's', size = 0.8)
+  if (!isFALSE(acc)) {
+    sapply(seq_len(nrow(t3) - 2) + 1, function(r) {
+      arrow3d(t3[r, c("x", "y", "z")], t3[r, c("x", "y", "z")] + acc[r, ] * 0.0001, col = 2, type = "extrusion")
+    })
+  }
 }
 
 test_that("3D basic", {
@@ -114,7 +119,45 @@ test_that("rediscretize with speed", {
   # Test that simulation without time throws exception
   rd2 <- Traj3DRediscretize(tr, 2, simConstantSpeed = FALSE)
   expect_error(Traj3DRediscretize(rd2, 4, simConstantSpeed = TRUE))
+})
 
+test_that("Velocity", {
+  track <- data.frame(x = c(0, 1, 1, 1),
+                      y = c(0, 0, 1, 1),
+                      z = c(0, 0, 0, 1))
+  t3 <- Traj3DFromCoords(track)
+  expect_equal(c(Traj3DVelocity(t3, "forward")), c(50, 0, 0, NA, 0, 50, 0, NA, 0, 0, 50, NA))
+  expect_equal(c(Traj3DVelocity(t3, "backward")), c(NA, 50, 0, 0, NA, 0, 50, 0, NA, 0, 0, 50))
+  expect_equal(c(Traj3DVelocity(t3)), c(NA, 25, 0, NA, NA, 25, 25, NA, NA, 0, 25, NA))
+
+  expect_equal(Traj3DSpeed(Traj3DVelocity(t3, "backward")), c(NA, 50, 50, 50))
+  expect_equal(Traj3DSpeed(Traj3DVelocity(t3, "forward")), c(50, 50, 50, NA))
+  expect_equal(Traj3DSpeed(Traj3DVelocity(t3, "central")), c(NA, sqrt(25^2 + 25^2), sqrt(25^2 + 25^2), NA))
+
+  # Some random trajectories
+  set.seed(1)
+  tr <- Traj3DFromCoords(gen3dPts(1000), zCol = "z", timeCol = "time")
+  diffs <- Traj3DSpeed(Traj3DVelocity(tr)) - Mod(TrajVelocity(tr))
+  # All speeds should be >= the speed ignoring z
+  expect_true(all(is.na(diffs) | diffs >= 0))
+  # Some speeds should be strictly >
+  expect_true(any(diffs > 0))
+  tr <- Traj3DFromCoords(gen3dPts(1000), zCol = "z", timeCol = "time")
+  diffs <- Traj3DSpeed(Traj3DVelocity(tr)) - Mod(TrajVelocity(tr))
+  # All speeds should be >= the speed ignoring z
+  expect_true(all(is.na(diffs) | diffs >= 0))
+  # Some speeds should be strictly >
+  expect_true(any(diffs > 0))
+
+  # Acceleration
+  acc <- Traj3DAcceleration(t3)
+  expect_equal(nrow(acc), nrow(t3))
+  expect_true(all(is.na(acc[1,])))
+  expect_true(all(is.na(acc[nrow(t3),])))
+
+  tr <- Traj3DFromCoords(gen3dPts(20), zCol = "z", timeCol = "time")
+
+  # plot3dTrj(tr, acc = Traj3DAcceleration(tr))
 })
 
 ##### TODO

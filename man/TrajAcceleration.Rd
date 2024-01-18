@@ -19,10 +19,11 @@ Vector of complex numbers. The modulus (\code{Mod(a)}) is the
 }
 \description{
 Returns an approximation of the acceleration of a trajectory at each point
-using the second-order central finite differences.
+using the second-order central \href{https://en.wikipedia.org/wiki/Finite_difference}{finite
+differences}.
 }
 \details{
-`trajr` trajectories, which consist of straight line displacements between
+\code{trajr} trajectories, which consist of straight line displacements between
 sampled locations, do not contain enough information to correctly derive
 velocity or acceleration. Since we have to assume a constant velocity at each
 step, the first derivative is discontinuous. Acceleration, therefore, is zero

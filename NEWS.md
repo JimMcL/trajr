@@ -1,5 +1,9 @@
 # Changes to the `trajr` package
 
+## trajr 1.5.1.9000
+
+* Add more 3d functionality: `Traj3DVelocity`, `Traj3DAcceleration` and `Traj3DSpeed`.
+
 ## trajr 1.5.1
 
 * Minor documentation changes: mention 3D in package overview and use new roxygen method to generate package documentation (https://github.com/r-lib/roxygen2/issues/1491).
