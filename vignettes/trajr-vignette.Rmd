@@ -190,6 +190,32 @@ legend("topright", c("Original", "Resampled"), col = c("black", "red"),
 
 ```
 
+`TrajResampleTime` can also be used to fill in missing samples or frames by specifying a `stepTime` value that is the step time of the original trajectory.
+
+```{r fillin, fig.cap="_Resampling to fill in missing frames._", fig.width=6, fig.height=4, echo=-1:-2}
+par(mar = c(4, 4, 0.5, 0.5) + 0.1)
+set.seed(1)
+# Generate a short trajectory
+trj <- TrajGenerate(10, stepLength = 1, fps = 24)
+# Remove some frames
+coords <- trj[c(1, 2, 3, 6, 9, 11), ]
+trjm <- TrajFromCoords(coords, timeCol = "time")
+
+# Resample trajectory with gaps to fill in the missing frames, using 
+# `stepTime = 1 / fps`, i.e. the same as the original trajectory
+trji <- TrajResampleTime(trjm, 1/24)
+
+# Plot trajectory with missing frames
+plot(trjm, lwd = 2)
+points(trjm, draw.start.pt = FALSE, pch = 16, cex = 1.2)
+
+# Plot interpolated trajectory in red
+lines(trji, col = "#FF0000A0", lwd = 2)
+points(trji, type = 'p', col = "#FF0000A0", pch = 16)
+legend("topleft", c("Original", "Interpolated"), col = c("black", "red"), 
+       lwd = 2, inset = c(0.01, 0.02))
+```
+
 ### Other trajectory operations
 
 This table lists trajectory operations not otherwise addressed by this document. Refer to the help for each function for information.

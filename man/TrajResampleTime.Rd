@@ -25,6 +25,10 @@ Constructs a new trajectory by resampling the input trajectory to a fixed
 time interval. Points are linearly interpolated along the trajectory. Spatial
 and time units are preserved.
 }
+\details{
+Resampling with the original step time (i.e., 1/fps) can be used to fill in
+missing frames in a trajectory.
+}
 \examples{
 # Simulate a trajectory with steps every 5 hours
 set.seed(46)

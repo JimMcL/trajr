@@ -288,7 +288,7 @@ TrajsMergeStats <- function(trjs, statsFn, progressBar = c("none", "text", "win"
       # in: invalid list argument: all variables should have the same length
       row[sapply(row, is.null)] <- NA
 
-      if(is.na(nc))
+      if (is.na(nc))
         nc <- length(row)
       else if (nc != length(row))
         stop(sprintf("Statistics for trajectory %d contains %d values, but expected %d", nrow(result), length(row), nc))

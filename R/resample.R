@@ -4,6 +4,9 @@
 #' time interval. Points are linearly interpolated along the trajectory. Spatial
 #' and time units are preserved.
 #'
+#' Resampling with the original step time (i.e., 1/fps) can be used to fill in
+#' missing frames in a trajectory.
+#'
 #' @param trj The trajectory to be resampled.
 #' @param stepTime The resampled trajectory step time. Each step in the new
 #'   trajectory will have this duration.
