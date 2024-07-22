@@ -57,7 +57,7 @@ RotateToDeflect <- function(origin, trj, boundary, inc = pi / 90) {
   pt2 <- trjPt(trj, 1) # Starting point of trj
 
   # Find a rotation such that pt2 is inside the boundary
-  angle <- findRotation(origin, pt2, inc)
+  angle <- findRotation(origin, pt2, inc, boundary)
 
   # Now rotate the whole trajectory around the origin point
   TrajRotate(trj, angle, origin = origin, relative = FALSE)
@@ -65,7 +65,7 @@ RotateToDeflect <- function(origin, trj, boundary, inc = pi / 90) {
 
 # This is the algorithm to find the minimal rotation angle. Simply generates
 # lots of angles, then tests them until a suitable angle is found
-findRotation <- function(pt1, pt2, inc) {
+findRotation <- function(pt1, pt2, inc, boundary) {
   for (alpha in seq(inc, pi, by = inc)) {
     # Rotate pt2 around pt1 by +- alpha
     npt2 <- rotatePt(pt1, pt2, alpha)
@@ -164,7 +164,7 @@ text(18, -2.5, "t2", pos = 1, font = 4)
 mtext("C", line = line, adj = adj)
 
 # Step 4
-angle <- findRotation(pI, pO, pi / 10)
+angle <- findRotation(pI, pO, pi / 10, boundary)
 
 # Step 5
 plot(l[[1]], xlim = xlim, ylim = ylim, col = MIDRED, lwd = 2)
@@ -246,17 +246,17 @@ hourglassArena <- function() {
              y = c(ys, rev(ys), -(ys), -rev(ys)))
 }
 
-boundary <- hourglassArena()
+hourglass <- hourglassArena()
 
 # Create a random trajectory
 set.seed(2)
 trj <- TrajGenerate(n = 10000, stepLength = 2, angularErrorSd = .1, spatialUnits = "mm")
 
 # Constrain it to the arena
-constrained <- ConstrainTrajectory(trj, boundary)
+constrained <- ConstrainTrajectory(trj, hourglass)
 
 plot(constrained, col = DARKBLUE)
-polygon(boundary, border = "brown", lwd = 2)
+polygon(hourglass, border = "brown", lwd = 2)
 
 ```
 
@@ -268,7 +268,7 @@ If we plot a heatmap of the trajectory, we can visualise locations where the ani
 d <- MASS::kde2d(constrained$x, constrained$y, n = 300)
 par(mar = c(3, 2, 1, 1) + .1)
 image(d, asp = 1)
-polygon(boundary, border = "blue", lwd = 2)
+polygon(hourglass, border = "blue", lwd = 2)
 
 ```
 

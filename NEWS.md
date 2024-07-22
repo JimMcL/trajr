@@ -3,6 +3,7 @@
 ## trajr 1.5.1.9000
 
 * Add more 3d functionality: `Traj3DVelocity`, `Traj3DAcceleration` and `Traj3DSpeed`.
+* Fix bug in simulation vignette.
 
 ## trajr 1.5.1
 
